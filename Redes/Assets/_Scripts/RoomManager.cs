@@ -9,6 +9,7 @@ using UnityEngine;
 public class RoomManager : MonoBehaviour
 {
     Socket udpSocket;
+    Socket clientSocket;
     IPEndPoint ipep; // My socket endpoint
     IPEndPoint clientIpep; // Client Endpoint
     [SerializeField]
@@ -17,7 +18,7 @@ public class RoomManager : MonoBehaviour
 
     int recv = 0; // Size of the data
     byte[] data;
-    EndPoint remote;
+    EndPoint remote = null;
 
 
     Thread netThread;
@@ -26,11 +27,26 @@ public class RoomManager : MonoBehaviour
     void Start()
     {
         udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         ipep = new IPEndPoint(IPAddress.Parse("10.0.103.46"), 5497);
         udpSocket.Bind(ipep);
-        
-        clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5497);
-        remote = clientIpep;
+
+        try
+        {
+            udpSocket.Listen(10);
+            Debug.Log("Waiting for clients...");
+            clientSocket = udpSocket.Accept();
+            clientIpep = (IPEndPoint)clientSocket.RemoteEndPoint;
+            Debug.Log("Connected " + clientIpep.ToString());
+            remote = clientIpep;
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("Connection failed " + e.Message);
+        }
+
+        //clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5497);
+        //remote = clientIpep;
 
         data = new byte[256];
 
@@ -52,6 +68,8 @@ public class RoomManager : MonoBehaviour
 
     void RecieveMessages()
     {
+        if (remote == null)
+            return;
         recv = udpSocket.ReceiveFrom(data, SocketFlags.None, ref remote);
         Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
     }
