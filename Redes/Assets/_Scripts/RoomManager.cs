@@ -25,12 +25,14 @@ public class RoomManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+        udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         ipep = new IPEndPoint(IPAddress.Parse("10.0.103.46"), 5497);
         udpSocket.Bind(ipep);
         
         clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5497);
         remote = clientIpep;
+
+        data = new byte[256];
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
