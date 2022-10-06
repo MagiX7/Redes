@@ -15,6 +15,8 @@ public class RoomManager : MonoBehaviour
     [SerializeField]
     string clientIp;
 
+    bool finished = false;
+
 
     int recv = 0; // Size of the data
     byte[] data;
@@ -31,22 +33,22 @@ public class RoomManager : MonoBehaviour
         ipep = new IPEndPoint(IPAddress.Parse("10.0.103.46"), 5497);
         udpSocket.Bind(ipep);
 
-        try
-        {
-            udpSocket.Listen(10);
-            Debug.Log("Waiting for clients...");
-            clientSocket = udpSocket.Accept();
-            clientIpep = (IPEndPoint)clientSocket.RemoteEndPoint;
-            Debug.Log("Connected " + clientIpep.ToString());
-            remote = clientIpep;
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log("Connection failed " + e.Message);
-        }
+        //try
+        //{
+        //    udpSocket.Listen(10);
+        //    Debug.Log("Waiting for clients...");
+        //    clientSocket = udpSocket.Accept();
+        //    clientIpep = (IPEndPoint)clientSocket.RemoteEndPoint;
+        //    Debug.Log("Connected " + clientIpep.ToString());
+        //    remote = clientIpep;
+        //}
+        //catch (System.Exception e)
+        //{
+        //    Debug.Log("Connection failed " + e.Message);
+        //}
 
-        //clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5497);
-        //remote = clientIpep;
+        clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5497);
+        remote = clientIpep;
 
         data = new byte[256];
 
@@ -57,21 +59,31 @@ public class RoomManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKeyUp(KeyCode.S))
         {
             string text = "Un saludo desde" + ipep.Address.ToString();
             data = Encoding.ASCII.GetBytes(text);
             recv = data.Length;
             udpSocket.SendTo(data, recv, SocketFlags.None, clientIpep);
         }
+
+        if (Input.GetKeyUp(KeyCode.F))
+        {
+            finished = true;
+        }
     }
 
     void RecieveMessages()
     {
-        if (remote == null)
-            return;
-        recv = udpSocket.ReceiveFrom(data, SocketFlags.None, ref remote);
-        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+        while (!finished)
+        {
+        
+            if (remote == null)
+                return;
+            recv = udpSocket.ReceiveFrom(data, SocketFlags.None, ref remote);
+            Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+
+        }
     }
 
     private void OnDisable()
