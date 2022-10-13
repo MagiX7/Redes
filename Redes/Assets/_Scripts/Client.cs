@@ -25,11 +25,11 @@ public class Client : MonoBehaviour
     void Start()
     {
         server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5468);
+        clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5497);
         server.Bind(clientIpep);
 
 
-        remote = (EndPoint) new IPEndPoint(IPAddress.Parse(serverIp), 5468);
+        remote = (EndPoint) new IPEndPoint(IPAddress.Parse(serverIp), 5497);
         //remote = new IPEndPoint(IPAddress.Any, 0);
 
         data = new byte[1024];
