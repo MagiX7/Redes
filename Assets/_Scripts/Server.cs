@@ -5,7 +5,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Server : MonoBehaviour
 {
@@ -14,21 +13,10 @@ public class Server : MonoBehaviour
     int recv = 0; // Size of the data
     byte[] data;
 
-    [SerializeField] string serverIp;
-
     EndPoint remote = null;
-    IPEndPoint sender;
-
-
+    
     Thread netThread;
     bool finished = false;
-    bool newMessage = false;
-
-    string text;
-    List<EndPoint> remoters;
-
-    [SerializeField] Text chat;
-    [SerializeField] InputField input;
 
     // Start is called before the first frame update
     void Start()
@@ -40,11 +28,9 @@ public class Server : MonoBehaviour
         //IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
         //remote = (EndPoint)sender;
 
-        remoters = new List<EndPoint>();
-
         data = new byte[1024];
 
-        ipep = new IPEndPoint(IPAddress.Parse(serverIp), 5468);
+        ipep = new IPEndPoint(IPAddress.Any, 5497);
 
         server = new Socket(AddressFamily.InterNetwork,
                         SocketType.Dgram, ProtocolType.Udp);
@@ -53,10 +39,8 @@ public class Server : MonoBehaviour
         Debug.Log("Waiting for a client...");
         Debug.Log("Server IP: " + ipep.ToString());
 
-        sender = new IPEndPoint(IPAddress.Parse(serverIp), 5468);
+        IPEndPoint sender = new IPEndPoint(IPAddress.Parse("10.0.103.35"), 0);
         remote = (EndPoint)(sender);
-
-        remoters.Add(remote);
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
@@ -70,31 +54,13 @@ public class Server : MonoBehaviour
             finished = true;
         }
 
-        //if (Input.GetKeyUp(KeyCode.A))
-        //{
-        //    text = "Server message";
-        //    data = Encoding.ASCII.GetBytes(text);
-        //    recv = data.Length;
-        //    remote = sender;
-        //    server.SendTo(data, recv, SocketFlags.None, remote);
-        //}
-
-        if (newMessage)
+        if (Input.GetKeyUp(KeyCode.A))
         {
-            chat.text += (text + "\n");
-            newMessage = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            data = Encoding.ASCII.GetBytes(input.text);
+            //string text = ;
+            data = Encoding.ASCII.GetBytes("Un saludo desde" + ipep.Address.ToString());
             recv = data.Length;
-            for (int i = 0; i < remoters.Count; i++)
-            {
-                EndPoint aux = remoters[i];
-                server.SendTo(data, recv, SocketFlags.None, aux);
-            }
-            input.text = "";
+            server.SendTo(data, recv, SocketFlags.None, remote);
+            data = new byte[1024];
         }
     }
 
@@ -106,16 +72,8 @@ public class Server : MonoBehaviour
             if (remote == null)
                 return;
             recv = server.ReceiveFrom(data, SocketFlags.None, ref remote);
-            text = Encoding.ASCII.GetString(data, 0, recv);
-            Debug.Log(text);
-            newMessage = true;
+            Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
             data = new byte[1024];
-
-            if (!remoters.Contains(remote))
-            {
-                remoters.Add(remote);
-            }
-
         }
     }
 
