@@ -22,8 +22,10 @@ public class Server : MonoBehaviour
     void Start()
     {
         server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        ipep = new IPEndPoint(IPAddress.Parse("10.0.103.46"), 5497);
+        ipep = new IPEndPoint(IPAddress.Any, 5497);
         server.Bind(ipep);
+
+        remote = new IPEndPoint(IPAddress.Any, 0);
 
         data = new byte[1024];
 
@@ -37,6 +39,14 @@ public class Server : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             finished = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            string text = "Un saludo desde" + ipep.Address.ToString();
+            data = Encoding.ASCII.GetBytes(text);
+            recv = data.Length;
+            server.SendTo(data, recv, SocketFlags.None, remote);
         }
     }
 
