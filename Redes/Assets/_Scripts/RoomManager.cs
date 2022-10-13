@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class RoomManager : MonoBehaviour
 {
-    Socket udpSocket;
+    Socket server;
     Socket clientSocket;
     IPEndPoint ipep; // My socket endpoint
     IPEndPoint clientIpep; // Client Endpoint
@@ -28,16 +28,16 @@ public class RoomManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         ipep = new IPEndPoint(IPAddress.Parse("10.0.103.46"), 5497);
-        udpSocket.Bind(ipep);
+        server.Bind(ipep);
 
         //try
         //{
-        //    udpSocket.Listen(10);
+        //    server.Listen(10);
         //    Debug.Log("Waiting for clients...");
-        //    clientSocket = udpSocket.Accept();
+        //    clientSocket = server.Accept();
         //    clientIpep = (IPEndPoint)clientSocket.RemoteEndPoint;
         //    Debug.Log("Connected " + clientIpep.ToString());
         //    remote = clientIpep;
@@ -50,7 +50,7 @@ public class RoomManager : MonoBehaviour
         clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5497);
         remote = clientIpep;
 
-        data = new byte[256];
+        data = new byte[1024];
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
@@ -64,7 +64,7 @@ public class RoomManager : MonoBehaviour
             string text = "Un saludo desde" + ipep.Address.ToString();
             data = Encoding.ASCII.GetBytes(text);
             recv = data.Length;
-            udpSocket.SendTo(data, recv, SocketFlags.None, clientIpep);
+            server.SendTo(data, recv, SocketFlags.None, remote);
         }
 
         if (Input.GetKeyUp(KeyCode.F))
@@ -75,12 +75,27 @@ public class RoomManager : MonoBehaviour
 
     void RecieveMessages()
     {
+        try
+        {
+            Debug.Log("Try");
+            server.Listen(2);
+            Debug.Log("Waiting for clients...");
+            clientSocket = server.Accept();
+            clientIpep = (IPEndPoint)clientSocket.RemoteEndPoint;
+            Debug.Log("Connected " + clientIpep.ToString());
+            remote = clientIpep;
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("Connection failed " + e.Message);
+        }
+
         while (!finished)
         {
         
             if (remote == null)
                 return;
-            recv = udpSocket.ReceiveFrom(data, SocketFlags.None, ref remote);
+            recv = server.ReceiveFrom(data, SocketFlags.None, ref remote);
             Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
 
         }
@@ -88,7 +103,7 @@ public class RoomManager : MonoBehaviour
 
     private void OnDisable()
     {
-        udpSocket.Close();
+        server.Close();
         if (netThread.IsAlive)
             netThread.Abort();
     }
