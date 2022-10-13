@@ -167,8 +167,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0987e36e22fdefe44ba4eb19ec90743d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clientIp: 10.0.103.46
-  serverIp: 10.0.103.35
+  clientIp: 127.0.0.1
+  serverIp: 10.0.103.46
 --- !u!1 &577317069
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,7 +408,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2048002616
 Transform:
   m_ObjectHideFlags: 0

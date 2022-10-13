@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class Client : MonoBehaviour
 {
-    Socket clientSocket;
+    Socket server;
     IPEndPoint clientIpep;
 
     int recv = 0; // Size of the data
@@ -24,11 +24,13 @@ public class Client : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5497);
-        clientSocket.Bind(clientIpep);
+        server.Bind(clientIpep);
 
-        remote = new IPEndPoint(IPAddress.Parse(serverIp), 5497);
+
+        remote = (EndPoint) new IPEndPoint(IPAddress.Parse(serverIp), 5497);
+        //remote = new IPEndPoint(IPAddress.Any, 0);
 
         data = new byte[1024];
 
@@ -44,7 +46,7 @@ public class Client : MonoBehaviour
             string text = "Un saludo desde" + clientIpep.Address.ToString();
             data = Encoding.ASCII.GetBytes(text);
             recv = data.Length;
-            clientSocket.SendTo(data, recv, SocketFlags.None, remote);
+            server.SendTo(data, recv, SocketFlags.None, remote);
         }
 
         if (Input.GetKeyDown(KeyCode.F))
@@ -58,10 +60,10 @@ public class Client : MonoBehaviour
         while (!finished)
         {
 
-            if (remote == null)
-                return;
-            recv = clientSocket.ReceiveFrom(data, SocketFlags.None, ref remote);
+            recv = server.ReceiveFrom(data, ref remote);
+            Debug.Log(data.ToString());
             Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+            data = new byte[1024];
 
         }
     }
