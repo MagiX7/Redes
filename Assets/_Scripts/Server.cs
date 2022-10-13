@@ -44,7 +44,7 @@ public class Server : MonoBehaviour
 
         data = new byte[1024];
 
-        ipep = new IPEndPoint(IPAddress.Parse(serverIp), 5468);
+        ipep = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
         server = new Socket(AddressFamily.InterNetwork,
                         SocketType.Dgram, ProtocolType.Udp);
@@ -53,10 +53,8 @@ public class Server : MonoBehaviour
         Debug.Log("Waiting for a client...");
         Debug.Log("Server IP: " + ipep.ToString());
 
-        sender = new IPEndPoint(IPAddress.Parse(serverIp), 5468);
+        sender = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
         remote = (EndPoint)(sender);
-
-        remoters.Add(remote);
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
@@ -81,8 +79,16 @@ public class Server : MonoBehaviour
 
         if (newMessage)
         {
+            Debug.Log(text + " Update");
+            data = Encoding.ASCII.GetBytes(text);
+            recv = data.Length;
+            for (int i = 0; i < remoters.Count; i++)
+            {
+                server.SendTo(data, recv, SocketFlags.None, remoters[i]);
+            }
             chat.text += (text + "\n");
             newMessage = false;
+            data = new byte[1024];
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
@@ -91,10 +97,12 @@ public class Server : MonoBehaviour
             recv = data.Length;
             for (int i = 0; i < remoters.Count; i++)
             {
-                EndPoint aux = remoters[i];
-                server.SendTo(data, recv, SocketFlags.None, aux);
+                server.SendTo(data, recv, SocketFlags.None, remoters[i]);
             }
+            chat.text += (input.text + "\n");
+            Debug.Log(input.text + " Send");
             input.text = "";
+            data = new byte[1024];
         }
     }
 
@@ -102,20 +110,20 @@ public class Server : MonoBehaviour
     {
         while (!finished)
         {
-            
             if (remote == null)
                 return;
+
             recv = server.ReceiveFrom(data, SocketFlags.None, ref remote);
             text = Encoding.ASCII.GetString(data, 0, recv);
-            Debug.Log(text);
+            Debug.Log(text + " Received");
             newMessage = true;
+
             data = new byte[1024];
 
             if (!remoters.Contains(remote))
             {
                 remoters.Add(remote);
             }
-
         }
     }
 
