@@ -21,13 +21,26 @@ public class Server : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        ipep = new IPEndPoint(IPAddress.Any, 5497);
-        server.Bind(ipep);
-
-        remote = new IPEndPoint(IPAddress.Any, 0);
+        //server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        //ipep = new IPEndPoint(IPAddress.Any, 5497);
+        //server.Bind(ipep);
+        //
+        //IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
+        //remote = (EndPoint)sender;
 
         data = new byte[1024];
+
+        ipep = new IPEndPoint(IPAddress.Any, 5497);
+
+        server = new Socket(AddressFamily.InterNetwork,
+                        SocketType.Dgram, ProtocolType.Udp);
+        server.Bind(ipep);
+
+        Debug.Log("Waiting for a client...");
+        Debug.Log("Server IP: " + ipep.ToString());
+
+        IPEndPoint sender = new IPEndPoint(IPAddress.Parse("10.0.103.35"), 0);
+        remote = (EndPoint)(sender);
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
@@ -41,32 +54,18 @@ public class Server : MonoBehaviour
             finished = true;
         }
 
-        if (Input.GetKeyUp(KeyCode.S))
+        if (Input.GetKeyUp(KeyCode.A))
         {
-            string text = "Un saludo desde" + ipep.Address.ToString();
-            data = Encoding.ASCII.GetBytes(text);
+            //string text = ;
+            data = Encoding.ASCII.GetBytes("Un saludo desde" + ipep.Address.ToString());
             recv = data.Length;
             server.SendTo(data, recv, SocketFlags.None, remote);
+            data = new byte[1024];
         }
     }
 
     void RecieveMessages()
     {
-        //try
-        //{
-        //    Debug.Log("Try");
-        //    server.Listen(2);
-        //    Debug.Log("Waiting for clients...");
-        //    clientSocket = server.Accept();
-        //    clientIpep = (IPEndPoint)clientSocket.RemoteEndPoint;
-        //    Debug.Log("Connected " + clientIpep.ToString());
-        //    remote = clientIpep;
-        //}
-        //catch (System.Exception e)
-        //{
-        //    Debug.Log("Connection failed " + e.Message);
-        //}
-
         while (!finished)
         {
             
@@ -74,7 +73,7 @@ public class Server : MonoBehaviour
                 return;
             recv = server.ReceiveFrom(data, SocketFlags.None, ref remote);
             Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-
+            data = new byte[1024];
         }
     }
 
