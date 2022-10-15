@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -113,17 +115,27 @@ public class Server : MonoBehaviour
             if (remote == null)
                 return;
 
-            recv = server.ReceiveFrom(data, SocketFlags.None, ref remote);
-            text = Encoding.ASCII.GetString(data, 0, recv);
-            Debug.Log(text + " Received");
-            newMessage = true;
-
-            data = new byte[1024];
-
-            if (!remoters.Contains(remote))
+            try
             {
-                remoters.Add(remote);
+                byte[] msg = new byte[1024];
+                recv = server.ReceiveFrom(msg, SocketFlags.None, ref remote);
+                text = Encoding.ASCII.GetString(msg, 0, recv);
+                Debug.Log(text + " Received");
+                newMessage = true;
+                
+                //data = msg; Not necessary
+
+                if (!remoters.Contains(remote))
+                {
+                    remoters.Add(remote);
+                }
+
             }
+            catch (Exception e)
+            {
+                Debug.Log("Error when receiving a message: " + e);
+            }
+            
         }
     }
 
