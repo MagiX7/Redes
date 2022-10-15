@@ -40,6 +40,7 @@ public class Client : MonoBehaviour
         remote = (EndPoint)(sender);
 
         data = new byte[1024];
+        server.SendTo(data, recv, SocketFlags.None, remote);
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
