@@ -22,18 +22,24 @@ public class ServerConnectionTCP : MonoBehaviour
     private int port = 3437;
     private Thread threadTCPConnection;
     private Thread threadReceiveTCPMessages;
+    private bool startListening = false;
+    private bool newChatMessage = false;
 
 
     // Gameplay variables
     bool newPlayer = false;
-    private Text players;
-    List<string> playerMessageList;
+    private Text playersConnectedText;
+    List<string> playerConnectionList;
+    public Text playerChatMessagesText;
+    List<string> playerChatMessagesList;
 
     // Start is called before the first frame update
     void Start()
     {
-        playerMessageList = new List<string>();
-        players = GameObject.Find("Players").GetComponent<Text>();
+        clientSocket = new List<Socket>();
+        playerConnectionList = new List<string>();
+        playerChatMessagesList = new List<string>();
+        playersConnectedText = GameObject.Find("Players").GetComponent<Text>();
 
         serverSocket = new Socket(AddressFamily.InterNetwork,
             SocketType.Stream,
@@ -56,30 +62,25 @@ public class ServerConnectionTCP : MonoBehaviour
     {
         if (newPlayer)
         {
-            players.text += playerMessageList[playerMessageList.Count-1] + "\n";
+            playersConnectedText.text += playerConnectionList[playerConnectionList.Count-1] + "\n";
             newPlayer = false;
         }
-        
-        if (Input.GetKeyUp(KeyCode.M))
+
+        if (newChatMessage)
         {
-            try
-            {
-                //string test = "Hola";
-               // clientSocket.Send(Encoding.ASCII.GetBytes(test), test.Length, SocketFlags.None);
-            }
-            catch (Exception error)
-            {
-                Debug.Log("Couldn't send a message to the client: " + error);
-            }
+            playerChatMessagesText.text += playerChatMessagesList[playerChatMessagesList.Count-1] + "\n";
+            newChatMessage = false;
+
         }
 
         // While at least there's 1 client we can call this function
-        if (clientSocket != null)
+        if (clientSocket.Count > 0 && !startListening)
         {
             if (!threadReceiveTCPMessages.IsAlive)
             {
                 Debug.Log("Server started listening for messages...");
                 threadReceiveTCPMessages.Start();
+                startListening = true;
             }
         }
     }
@@ -87,18 +88,20 @@ public class ServerConnectionTCP : MonoBehaviour
 
     private void ThreadTCPConnect()
     {
+        Debug.Log("Listening for other players...");
         // Keep listening until someone connects, then accept it
-        serverSocket.Listen(2);
+        serverSocket.Listen(1);
         clientSocket.Add(serverSocket.Accept());
-
-        newPlayer = true;
-
+        
         // Receive message
         byte[] info = new byte[1024];
         for (int i = 0; i < clientSocket.Count; ++i)
         {
             int siz = clientSocket[i].Receive(info);
-            Debug.Log("Client connected " + siz + " Message: " + Encoding.ASCII.GetString(info, 0, siz));
+            string clientName = Encoding.ASCII.GetString(info, 0, siz);
+            Debug.Log("Client connected " + siz + " Message: " + clientName);
+            playerConnectionList.Add(clientName);
+            newPlayer = true;
         }
        
 
@@ -127,10 +130,24 @@ public class ServerConnectionTCP : MonoBehaviour
                 string clientMessage = Encoding.ASCII.GetString(info, 0, siz);
 
                 // Add it to player messages list
-                playerMessageList.Add(clientMessage);
+                if (playerChatMessagesList.Count > 3) playerChatMessagesList.RemoveAt(0);
+          
+                playerChatMessagesList.Add(clientMessage);
+                newChatMessage = true;
                 Debug.Log("Client said: " + clientMessage);
+
+
+                // Send message to client that he connected successfully
+                byte[] buffer = new byte[clientMessage.Length];
+                buffer = Encoding.ASCII.GetBytes(clientMessage);
+                for (int j = 0; j < clientSocket.Count; ++j)
+                {
+                    clientSocket[j].Send(buffer);
+                }
             }            
         }
+
+        startListening = false;
     }
 
     private void OnDisable()

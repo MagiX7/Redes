@@ -26,9 +26,16 @@ public class ClientTCP : MonoBehaviour
     public GameObject connectionCanvas;
     public GameObject waitingRoomCanvas;
 
+    // Waiting room
+    private bool newChatMessage = false;
+    private List<string> chatMessagesList;
+    public Text chatMessagesText;
+
     // Start is called before the first frame update
     void Start()
     {
+        chatMessagesList = new List<string>();
+
         // Start a new socket TCP type
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -72,10 +79,17 @@ public class ClientTCP : MonoBehaviour
         {
             if (Input.GetKeyUp(KeyCode.Return))
             {
-                socket.Send(Encoding.ASCII.GetBytes("[" + playerName + "]" + chatMessages.text));
+                socket.Send(Encoding.ASCII.GetBytes("[" + playerName + "]: " + chatMessages.text));
                 
                 chatMessages.text = "";
             }
+        }
+
+        if (newChatMessage)
+        {
+            chatMessagesText.text += chatMessagesList[chatMessagesList.Count - 1];
+
+            newChatMessage = false;
         }
     }
 
@@ -90,7 +104,7 @@ public class ClientTCP : MonoBehaviour
 
         // Send message to the server
         socket.Send(Encoding.ASCII.GetBytes("Player " + playerNameInput.text + " connected"));
-        socket.Send(Encoding.ASCII.GetBytes("Hola sucio cerdo"));
+        playerName = playerNameInput.text;
 
         connected = true;
     }
@@ -102,7 +116,14 @@ public class ClientTCP : MonoBehaviour
             byte[] info = new byte[1024];
             int size = socket.Receive(info);
 
-            Debug.Log(Encoding.ASCII.GetString(info, 0, size));
+            string chatMessage = Encoding.ASCII.GetString(info, 0, size);
+
+            newChatMessage = true;
+            if (chatMessagesList.Count > 3) chatMessagesList.RemoveAt(0);
+
+            chatMessagesList.Add(chatMessage);
+
+            Debug.Log(chatMessage);
         }
     }
 
