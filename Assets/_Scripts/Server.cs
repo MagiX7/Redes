@@ -52,7 +52,7 @@ public class Server : MonoBehaviour
                         SocketType.Dgram, ProtocolType.Udp);
         server.Bind(ipep);
 
-        Debug.Log("Waiting for a client...");
+        //Debug.Log("Waiting for a client...");
         Debug.Log("Server IP: " + ipep.ToString());
 
         sender = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
@@ -70,41 +70,46 @@ public class Server : MonoBehaviour
             finished = true;
         }
 
-        //if (Input.GetKeyUp(KeyCode.A))
-        //{
-        //    text = "Server message";
-        //    data = Encoding.ASCII.GetBytes(text);
-        //    recv = data.Length;
-        //    remote = sender;
-        //    server.SendTo(data, recv, SocketFlags.None, remote);
-        //}
-
         if (newMessage)
         {
-            Debug.Log(text + " Update");
-            data = Encoding.ASCII.GetBytes(text);
-            recv = data.Length;
-            for (int i = 0; i < remoters.Count; i++)
+            try
             {
-                server.SendTo(data, recv, SocketFlags.None, remoters[i]);
+                Debug.Log(text + " Update");
+                data = Encoding.ASCII.GetBytes(text);
+                recv = data.Length;
+                for (int i = 0; i < remoters.Count; i++)
+                {
+                    server.SendTo(data, recv, SocketFlags.None, remoters[i]);
+                }
+                chat.text += (text + "\n");
+                newMessage = false;
+                data = new byte[1024];
             }
-            chat.text += (text + "\n");
-            newMessage = false;
-            data = new byte[1024];
+            catch (Exception e)
+            {
+                Debug.Log("Error when sending message: " + e);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            data = Encoding.ASCII.GetBytes(input.text);
-            recv = data.Length;
-            for (int i = 0; i < remoters.Count; i++)
+            try
             {
-                server.SendTo(data, recv, SocketFlags.None, remoters[i]);
+                data = Encoding.ASCII.GetBytes(input.text);
+                recv = data.Length;
+                for (int i = 0; i < remoters.Count; i++)
+                {
+                    server.SendTo(data, recv, SocketFlags.None, remoters[i]);
+                }
+                chat.text += (input.text + "\n");
+                Debug.Log(input.text + " Send");
+                input.text = "";
+                data = new byte[1024];
             }
-            chat.text += (input.text + "\n");
-            Debug.Log(input.text + " Send");
-            input.text = "";
-            data = new byte[1024];
+            catch (Exception e)
+            {
+                Debug.Log("Error when sending message: " + e);
+            }
         }
     }
 
@@ -123,7 +128,7 @@ public class Server : MonoBehaviour
                 Debug.Log(text + " Received");
                 newMessage = true;
                 
-                //data = msg; Not necessary
+                data = msg;
 
                 if (!remoters.Contains(remote))
                 {
