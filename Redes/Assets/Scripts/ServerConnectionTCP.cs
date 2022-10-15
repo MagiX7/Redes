@@ -10,8 +10,14 @@ using UnityEngine.UI;
 
 public class ServerConnectionTCP : MonoBehaviour
 {
+    enum InfoType
+    {
+        MESSAGE = 0,
+        CONNECTION
+    };
+
     private Socket serverSocket;
-    private Socket clientSocket;
+    private List<Socket> clientSocket;
     private IPEndPoint ipep;
     private int port = 3437;
     private Thread threadTCPConnection;
@@ -21,12 +27,12 @@ public class ServerConnectionTCP : MonoBehaviour
     // Gameplay variables
     bool newPlayer = false;
     private Text players;
-    List<string> playerList;
+    List<string> playerMessageList;
 
     // Start is called before the first frame update
     void Start()
     {
-        playerList = new List<string>();
+        playerMessageList = new List<string>();
         players = GameObject.Find("Players").GetComponent<Text>();
 
         serverSocket = new Socket(AddressFamily.InterNetwork,
@@ -50,7 +56,7 @@ public class ServerConnectionTCP : MonoBehaviour
     {
         if (newPlayer)
         {
-            players.text += playerList[playerList.Count-1] + "\n";
+            players.text += playerMessageList[playerMessageList.Count-1] + "\n";
             newPlayer = false;
         }
         
@@ -58,8 +64,8 @@ public class ServerConnectionTCP : MonoBehaviour
         {
             try
             {
-                string test = "Hola";
-                clientSocket.Send(Encoding.ASCII.GetBytes(test), test.Length, SocketFlags.None);
+                //string test = "Hola";
+               // clientSocket.Send(Encoding.ASCII.GetBytes(test), test.Length, SocketFlags.None);
             }
             catch (Exception error)
             {
@@ -82,36 +88,48 @@ public class ServerConnectionTCP : MonoBehaviour
     private void ThreadTCPConnect()
     {
         // Keep listening until someone connects, then accept it
-        serverSocket.Listen(1);
-        clientSocket = serverSocket.Accept();
+        serverSocket.Listen(2);
+        clientSocket.Add(serverSocket.Accept());
+
+        newPlayer = true;
 
         // Receive message
         byte[] info = new byte[1024];
-        int siz = clientSocket.Receive(info);
-        Debug.Log("Client connected " + siz + " Message: " + Encoding.ASCII.GetString(info, 0, siz));
+        for (int i = 0; i < clientSocket.Count; ++i)
+        {
+            int siz = clientSocket[i].Receive(info);
+            Debug.Log("Client connected " + siz + " Message: " + Encoding.ASCII.GetString(info, 0, siz));
+        }
+       
 
         // Send message to client that he connected successfully
         string messageToClient = "You connected to server: Middle Ambient";
         byte[] buffer = new byte[messageToClient.Length];
         buffer = Encoding.ASCII.GetBytes(messageToClient);
-        clientSocket.Send(buffer);
+        for (int i = 0; i < clientSocket.Count; ++i)
+        {
+            clientSocket[i].Send(buffer);
+        }
+        
     }
 
     private void ThreadReceiveTCPMessage()
     {
         // While the client is connected, we receive messages,
         // this way we avoid creating new threads
-        while (clientSocket != null)
+        while (clientSocket.Count > 0)
         {
-            byte[] info = new byte[1024];
-            int siz = clientSocket.Receive(info);
-            string clientMessage = Encoding.ASCII.GetString(info, 0, siz);
+            for (int i = 0; i < clientSocket.Count; ++i)
+            {
+                // Receive message and convert it to string for debug
+                byte[] info = new byte[1024];
+                int siz = clientSocket[i].Receive(info);
+                string clientMessage = Encoding.ASCII.GetString(info, 0, siz);
 
-            playerList.Add(clientMessage);
-            newPlayer = true;
-
-            Debug.Log("Client said: " + clientMessage);
-
+                // Add it to player messages list
+                playerMessageList.Add(clientMessage);
+                Debug.Log("Client said: " + clientMessage);
+            }            
         }
     }
 
@@ -119,12 +137,13 @@ public class ServerConnectionTCP : MonoBehaviour
     {
         // Correctly close and abort all sockets and threads
         // Close sockets
-        if (clientSocket != null)
+
+        for (int i = 0; i < clientSocket.Count; ++i)
         {
-            clientSocket.Close();
-            Debug.Log("Closed client socket");
+            clientSocket[i].Close();
+            Debug.Log("Closed client socket" + i);
         }
-      
+
 
         if (serverSocket != null)
         {

@@ -14,12 +14,12 @@ public class ClientTCP : MonoBehaviour
     bool connected = false;
     bool startListening = false;
     int port = 3442;
-    private string playerName;
     Thread connectionThread;
     Thread receiveMessagesThread;
 
     // Connect player
     public InputField playerNameInput;
+    private string playerName;
     public InputField serverIpAddress;
     public InputField chatMessages;
     bool firstConnection = false;
@@ -29,7 +29,6 @@ public class ClientTCP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerName = "Lucas Perez";
         // Start a new socket TCP type
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -38,8 +37,6 @@ public class ClientTCP : MonoBehaviour
         Debug.Log("Connecting");
         // Bind socket with our ip
         socket.Bind(ipep);
-
-      
     }
 
     // Update is called once per frame
@@ -75,7 +72,9 @@ public class ClientTCP : MonoBehaviour
         {
             if (Input.GetKeyUp(KeyCode.Return))
             {
-                socket.Send(Encoding.ASCII.GetBytes(chatMessages.text));
+                socket.Send(Encoding.ASCII.GetBytes("[" + playerName + "]" + chatMessages.text));
+                
+                chatMessages.text = "";
             }
         }
     }
@@ -94,12 +93,6 @@ public class ClientTCP : MonoBehaviour
         socket.Send(Encoding.ASCII.GetBytes("Hola sucio cerdo"));
 
         connected = true;
-    }
-
-    void SendMessage()
-    {
-        Debug.Log(playerNameInput.text);
-        socket.Send(Encoding.ASCII.GetBytes("Player " + playerNameInput.text + " connected"));
     }
 
     void ReceiveMessageThread()
@@ -122,6 +115,6 @@ public class ClientTCP : MonoBehaviour
     {
         if (socket != null) socket.Close();
 
-        if (connectionThread.IsAlive) connectionThread.Abort();
+        if (connectionThread != null && connectionThread.IsAlive) connectionThread.Abort();
     }
 }
