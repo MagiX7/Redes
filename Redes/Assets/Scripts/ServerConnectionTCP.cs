@@ -19,7 +19,7 @@ public class ServerConnectionTCP : MonoBehaviour
     private Socket serverSocket;
     private List<Socket> clientSocket;
     private IPEndPoint ipep;
-    private int port = 3437;
+    private int port = 3438;
     private Thread threadTCPConnection;
     private Thread threadReceiveTCPMessages;
     private bool startListening = false;
@@ -95,10 +95,11 @@ public class ServerConnectionTCP : MonoBehaviour
         
         // Receive message
         byte[] info = new byte[1024];
+        string clientName = "";
         for (int i = 0; i < clientSocket.Count; ++i)
         {
             int siz = clientSocket[i].Receive(info);
-            string clientName = Encoding.ASCII.GetString(info, 0, siz);
+            clientName = Encoding.ASCII.GetString(info, 0, siz);
             Debug.Log("Client connected " + siz + " Message: " + clientName);
             playerConnectionList.Add(clientName);
             newPlayer = true;
@@ -106,7 +107,7 @@ public class ServerConnectionTCP : MonoBehaviour
        
 
         // Send message to client that he connected successfully
-        string messageToClient = "You connected to server: Middle Ambient";
+        string messageToClient = "Player " + clientName + " connected to server: Middle Ambient" + "\n";
         byte[] buffer = new byte[messageToClient.Length];
         buffer = Encoding.ASCII.GetBytes(messageToClient);
         for (int i = 0; i < clientSocket.Count; ++i)

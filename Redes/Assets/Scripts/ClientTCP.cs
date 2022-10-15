@@ -13,7 +13,7 @@ public class ClientTCP : MonoBehaviour
     public IPEndPoint ipep;
     bool connected = false;
     bool startListening = false;
-    int port = 3442;
+    int port = 3438;
     Thread connectionThread;
     Thread receiveMessagesThread;
 
@@ -79,7 +79,7 @@ public class ClientTCP : MonoBehaviour
         {
             if (Input.GetKeyUp(KeyCode.Return))
             {
-                socket.Send(Encoding.ASCII.GetBytes("[" + playerName + "]: " + chatMessages.text));
+                socket.Send(Encoding.ASCII.GetBytes("[" + playerName + "]: " + chatMessages.text + "\n"));
                 
                 chatMessages.text = "";
             }
