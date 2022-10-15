@@ -665,6 +665,7 @@ MonoBehaviour:
   chatMessages: {fileID: 248705354}
   connectionCanvas: {fileID: 1504066426}
   waitingRoomCanvas: {fileID: 1711469562}
+  chatMessagesText: {fileID: 0}
 --- !u!4 &361083812
 Transform:
   m_ObjectHideFlags: 0
@@ -2108,7 +2109,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Example
+  m_Text: 
 --- !u!222 &2143178318
 CanvasRenderer:
   m_ObjectHideFlags: 0
