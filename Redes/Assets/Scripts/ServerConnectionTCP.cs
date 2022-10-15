@@ -13,7 +13,7 @@ public class ServerConnectionTCP : MonoBehaviour
     private Socket serverSocket;
     private Socket clientSocket;
     private IPEndPoint ipep;
-    private int port = 3436;
+    private int port = 3437;
     private Thread threadTCPConnection;
     private Thread threadReceiveTCPMessages;
 
@@ -91,7 +91,7 @@ public class ServerConnectionTCP : MonoBehaviour
         Debug.Log("Client connected " + siz + " Message: " + Encoding.ASCII.GetString(info, 0, siz));
 
         // Send message to client that he connected successfully
-        string messageToClient = "Server: Middle Ambient";
+        string messageToClient = "You connected to server: Middle Ambient";
         byte[] buffer = new byte[messageToClient.Length];
         buffer = Encoding.ASCII.GetBytes(messageToClient);
         clientSocket.Send(buffer);
@@ -119,15 +119,31 @@ public class ServerConnectionTCP : MonoBehaviour
     {
         // Correctly close and abort all sockets and threads
         // Close sockets
-        clientSocket.Close();
-        Debug.Log("Closed client socket");
-        serverSocket.Close();
-        Debug.Log("Closed server socket");
+        if (clientSocket != null)
+        {
+            clientSocket.Close();
+            Debug.Log("Closed client socket");
+        }
+      
+
+        if (serverSocket != null)
+        {
+            serverSocket.Close();
+            Debug.Log("Closed server socket");
+        }
+       
 
         // Abort Threads
-        threadTCPConnection.Abort();
-        Debug.Log("Aborted connections thread");
-        threadReceiveTCPMessages.Abort();
-        Debug.Log("Aborted receive messages thread");
+        if (threadTCPConnection.IsAlive)
+        {
+            threadTCPConnection.Abort();
+            Debug.Log("Aborted connections thread");
+        }
+
+        if (threadReceiveTCPMessages.IsAlive)
+        {
+            threadReceiveTCPMessages.Abort();
+            Debug.Log("Aborted receive messages thread");
+        }
     }
 }

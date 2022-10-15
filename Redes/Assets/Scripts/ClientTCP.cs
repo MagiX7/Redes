@@ -15,50 +15,82 @@ public class ClientTCP : MonoBehaviour
     bool startListening = false;
     int port = 3442;
     private string playerName;
-    Thread thread;
+    Thread connectionThread;
+    Thread receiveMessagesThread;
 
     // Connect player
     public InputField playerNameInput;
-    bool connect = false;
+    public InputField serverIpAddress;
+    public InputField chatMessages;
+    bool firstConnection = false;
+    public GameObject connectionCanvas;
+    public GameObject waitingRoomCanvas;
 
     // Start is called before the first frame update
     void Start()
     {
         playerName = "Lucas Perez";
+        // Start a new socket TCP type
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+        // Create an endpoint with our ip adress (Client)
         ipep = new IPEndPoint(IPAddress.Parse("192.168.0.31"), port);
         Debug.Log("Connecting");
+        // Bind socket with our ip
         socket.Bind(ipep);
 
-        thread = new Thread(StartClient);
-        thread.Start();
+      
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (connect)
+        if (firstConnection)
         {
-            Thread thread = new Thread(SendMessage);
-            thread.Start();
-            connect = false;
+            // TODO: This is for chat messages
+            //Thread thread = new Thread(SendMessage);
+            //thread.Start();
+
+            // Connect to server
+            connectionThread = new Thread(StartClient);
+            connectionThread.Start();
+
+            connectionCanvas.SetActive(false);
+            waitingRoomCanvas.SetActive(true);
+
+
+            firstConnection = false;
         }
 
         if (connected && !startListening)
         {
-            Thread thread = new Thread(ReceiveMessageThread);
-            thread.Start();
+            // Receive messages from the server
+            receiveMessagesThread = new Thread(ReceiveMessageThread);
+            receiveMessagesThread.Start();
+
+            startListening = true;
+        }
+
+        if (waitingRoomCanvas.activeSelf)
+        {
+            if (Input.GetKeyUp(KeyCode.Return))
+            {
+                socket.Send(Encoding.ASCII.GetBytes(chatMessages.text));
+            }
         }
     }
 
     void StartClient()
     {
-        IPEndPoint ipepServer = new IPEndPoint(IPAddress.Parse("192.168.0.12"), port);
+        // Get the endpoint of the server
+        IPEndPoint ipepServer = new IPEndPoint(IPAddress.Parse(serverIpAddress.text), port);
         Debug.Log("Connecting to server");
+        // Connect our socket to the server end point
         socket.Connect(ipepServer);
         Debug.Log("Connected!");
 
+        // Send message to the server
+        socket.Send(Encoding.ASCII.GetBytes("Player " + playerNameInput.text + " connected"));
         socket.Send(Encoding.ASCII.GetBytes("Hola sucio cerdo"));
 
         connected = true;
@@ -66,10 +98,8 @@ public class ClientTCP : MonoBehaviour
 
     void SendMessage()
     {
-        //IPEndPoint ipepServer = new IPEndPoint(IPAddress.Parse("10.0.103.50"), 5496);
-        //socket.Connect(ipepServer);
         Debug.Log(playerNameInput.text);
-        socket.Send(Encoding.ASCII.GetBytes("Player" + playerNameInput.text + " connected"));
+        socket.Send(Encoding.ASCII.GetBytes("Player " + playerNameInput.text + " connected"));
     }
 
     void ReceiveMessageThread()
@@ -85,13 +115,13 @@ public class ClientTCP : MonoBehaviour
 
     public void Connect()
     {
-        connect = true;
+        firstConnection = true;
     }
 
     private void OnDisable()
     {
         if (socket != null) socket.Close();
 
-        if (thread.IsAlive) thread.Abort();
+        if (connectionThread.IsAlive) connectionThread.Abort();
     }
 }
