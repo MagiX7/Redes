@@ -25,6 +25,7 @@ public class Server : MonoBehaviour
     Thread netThread;
     bool finished = false;
     bool newMessage = false;
+    bool clientConnected = false;
 
     string text;
     List<EndPoint> remoters;
@@ -91,6 +92,22 @@ public class Server : MonoBehaviour
             }
         }
 
+        if (clientConnected)
+        {
+            byte[] msg = new byte[1024];
+            string text = "Welcome to the UDP server";
+            msg = Encoding.ASCII.GetBytes(text);
+            for (int i = 0; i < remoters.Count; i++)
+            {
+                server.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
+            }
+            //server.SendTo(data, data.Length, SocketFlags.None, )
+            //chat.text += (text + "\n");
+            clientConnected = false;
+            data = new byte[1024];
+            Debug.Log(text + " Send");
+        }
+
         if (Input.GetKeyDown(KeyCode.Return))
         {
             try
@@ -115,6 +132,9 @@ public class Server : MonoBehaviour
 
     void RecieveMessages()
     {
+        //server.Listen(1);
+        //remoters.Add(server.Accept().RemoteEndPoint);
+
         while (!finished)
         {
             if (remote == null)
@@ -124,14 +144,19 @@ public class Server : MonoBehaviour
             {
                 byte[] msg = new byte[1024];
                 recv = server.ReceiveFrom(msg, SocketFlags.None, ref remote);
-                text = Encoding.ASCII.GetString(msg, 0, recv);
-                Debug.Log(text + " Received");
-                newMessage = true;
-                
-                data = msg;
+                if (recv > 0)
+                {
+                    text = Encoding.ASCII.GetString(msg, 0, recv);
+
+                    Debug.Log(text + " Received");
+                    newMessage = true;
+
+                    data = msg;
+                }
 
                 if (!remoters.Contains(remote))
                 {
+                    clientConnected = true;
                     remoters.Add(remote);
                 }
 
