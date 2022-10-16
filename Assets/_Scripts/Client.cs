@@ -14,7 +14,7 @@ public class Client : MonoBehaviour
 
     int recv = 0; // Size of the data
     byte[] data;
-    [SerializeField] string clientIp;
+    public string clientIp;
     [SerializeField] string serverIp;
     [HideInInspector] public string userName;
     
@@ -41,9 +41,9 @@ public class Client : MonoBehaviour
         remote = (EndPoint)(sender);
 
         data = new byte[1024];
-        userName = "MagiX";
         data = Encoding.ASCII.GetBytes(userName);
-        server.SendTo(data, recv, SocketFlags.None, remote);
+        server.SendTo(data, data.Length, SocketFlags.None, remote);
+        data = new byte[1024];
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
