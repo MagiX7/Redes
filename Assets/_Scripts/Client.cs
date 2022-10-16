@@ -16,6 +16,7 @@ public class Client : MonoBehaviour
     byte[] data;
     [SerializeField] string clientIp;
     [SerializeField] string serverIp;
+    [HideInInspector] public string userName;
     
     EndPoint remote = null;
     IPEndPoint sender;
@@ -40,6 +41,8 @@ public class Client : MonoBehaviour
         remote = (EndPoint)(sender);
 
         data = new byte[1024];
+        userName = "MagiX";
+        data = Encoding.ASCII.GetBytes(userName);
         server.SendTo(data, recv, SocketFlags.None, remote);
 
         netThread = new Thread(RecieveMessages);
@@ -49,14 +52,6 @@ public class Client : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyUp(KeyCode.S))
-        //{
-        //    string text = "Un saludo desde" + clientIpep.Address.ToString();
-        //    data = Encoding.ASCII.GetBytes(text);
-        //    recv = data.Length;
-        //    server.SendTo(data, recv, SocketFlags.None, remote);
-        //}
-
         if (Input.GetKeyDown(KeyCode.F))
         {
             finished = true;
@@ -83,13 +78,16 @@ public class Client : MonoBehaviour
     {
         while (!finished)
         {
-            if (remote == null)
-                return;
-            recv = server.ReceiveFrom(data, SocketFlags.None, ref remote);
-            text = Encoding.ASCII.GetString(data, 0, recv);
+            //if (remote == null)
+            //    return;
+
+            byte[] msg = new byte[1024];
+            recv = server.ReceiveFrom(msg, SocketFlags.None, ref remote);
+            text = Encoding.ASCII.GetString(msg, 0, recv);
             Debug.Log(text + " Received");
             newMessage = true;
-            data = new byte[1024];
+            //data = new byte[1024];
+            data = msg;
 
         }
     }

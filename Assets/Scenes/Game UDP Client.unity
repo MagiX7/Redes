@@ -329,6 +329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clientIp: 192.168.1.35
   serverIp: 192.168.1.42
+  userName: 
   chat: {fileID: 33387057}
   input: {fileID: 1369479069}
 --- !u!1 &1217599986

@@ -25,7 +25,10 @@ public class Server : MonoBehaviour
     Thread netThread;
     bool finished = false;
     bool newMessage = false;
+    
     bool clientConnected = false;
+    string lastUserName = string.Empty;
+
 
     string text;
     List<EndPoint> remoters;
@@ -71,28 +74,31 @@ public class Server : MonoBehaviour
             finished = true;
         }
 
-        if (newMessage)
+        if (!clientConnected && newMessage)
         {
             try
             {
                 Debug.Log(text + " Update");
                 data = Encoding.ASCII.GetBytes(text);
                 recv = data.Length;
+                
                 for (int i = 0; i < remoters.Count; i++)
                 {
                     server.SendTo(data, recv, SocketFlags.None, remoters[i]);
                 }
+
                 chat.text += (text + "\n");
+                
                 newMessage = false;
                 data = new byte[1024];
+
             }
             catch (Exception e)
             {
                 Debug.Log("Error when sending message: " + e);
             }
         }
-
-        if (clientConnected)
+        else if (clientConnected)
         {
             byte[] msg = new byte[1024];
             string text = "Welcome to the UDP server";
@@ -102,9 +108,14 @@ public class Server : MonoBehaviour
                 server.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
             }
             //server.SendTo(data, data.Length, SocketFlags.None, )
-            //chat.text += (text + "\n");
+            chat.text += (lastUserName + " Connected!\n");
+            
             clientConnected = false;
+            newMessage = false;
+
             data = new byte[1024];
+            lastUserName = string.Empty;
+
             Debug.Log(text + " Send");
         }
 
@@ -152,12 +163,13 @@ public class Server : MonoBehaviour
                     newMessage = true;
 
                     data = msg;
-                }
 
-                if (!remoters.Contains(remote))
-                {
-                    clientConnected = true;
-                    remoters.Add(remote);
+                    if (!remoters.Contains(remote))
+                    {
+                        clientConnected = true;
+                        lastUserName = text;
+                        remoters.Add(remote);
+                    }
                 }
 
             }
