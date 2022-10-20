@@ -16,8 +16,6 @@ public class Server : MonoBehaviour
     int recv = 0; // Size of the data
     byte[] data;
 
-    [SerializeField] string serverIp;
-
     EndPoint remote = null;
     IPEndPoint sender;
 
@@ -25,7 +23,7 @@ public class Server : MonoBehaviour
     Thread netThread;
     bool finished = false;
     bool newMessage = false;
-    
+
     bool clientConnected = false;
     string lastUserName = string.Empty;
 
@@ -51,7 +49,7 @@ public class Server : MonoBehaviour
 
         data = new byte[1024];
 
-        ipep = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
+        ipep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
 
         server = new Socket(AddressFamily.InterNetwork,
                         SocketType.Dgram, ProtocolType.Udp);
@@ -60,7 +58,7 @@ public class Server : MonoBehaviour
         //Debug.Log("Waiting for a client...");
         Debug.Log("Server IP: " + ipep.ToString());
 
-        sender = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
+        sender = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
         remote = (EndPoint)(sender);
 
         netThread = new Thread(RecieveMessages);
@@ -84,14 +82,14 @@ public class Server : MonoBehaviour
                 Debug.Log(text + " Update");
                 data = Encoding.ASCII.GetBytes(text);
                 recv = data.Length;
-                
+
                 for (int i = 0; i < remoters.Count; i++)
                 {
                     server.SendTo(data, recv, SocketFlags.None, remoters[i]);
                 }
 
                 chat.text += (text + "\n");
-                
+
                 newMessage = false;
                 data = new byte[1024];
 
@@ -105,15 +103,28 @@ public class Server : MonoBehaviour
         {
             byte[] msg = new byte[1024];
             string text = "Welcome to the UDP server";
-            msg = Encoding.ASCII.GetBytes(text);
+            //msg = Encoding.ASCII.GetBytes(text);
+            //server.SendTo(msg, msg.Length, SocketFlags.None, remote);
+
+            //text = lastUserName + " Connected!\n";
+            //msg = Encoding.ASCII.GetBytes(text);
             for (int i = 0; i < remoters.Count; i++)
             {
+                if (remote == remoters[i])
+                {
+                    text = "Welcome to the UDP server";
+                    msg = Encoding.ASCII.GetBytes(text);
+                    server.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
+                }
+
+                text = lastUserName + " Connected!\n";
+                msg = Encoding.ASCII.GetBytes(text);
                 server.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
             }
             //server.SendTo(data, data.Length, SocketFlags.None, )
             chat.text += (lastUserName + " Connected!\n");
             connectedPeople.text += (lastUserName + "\n");
-            
+
             clientConnected = false;
             newMessage = false;
 
@@ -181,7 +192,7 @@ public class Server : MonoBehaviour
             {
                 Debug.Log("Error when receiving a message: " + e);
             }
-            
+
         }
     }
 
@@ -190,5 +201,18 @@ public class Server : MonoBehaviour
         server.Close();
         if (netThread.IsAlive)
             netThread.Abort();
+    }
+
+    string GetLocalIPAddress()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        return "Null";
     }
 }

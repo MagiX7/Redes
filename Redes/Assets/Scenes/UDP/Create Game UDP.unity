@@ -158,8 +158,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -283, y: -23}
-  m_SizeDelta: {x: 160, y: 300}
+  m_AnchoredPosition: {x: -215, y: -23}
+  m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &33387057
 MonoBehaviour:
@@ -472,7 +472,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51e22aab988ce44a993f981f3554172, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverIp: 10.0.103.35
   chat: {fileID: 33387057}
   input: {fileID: 1369479069}
   connectedPeople: {fileID: 310421491}
