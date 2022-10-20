@@ -78,7 +78,6 @@ public class Client : MonoBehaviour
                 byte[] msg = new byte[1024];
                 recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
                 text = Encoding.ASCII.GetString(msg, 0, recv);
-                Debug.Log(text + " Received");
                 newMessage = true;
                 data = msg;
             }
