@@ -26,6 +26,7 @@ public class ClientTCP : MonoBehaviour
     public GameObject connectionCanvas;
     public GameObject waitingRoomCanvas;
 
+    private bool resetText = false;
     // Waiting room
     private bool newChatMessage = false;
     private List<string> chatMessagesList;
@@ -91,6 +92,17 @@ public class ClientTCP : MonoBehaviour
 
             newChatMessage = false;
         }
+
+        if (resetText)
+        {
+            chatMessagesList.RemoveAt(0);
+            chatMessagesText.text = "";
+            for (int i = 0; i < chatMessagesList.Count; ++i)
+            {
+                chatMessagesText.text += chatMessagesList[i];
+            }
+            resetText = false;
+        }
     }
 
     void StartClient()
@@ -121,12 +133,7 @@ public class ClientTCP : MonoBehaviour
             newChatMessage = true;
             if (chatMessagesList.Count > 3)
             {
-                chatMessagesList.RemoveAt(0);
-                chatMessagesText.text = "";
-                for (int i = 0; i < chatMessagesList.Count; ++i)
-                {
-                    chatMessagesText.text += chatMessagesList[i];
-                }
+                resetText = true;
             }
 
             chatMessagesList.Add(chatMessage);
