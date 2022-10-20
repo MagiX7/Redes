@@ -44,7 +44,7 @@ public class ClientTCP : MonoBehaviour
         ipep = new IPEndPoint(IPAddress.Parse("192.168.0.31"), port);
         Debug.Log("Connecting");
         // Bind socket with our ip
-        socket.Bind(ipep);
+       // socket.Bind(ipep);
     }
 
     // Update is called once per frame
