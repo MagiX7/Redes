@@ -35,6 +35,7 @@ public class Server : MonoBehaviour
 
     [SerializeField] Text chat;
     [SerializeField] InputField input;
+    [SerializeField] Text connectedPeople;
 
     // Start is called before the first frame update
     void Start()
@@ -64,6 +65,8 @@ public class Server : MonoBehaviour
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
+
+        connectedPeople.text += ("You(Server)\n");
     }
 
     // Update is called once per frame
@@ -109,6 +112,7 @@ public class Server : MonoBehaviour
             }
             //server.SendTo(data, data.Length, SocketFlags.None, )
             chat.text += (lastUserName + " Connected!\n");
+            connectedPeople.text += (lastUserName + "\n");
             
             clientConnected = false;
             newMessage = false;
@@ -123,13 +127,13 @@ public class Server : MonoBehaviour
         {
             try
             {
-                data = Encoding.ASCII.GetBytes(input.text);
+                data = Encoding.ASCII.GetBytes("Server: " + input.text);
                 recv = data.Length;
                 for (int i = 0; i < remoters.Count; i++)
                 {
                     server.SendTo(data, recv, SocketFlags.None, remoters[i]);
                 }
-                chat.text += (input.text + "\n");
+                chat.text += ("Server: " + input.text + "\n");
                 Debug.Log(input.text + " Send");
                 input.text = "";
                 data = new byte[1024];
