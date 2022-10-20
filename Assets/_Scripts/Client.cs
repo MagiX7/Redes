@@ -15,7 +15,7 @@ public class Client : MonoBehaviour
     int recv = 0; // Size of the data
     byte[] data;
     public string clientIp;
-    [SerializeField] string serverIp;
+    public string serverIp;
     [HideInInspector] public string userName;
     
     EndPoint remote = null;
