@@ -130,33 +130,33 @@ public class ServerConnectionTCP : MonoBehaviour
 
     private void ThreadTCPConnect()
     {
-        Debug.Log("Listening for other players...");
         // Keep listening until someone connects, then accept it
-        serverSocket.Listen(2);
-        clientSocket.Add(serverSocket.Accept());
-        
-        // Receive message
-        byte[] info = new byte[1024];
-        string clientName = "";
-        for (int i = 0; i < clientSocket.Count; ++i)
+        while (clientSocket.Count < 3)
         {
-            int siz = clientSocket[i].Receive(info);
+            Debug.Log("Listening for other players...");
+            serverSocket.Listen(2);
+            clientSocket.Add(serverSocket.Accept());
+            Debug.Log("Player connected, player count is: " + clientSocket.Count);
+
+            // Receive message
+            byte[] info = new byte[1024];
+            string clientName = "";
+
+
+            int siz = clientSocket[0].Receive(info);
             clientName = Encoding.ASCII.GetString(info, 0, siz);
             Debug.Log("Client connected " + siz + " Message: " + clientName);
             playerConnectionList.Add(clientName);
             newPlayer = true;
-        }
-       
 
-        // Send message to client that he connected successfully
-        string messageToClient = "Player " + clientName + " connected to server: Middle Ambient" + "\n";
-        byte[] buffer = new byte[messageToClient.Length];
-        buffer = Encoding.ASCII.GetBytes(messageToClient);
-        for (int i = 0; i < clientSocket.Count; ++i)
-        {
-            clientSocket[i].Send(buffer);
-        }
-        
+            // Send message to client that he connected successfully
+            string messageToClient = "Player " + clientName + " connected to server: Middle Ambient" + "\n";
+            byte[] buffer = new byte[messageToClient.Length];
+            buffer = Encoding.ASCII.GetBytes(messageToClient);
+
+            clientSocket[0].Send(buffer);
+
+        }    
     }
 
     private void ThreadReceiveTCPMessage()
@@ -165,11 +165,13 @@ public class ServerConnectionTCP : MonoBehaviour
         // this way we avoid creating new threads
         while (clientSocket.Count > 0)
         {
-            for (int i = 0; i < clientSocket.Count; ++i)
+            List<Socket> receiveSockets = clientSocket;
+            Socket.Select(receiveSockets, null, null, 2000);
+            for (int i = 0; i < receiveSockets.Count; ++i)
             {
                 // Receive message and convert it to string for debug
                 byte[] info = new byte[1024];
-                int siz = clientSocket[i].Receive(info);
+                int siz = receiveSockets[i].Receive(info);
                 string clientMessage = Encoding.ASCII.GetString(info, 0, siz);
           
                 playerChatMessagesList.Add(clientMessage);
@@ -180,9 +182,9 @@ public class ServerConnectionTCP : MonoBehaviour
                 // Send message to client that he connected successfully
                 byte[] buffer = new byte[clientMessage.Length];
                 buffer = Encoding.ASCII.GetBytes(clientMessage);
-                for (int j = 0; j < clientSocket.Count; ++j)
+                for (int j = 0; j < receiveSockets.Count; ++j)
                 {
-                    clientSocket[j].Send(buffer);
+                    receiveSockets[j].Send(buffer);
                 }
             }            
         }
