@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -49,7 +50,6 @@ public class Client : MonoBehaviour
         netThread.Start();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.F))
@@ -59,19 +59,13 @@ public class Client : MonoBehaviour
 
         if (newMessage)
         {
-            Debug.Log(text + " Update");
             chat.text += (text + "\n");
             newMessage = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            string msg = userName + ": " + input.text;
-            data = Encoding.ASCII.GetBytes(msg);
-            recv = data.Length;
-            clientSocket.SendTo(data, recv, SocketFlags.None, remote);
-            Debug.Log(input.text + " Send");
-            input.text = "";
+            OnMessageSent();
         }
     }
 
@@ -79,17 +73,35 @@ public class Client : MonoBehaviour
     {
         while (!finished)
         {
-            //if (remote == null)
-            //    return;
+            try
+            {
+                byte[] msg = new byte[1024];
+                recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
+                text = Encoding.ASCII.GetString(msg, 0, recv);
+                Debug.Log(text + " Received");
+                newMessage = true;
+                data = msg;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error when sending the message: " + e);
+            }
+        }
+    }
 
-            byte[] msg = new byte[1024];
-            recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
-            text = Encoding.ASCII.GetString(msg, 0, recv);
-            Debug.Log(text + " Received");
-            newMessage = true;
-            //data = new byte[1024];
-            data = msg;
-
+    void OnMessageSent()
+    {
+        try
+        {
+            string msg = userName + ": " + input.text;
+            data = Encoding.ASCII.GetBytes(msg);
+            recv = data.Length;
+            clientSocket.SendTo(data, recv, SocketFlags.None, remote);
+            input.text = "";
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error when sending the message: " + e);
         }
     }
 
@@ -105,6 +117,5 @@ public class Client : MonoBehaviour
         }
         return "Null";
     }
-
 
 }
