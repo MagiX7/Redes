@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class Client : MonoBehaviour
 {
-    Socket server;
+    Socket clientSocket;
     IPEndPoint clientIpep;
 
     int recv = 0; // Size of the data
@@ -33,16 +33,16 @@ public class Client : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        clientIpep = new IPEndPoint(IPAddress.Parse(clientIp), 5345);
-        server.Bind(clientIpep);
+        clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        clientIpep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
+        clientSocket.Bind(clientIpep);
 
         sender = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
         remote = (EndPoint)(sender);
 
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(userName);
-        server.SendTo(data, data.Length, SocketFlags.None, remote);
+        clientSocket.SendTo(data, data.Length, SocketFlags.None, remote);
         data = new byte[1024];
 
         netThread = new Thread(RecieveMessages);
@@ -69,7 +69,7 @@ public class Client : MonoBehaviour
             string msg = userName + ": " + input.text;
             data = Encoding.ASCII.GetBytes(msg);
             recv = data.Length;
-            server.SendTo(data, recv, SocketFlags.None, remote);
+            clientSocket.SendTo(data, recv, SocketFlags.None, remote);
             Debug.Log(input.text + " Send");
             input.text = "";
         }
@@ -83,7 +83,7 @@ public class Client : MonoBehaviour
             //    return;
 
             byte[] msg = new byte[1024];
-            recv = server.ReceiveFrom(msg, SocketFlags.None, ref remote);
+            recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
             text = Encoding.ASCII.GetString(msg, 0, recv);
             Debug.Log(text + " Received");
             newMessage = true;
@@ -92,4 +92,19 @@ public class Client : MonoBehaviour
 
         }
     }
+
+    string GetLocalIPAddress()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        return "Null";
+    }
+
+
 }
