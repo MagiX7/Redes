@@ -115,7 +115,7 @@ public class ClientTCP : MonoBehaviour
         Debug.Log("Connected!");
 
         // Send message to the server
-        socket.Send(Encoding.ASCII.GetBytes("Player " + playerNameInput.text + " connected"));
+        socket.Send(Encoding.ASCII.GetBytes(playerNameInput.text));
         playerName = playerNameInput.text;
 
         connected = true;

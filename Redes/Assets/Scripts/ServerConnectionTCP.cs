@@ -16,6 +16,7 @@ public class ServerConnectionTCP : MonoBehaviour
         CONNECTION
     };
 
+    // Connection Variables
     private Socket serverSocket;
     private List<Socket> clientSocket;
     private IPEndPoint ipep;
@@ -23,12 +24,11 @@ public class ServerConnectionTCP : MonoBehaviour
     private Thread threadTCPConnection;
     private Thread threadReceiveTCPMessages;
     private bool startListening = false;
-    private bool newChatMessage = false;
-    private bool newServerChatMessage = false;
+
+
+    // User-Related variables
     public InputField chatServerInput;
-
-
-    // Gameplay variables
+    private bool newChatMessage = false;
     bool newPlayer = false;
     private Text playersConnectedText;
     List<string> playerConnectionList;
@@ -47,7 +47,7 @@ public class ServerConnectionTCP : MonoBehaviour
             SocketType.Stream,
             ProtocolType.Tcp);
 
-        ipep = new IPEndPoint(IPAddress.Parse("10.0.103.50"), port);
+        ipep = new IPEndPoint(IPAddress.Parse("192.168.0.12"), port);
 
         serverSocket.Bind(ipep);
 
@@ -68,11 +68,9 @@ public class ServerConnectionTCP : MonoBehaviour
             string messageToClient = "[Server]: " + chatServerInput.text + "\n";
             playerChatMessagesList.Add(messageToClient);
             playerChatMessagesText.text += messageToClient;
-            Debug.Log("message list count" + playerChatMessagesList.Count);
-            Debug.Log("ME cago en tus muertos list count");
             chatServerInput.text = "";
             // Add it to player messages list
-            if (playerChatMessagesList.Count > 3)
+            if (playerChatMessagesList.Count > 5)
             {
                 playerChatMessagesList.RemoveAt(0);
                 playerChatMessagesText.text = "";
@@ -91,6 +89,21 @@ public class ServerConnectionTCP : MonoBehaviour
         }
         if (newPlayer)
         {
+            // Notify chat
+
+            if (playerChatMessagesList.Count > 5)
+            {
+                playerChatMessagesList.RemoveAt(0);
+                playerChatMessagesText.text = "";
+                for (int j = 0; j < playerChatMessagesList.Count; ++j)
+                {
+                    playerChatMessagesText.text += playerChatMessagesList[j];
+                }
+            }
+       
+            playerChatMessagesText.text += playerConnectionList[playerConnectionList.Count - 1] + "\n";
+
+            // Add it to list of players
             playersConnectedText.text += playerConnectionList[playerConnectionList.Count-1] + "\n";
             newPlayer = false;
         }
@@ -98,7 +111,7 @@ public class ServerConnectionTCP : MonoBehaviour
         if (newChatMessage)
         {
             // Add it to player messages list
-            if (playerChatMessagesList.Count > 3)
+            if (playerChatMessagesList.Count > 5)
             {
                 playerChatMessagesList.RemoveAt(0);
                 playerChatMessagesText.text = "";
@@ -165,8 +178,10 @@ public class ServerConnectionTCP : MonoBehaviour
         // this way we avoid creating new threads
         while (clientSocket.Count > 0)
         {
-            List<Socket> receiveSockets = clientSocket;
-            Socket.Select(receiveSockets, null, null, 2000);
+                Debug.Log("ENTRO AL WHILE");
+          
+            List<Socket> receiveSockets = new List<Socket>(clientSocket);
+            Socket.Select(receiveSockets, null, null, 50000);
             for (int i = 0; i < receiveSockets.Count; ++i)
             {
                 // Receive message and convert it to string for debug
@@ -177,6 +192,7 @@ public class ServerConnectionTCP : MonoBehaviour
                 playerChatMessagesList.Add(clientMessage);
                 newChatMessage = true;
                 Debug.Log("Client said: " + clientMessage);
+                Debug.Log("AFTER SELECT IS "+ clientSocket.Count);
 
 
                 // Send message to client that he connected successfully
