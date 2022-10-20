@@ -116,12 +116,13 @@ public class Server : MonoBehaviour
                     msg = Encoding.ASCII.GetBytes(text);
                     server.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
                 }
-
-                text = lastUserName + " Connected!\n";
-                msg = Encoding.ASCII.GetBytes(text);
-                server.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
+                else
+                {
+                    text = lastUserName + " Connected!\n";
+                    msg = Encoding.ASCII.GetBytes(text);
+                    server.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
+                }
             }
-            //server.SendTo(data, data.Length, SocketFlags.None, )
             chat.text += (lastUserName + " Connected!\n");
             connectedPeople.text += (lastUserName + "\n");
 
