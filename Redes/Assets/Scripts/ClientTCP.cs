@@ -119,7 +119,15 @@ public class ClientTCP : MonoBehaviour
             string chatMessage = Encoding.ASCII.GetString(info, 0, size);
 
             newChatMessage = true;
-            if (chatMessagesList.Count > 3) chatMessagesList.RemoveAt(0);
+            if (chatMessagesList.Count > 3)
+            {
+                chatMessagesList.RemoveAt(0);
+                chatMessagesText.text = "";
+                for (int i = 0; i < chatMessagesList.Count; ++i)
+                {
+                    chatMessagesText.text += chatMessagesList[i];
+                }
+            }
 
             chatMessagesList.Add(chatMessage);
 
