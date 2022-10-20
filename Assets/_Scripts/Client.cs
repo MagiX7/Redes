@@ -66,7 +66,8 @@ public class Client : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            data = Encoding.ASCII.GetBytes(input.text);
+            string msg = userName + ": " + input.text;
+            data = Encoding.ASCII.GetBytes(msg);
             recv = data.Length;
             server.SendTo(data, recv, SocketFlags.None, remote);
             Debug.Log(input.text + " Send");
