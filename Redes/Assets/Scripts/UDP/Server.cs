@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,10 +19,12 @@ public class Server : MonoBehaviour
 
     EndPoint remote = null;
 
-    Thread netThread;
+    Thread receiveMsgsThread;
+    Thread sendMsgsThread;
     bool finished = false;
 
     bool newMessage = false;
+    bool messageSent = false;
     bool clientConnected = false;
     string lastUserName = string.Empty;
 
@@ -45,8 +48,10 @@ public class Server : MonoBehaviour
         remote = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
         //remote = (EndPoint)(sender);
 
-        netThread = new Thread(RecieveMessages);
-        netThread.Start();
+        receiveMsgsThread = new Thread(RecieveMessages);
+        receiveMsgsThread.Start();
+
+        sendMsgsThread = new Thread(OnMessageSent);
 
         connectedPeople.text += ("You (Server)\n");
     }
@@ -54,8 +59,10 @@ public class Server : MonoBehaviour
     private void OnDisable()
     {
         serverSocket.Close();
-        if (netThread.IsAlive)
-            netThread.Abort();
+        if (receiveMsgsThread.IsAlive)
+            receiveMsgsThread.Abort();
+        if (sendMsgsThread.IsAlive)
+            sendMsgsThread.Abort();
     }
 
     void Update()
@@ -76,7 +83,17 @@ public class Server : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            OnMessageSent();
+            if (!sendMsgsThread.IsAlive)
+            {
+                sendMsgsThread.Start();
+            }
+        }
+        if (messageSent)
+        {
+            chat.text += ("Server: " + input.text + "\n");
+            input.text = "";
+            data = new byte[1024];
+            messageSent = false;
         }
     }
 
@@ -99,6 +116,17 @@ public class Server : MonoBehaviour
                         clientConnected = true;
                         lastUserName = text;
                         remoters.Add(remote);
+
+                        for (int i = 0; i < remoters.Count; i++)
+                        {
+                            if (remote == remoters[i])
+                                text = "Welcome to the UDP server";
+                            else
+                                text = lastUserName + " Connected!\n";
+
+                            msg = Encoding.ASCII.GetBytes(text);
+                            serverSocket.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
+                        }
                     }
                 }
             }
@@ -140,9 +168,10 @@ public class Server : MonoBehaviour
             {
                 serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
             }
-            chat.text += ("Server: " + input.text + "\n");
-            input.text = "";
-            data = new byte[1024];
+            messageSent = true;
+            //chat.text += ("Server: " + input.text + "\n");
+            //input.text = "";
+            //data = new byte[1024];
         }
         catch (Exception e)
         {
@@ -152,22 +181,22 @@ public class Server : MonoBehaviour
 
     void OnClientConnected()
     {
-        byte[] msg;
-        string text = string.Empty;
-        for (int i = 0; i < remoters.Count; i++)
-        {
-            if (remote == remoters[i])
-            {
-                text = "Welcome to the UDP server";
-            }
-            else
-            {
-                text = lastUserName + " Connected!\n";
-            }
-
-            msg = Encoding.ASCII.GetBytes(text);
-            serverSocket.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
-        }
+        //byte[] msg;
+        //string text = string.Empty;
+        //for (int i = 0; i < remoters.Count; i++)
+        //{
+        //    if (remote == remoters[i])
+        //    {
+        //        text = "Welcome to the UDP server";
+        //    }
+        //    else
+        //    {
+        //        text = lastUserName + " Connected!\n";
+        //    }
+        //
+        //    msg = Encoding.ASCII.GetBytes(text);
+        //    serverSocket.SendTo(msg, msg.Length, SocketFlags.None, remoters[i]);
+        //}
 
         chat.text += (lastUserName + " Connected!\n");
         connectedPeople.text += (lastUserName + "\n");
