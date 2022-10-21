@@ -47,7 +47,7 @@ public class ServerConnectionTCP : MonoBehaviour
             SocketType.Stream,
             ProtocolType.Tcp);
 
-        ipep = new IPEndPoint(IPAddress.Parse("192.168.0.12"), port);
+        ipep = new IPEndPoint(IPAddress.Parse("10.0.103.50"), port);
 
         serverSocket.Bind(ipep);
 
@@ -144,21 +144,19 @@ public class ServerConnectionTCP : MonoBehaviour
     private void ThreadTCPConnect()
     {
         // Keep listening until someone connects, then accept it
-        while (clientSocket.Count < 3)
+        while (clientSocket.Count < 2)
         {
-            Debug.Log("Listening for other players...");
             serverSocket.Listen(2);
             clientSocket.Add(serverSocket.Accept());
-            Debug.Log("Player connected, player count is: " + clientSocket.Count);
 
             // Receive message
             byte[] info = new byte[1024];
             string clientName = "";
-
-
-            int siz = clientSocket[0].Receive(info);
+            int siz = clientSocket[clientSocket.Count - 1].Receive(info);
             clientName = Encoding.ASCII.GetString(info, 0, siz);
             Debug.Log("Client connected " + siz + " Message: " + clientName);
+
+            // Add the new client to the connection list
             playerConnectionList.Add(clientName);
             newPlayer = true;
 
@@ -167,7 +165,7 @@ public class ServerConnectionTCP : MonoBehaviour
             byte[] buffer = new byte[messageToClient.Length];
             buffer = Encoding.ASCII.GetBytes(messageToClient);
 
-            clientSocket[0].Send(buffer);
+            clientSocket[clientSocket.Count - 1].Send(buffer);
 
         }    
     }
@@ -177,9 +175,7 @@ public class ServerConnectionTCP : MonoBehaviour
         // While the client is connected, we receive messages,
         // this way we avoid creating new threads
         while (clientSocket.Count > 0)
-        {
-                Debug.Log("ENTRO AL WHILE");
-          
+        {          
             List<Socket> receiveSockets = new List<Socket>(clientSocket);
             Socket.Select(receiveSockets, null, null, 50000);
             for (int i = 0; i < receiveSockets.Count; ++i)
@@ -192,15 +188,14 @@ public class ServerConnectionTCP : MonoBehaviour
                 playerChatMessagesList.Add(clientMessage);
                 newChatMessage = true;
                 Debug.Log("Client said: " + clientMessage);
-                Debug.Log("AFTER SELECT IS "+ clientSocket.Count);
 
 
                 // Send message to client that he connected successfully
                 byte[] buffer = new byte[clientMessage.Length];
                 buffer = Encoding.ASCII.GetBytes(clientMessage);
-                for (int j = 0; j < receiveSockets.Count; ++j)
+                for (int j = 0; j < clientSocket.Count; ++j)
                 {
-                    receiveSockets[j].Send(buffer);
+                        clientSocket[j].Send(buffer);
                 }
             }            
         }
