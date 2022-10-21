@@ -23,10 +23,10 @@ public class Client : MonoBehaviour
     IPEndPoint sender;
 
     Thread netThread;
-    Thread sendMsgsThread;
+    //Thread sendMsgsThread;
     bool finished = false;
     bool newMessage = false;
-    bool messageSend = false;
+    //bool messageSend = false;
 
     string text;
 
@@ -51,8 +51,8 @@ public class Client : MonoBehaviour
         netThread = new Thread(RecieveMessages);
         netThread.Start();
 
-        sendMsgsThread = new Thread(OnMessageSent);
-        sendMsgsThread.Start();
+        //sendMsgsThread = new Thread(OnMessageSent);
+        //sendMsgsThread.Start();
     }
 
     void Update()
@@ -70,7 +70,8 @@ public class Client : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            messageSend = true;
+            //messageSend = true;
+            OnMessageSent();
         }
     }
 
@@ -95,25 +96,34 @@ public class Client : MonoBehaviour
 
     void OnMessageSent()
     {
-        while (!finished)
-        {
-            if (messageSend)
-            {
-                try
-                {
-                    string msg = "[" + userName + "]" + ": " + input.text;
-                    data = Encoding.ASCII.GetBytes(msg);
-                    recv = data.Length;
-                    clientSocket.SendTo(data, recv, SocketFlags.None, remote);
-                    input.text = "";
-                    messageSend = false;
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("Error when sending the message: " + e);
-                }
-            }
-        }
+        //while (!finished)
+        //{
+        //    if (messageSend)
+        //    {
+        //        try
+        //        {
+        //            string msg = "[" + userName + "]" + ": " + input.text;
+        //            data = Encoding.ASCII.GetBytes(msg);
+        //            recv = data.Length;
+        //            clientSocket.SendTo(data, recv, SocketFlags.None, remote);
+        //            input.text = "";
+        //            messageSend = false;
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Debug.Log("Error when sending the message: " + e);
+        //        }
+
+        //        messageSend = false;
+        //    }
+        //}
+
+
+        string msg = "[" + userName + "]" + ": " + input.text;
+        data = Encoding.ASCII.GetBytes(msg);
+        recv = data.Length;
+        clientSocket.SendTo(data, recv, SocketFlags.None, remote);
+        input.text = "";
     }
 
     string GetLocalIPAddress()

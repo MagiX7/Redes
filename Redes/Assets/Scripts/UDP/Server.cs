@@ -20,14 +20,14 @@ public class Server : MonoBehaviour
     EndPoint remote = null;
 
     Thread receiveMsgsThread;
-    Thread sendMsgsThread;
-    Thread updateMsgsThread;
+    //Thread sendMsgsThread;
+    //Thread updateMsgsThread;
     bool finished = false;
 
     bool newMessage = false;
     bool messageSent = false;
-    bool sendingMsg = false;
-    bool msgReceived = false;
+    //bool sendingMsg = false;
+    //bool msgReceived = false;
     bool clientConnected = false;
     string lastUserName = string.Empty;
 
@@ -49,16 +49,15 @@ public class Server : MonoBehaviour
         serverSocket.Bind(ipep);
 
         remote = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
-        //remote = (EndPoint)(sender);
 
         receiveMsgsThread = new Thread(RecieveMessages);
         receiveMsgsThread.Start();
 
-        sendMsgsThread = new Thread(OnMessageSent);
-        sendMsgsThread.Start();
+        //sendMsgsThread = new Thread(OnMessageSent);
+        //sendMsgsThread.Start();
 
-        updateMsgsThread = new Thread(OnMessageReceived);
-        updateMsgsThread.Start();
+        //updateMsgsThread = new Thread(OnMessageReceived);
+        //updateMsgsThread.Start();
 
         connectedPeople.text += ("You (Server)\n");
     }
@@ -68,10 +67,10 @@ public class Server : MonoBehaviour
         serverSocket.Close();
         if (receiveMsgsThread.IsAlive)
             receiveMsgsThread.Abort();
-        if (sendMsgsThread.IsAlive)
-            sendMsgsThread.Abort();
-        if (updateMsgsThread.IsAlive)
-            updateMsgsThread.Abort();
+        //if (sendMsgsThread.IsAlive)
+        //    sendMsgsThread.Abort();
+        //if (updateMsgsThread.IsAlive)
+        //    updateMsgsThread.Abort();
     }
 
     void Update()
@@ -83,8 +82,8 @@ public class Server : MonoBehaviour
 
         if (!clientConnected && newMessage)
         {
-            msgReceived = true;
-            //OnMessageReceived();
+            //msgReceived = true;
+            OnMessageReceived();
         }
         else if (clientConnected)
         {
@@ -93,7 +92,8 @@ public class Server : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            sendingMsg = true;
+            //sendingMsg = true;
+            OnMessageSent();
         }
         if (messageSent)
         {
@@ -146,58 +146,79 @@ public class Server : MonoBehaviour
 
     void OnMessageReceived()
     {
-        while (!finished)
-        {
-            if (msgReceived)
-            {
-                try
-                {
-                    data = Encoding.ASCII.GetBytes(text);
-                    recv = data.Length;
+        //while (!finished)
+        //{
+        //    if (msgReceived)
+        //    {
+        //        try
+        //        {
+        //            data = Encoding.ASCII.GetBytes(text);
+        //            recv = data.Length;
 
-                    for (int i = 0; i < remoters.Count; i++)
-                        serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
+        //            for (int i = 0; i < remoters.Count; i++)
+        //                serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
 
-                    chat.text += (text + "\n");
+        //            chat.text += (text + "\n");
 
-                    newMessage = false;
-                    msgReceived = false;
-                    data = new byte[1024];
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("Error when sending message: " + e);
-                }
-            }
-        }
+        //            newMessage = false;
+        //            msgReceived = false;
+        //            data = new byte[1024];
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Debug.Log("Error when sending message: " + e);
+        //        }
+        //    }
+        //}
+
+        data = Encoding.ASCII.GetBytes(text);
+        recv = data.Length;
+
+        for (int i = 0; i < remoters.Count; i++)
+            serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
+
+        chat.text += (text + "\n");
+
+        newMessage = false;
+        data = new byte[1024];
     }
 
     void OnMessageSent()
     {
-        while (!finished)
+        //while (!finished)
+        //{
+        //    if (sendingMsg)
+        //    {
+        //        try
+        //        {
+        //            data = Encoding.ASCII.GetBytes("[Server]: " + input.text);
+        //            recv = data.Length;
+        //            for (int i = 0; i < remoters.Count; i++)
+        //            {
+        //                serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
+        //            }
+        //            messageSent = true;
+        //            sendingMsg = false;
+        //            chat.text += ("Server: " + input.text + "\n");
+        //            input.text = "";
+        //            data = new byte[1024];
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Debug.Log("Error when sending message: " + e);
+        //        }
+        //    }
+        //}
+
+        data = Encoding.ASCII.GetBytes("[Server]: " + input.text);
+        recv = data.Length;
+        for (int i = 0; i < remoters.Count; i++)
         {
-            if (sendingMsg)
-            {
-                try
-                {
-                    data = Encoding.ASCII.GetBytes("[Server]: " + input.text);
-                    recv = data.Length;
-                    for (int i = 0; i < remoters.Count; i++)
-                    {
-                        serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
-                    }
-                    messageSent = true;
-                    sendingMsg = false;
-                    //chat.text += ("Server: " + input.text + "\n");
-                    //input.text = "";
-                    //data = new byte[1024];
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("Error when sending message: " + e);
-                }
-            }
+            serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
         }
+
+        messageSent = true;
+        data = new byte[1024];
     }
 
     void OnClientConnected()
