@@ -47,7 +47,7 @@ public class ServerConnectionTCP : MonoBehaviour
             SocketType.Stream,
             ProtocolType.Tcp);
 
-        ipep = new IPEndPoint(IPAddress.Parse("10.0.103.50"), port);
+        ipep = new IPEndPoint(IPAddress.Parse("10.0.53.60"), port);
 
         serverSocket.Bind(ipep);
 
