@@ -21,10 +21,13 @@ public class Server : MonoBehaviour
 
     Thread receiveMsgsThread;
     Thread sendMsgsThread;
+    Thread updateMsgsThread;
     bool finished = false;
 
     bool newMessage = false;
     bool messageSent = false;
+    bool sendingMsg = false;
+    bool msgReceived = false;
     bool clientConnected = false;
     string lastUserName = string.Empty;
 
@@ -52,6 +55,10 @@ public class Server : MonoBehaviour
         receiveMsgsThread.Start();
 
         sendMsgsThread = new Thread(OnMessageSent);
+        sendMsgsThread.Start();
+
+        updateMsgsThread = new Thread(OnMessageReceived);
+        updateMsgsThread.Start();
 
         connectedPeople.text += ("You (Server)\n");
     }
@@ -63,18 +70,21 @@ public class Server : MonoBehaviour
             receiveMsgsThread.Abort();
         if (sendMsgsThread.IsAlive)
             sendMsgsThread.Abort();
+        if (updateMsgsThread.IsAlive)
+            updateMsgsThread.Abort();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.Keypad0))
         {
             finished = true;
         }
 
         if (!clientConnected && newMessage)
         {
-            OnMessageReceived();
+            msgReceived = true;
+            //OnMessageReceived();
         }
         else if (clientConnected)
         {
@@ -83,14 +93,11 @@ public class Server : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            if (!sendMsgsThread.IsAlive)
-            {
-                sendMsgsThread.Start();
-            }
+            sendingMsg = true;
         }
         if (messageSent)
         {
-            chat.text += ("Server: " + input.text + "\n");
+            chat.text += ("[Server]: " + input.text + "\n");
             input.text = "";
             data = new byte[1024];
             messageSent = false;
@@ -139,43 +146,57 @@ public class Server : MonoBehaviour
 
     void OnMessageReceived()
     {
-        try
+        while (!finished)
         {
-            data = Encoding.ASCII.GetBytes(text);
-            recv = data.Length;
+            if (msgReceived)
+            {
+                try
+                {
+                    data = Encoding.ASCII.GetBytes(text);
+                    recv = data.Length;
 
-            for (int i = 0; i < remoters.Count; i++)
-                serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
+                    for (int i = 0; i < remoters.Count; i++)
+                        serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
 
-            chat.text += (text + "\n");
+                    chat.text += (text + "\n");
 
-            newMessage = false;
-            data = new byte[1024];
-        }
-        catch (Exception e)
-        {
-            Debug.Log("Error when sending message: " + e);
+                    newMessage = false;
+                    msgReceived = false;
+                    data = new byte[1024];
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("Error when sending message: " + e);
+                }
+            }
         }
     }
 
     void OnMessageSent()
     {
-        try
+        while (!finished)
         {
-            data = Encoding.ASCII.GetBytes("Server: " + input.text);
-            recv = data.Length;
-            for (int i = 0; i < remoters.Count; i++)
+            if (sendingMsg)
             {
-                serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
+                try
+                {
+                    data = Encoding.ASCII.GetBytes("[Server]: " + input.text);
+                    recv = data.Length;
+                    for (int i = 0; i < remoters.Count; i++)
+                    {
+                        serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
+                    }
+                    messageSent = true;
+                    sendingMsg = false;
+                    //chat.text += ("Server: " + input.text + "\n");
+                    //input.text = "";
+                    //data = new byte[1024];
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("Error when sending message: " + e);
+                }
             }
-            messageSent = true;
-            //chat.text += ("Server: " + input.text + "\n");
-            //input.text = "";
-            //data = new byte[1024];
-        }
-        catch (Exception e)
-        {
-            Debug.Log("Error when sending message: " + e);
         }
     }
 

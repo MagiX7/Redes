@@ -10,7 +10,7 @@ public class ClientSceneManager : MonoBehaviour
     [SerializeField] GameObject chat;
     GameObject serverIpInput;
     GameObject userNameInput;
-    GameObject inputBox;
+    [SerializeField] GameObject chatInput;
     [SerializeField] GameObject connectButton;
     
     [SerializeField] Client clientScript;
@@ -24,16 +24,13 @@ public class ClientSceneManager : MonoBehaviour
         serverIpInput = GameObject.Find("Server IP Input");
         userNameInput = GameObject.Find("Username Input");
 
-        inputBox = GameObject.Find("Input");
-
-        inputBox.SetActive(false);
         serverIpInputField = serverIpInput.GetComponentInChildren<InputField>();
         userNameInputField = userNameInput.GetComponentInChildren<InputField>();
     }
 
     public void StartConnection()
     {
-        inputBox.SetActive(true);
+        chatInput.SetActive(true);
 
         chat.SetActive(true);
         clientScript.gameObject.SetActive(true);

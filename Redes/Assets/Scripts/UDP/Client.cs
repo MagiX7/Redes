@@ -23,8 +23,10 @@ public class Client : MonoBehaviour
     IPEndPoint sender;
 
     Thread netThread;
+    Thread sendMsgsThread;
     bool finished = false;
     bool newMessage = false;
+    bool messageSend = false;
 
     string text;
 
@@ -48,11 +50,14 @@ public class Client : MonoBehaviour
 
         netThread = new Thread(RecieveMessages);
         netThread.Start();
+
+        sendMsgsThread = new Thread(OnMessageSent);
+        sendMsgsThread.Start();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.Keypad0))
         {
             finished = true;
         }
@@ -65,7 +70,7 @@ public class Client : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            OnMessageSent();
+            messageSend = true;
         }
     }
 
@@ -90,17 +95,24 @@ public class Client : MonoBehaviour
 
     void OnMessageSent()
     {
-        try
+        while (!finished)
         {
-            string msg = userName + ": " + input.text;
-            data = Encoding.ASCII.GetBytes(msg);
-            recv = data.Length;
-            clientSocket.SendTo(data, recv, SocketFlags.None, remote);
-            input.text = "";
-        }
-        catch (Exception e)
-        {
-            Debug.Log("Error when sending the message: " + e);
+            if (messageSend)
+            {
+                try
+                {
+                    string msg = "[" + userName + "]" + ": " + input.text;
+                    data = Encoding.ASCII.GetBytes(msg);
+                    recv = data.Length;
+                    clientSocket.SendTo(data, recv, SocketFlags.None, remote);
+                    input.text = "";
+                    messageSend = false;
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("Error when sending the message: " + e);
+                }
+            }
         }
     }
 
