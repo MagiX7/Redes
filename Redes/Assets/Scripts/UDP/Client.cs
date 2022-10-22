@@ -40,8 +40,7 @@ public class Client : MonoBehaviour
         clientIpep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
         clientSocket.Bind(clientIpep);
 
-        sender = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
-        remote = (EndPoint)(sender);
+        remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(userName);
@@ -53,6 +52,15 @@ public class Client : MonoBehaviour
 
         //sendMsgsThread = new Thread(OnMessageSent);
         //sendMsgsThread.Start();
+    }
+
+    private void OnDisable()
+    {
+        finished = true;
+
+        clientSocket.Close();
+        if (netThread.IsAlive)
+            netThread.Abort();
     }
 
     void Update()
@@ -77,15 +85,18 @@ public class Client : MonoBehaviour
 
     void RecieveMessages()
     {
-        while (!finished)
+        while (!finished && clientSocket.Connected)
         {
             try
             {
                 byte[] msg = new byte[1024];
                 recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
-                text = Encoding.ASCII.GetString(msg, 0, recv);
-                newMessage = true;
-                data = msg;
+                if (recv > 0)
+                {
+                    text = Encoding.ASCII.GetString(msg, 0, recv);
+                    newMessage = true;
+                    data = msg;
+                }
             }
             catch (Exception e)
             {
@@ -118,6 +129,8 @@ public class Client : MonoBehaviour
         //    }
         //}
 
+        if (input.text.Length <= 0)
+            return;
 
         string msg = "[" + userName + "]" + ": " + input.text;
         data = Encoding.ASCII.GetBytes(msg);
