@@ -55,6 +55,15 @@ public class Client : MonoBehaviour
         //sendMsgsThread.Start();
     }
 
+    private void OnDisable()
+    {
+        finished = true;
+
+        clientSocket.Close();
+        if (netThread.IsAlive)
+            netThread.Abort();
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Keypad0))

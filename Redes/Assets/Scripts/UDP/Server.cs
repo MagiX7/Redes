@@ -64,9 +64,12 @@ public class Server : MonoBehaviour
     
     private void OnDisable()
     {
+        finished = true;
+
         serverSocket.Close();
         if (receiveMsgsThread.IsAlive)
             receiveMsgsThread.Abort();
+
         //if (sendMsgsThread.IsAlive)
         //    sendMsgsThread.Abort();
         //if (updateMsgsThread.IsAlive)
