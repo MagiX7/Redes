@@ -10,12 +10,6 @@ using UnityEngine.UI;
 
 public class ServerConnectionTCP : MonoBehaviour
 {
-    enum InfoType
-    {
-        MESSAGE = 0,
-        CONNECTION
-    };
-
     // Connection Variables
     private Socket serverSocket;
     private List<Socket> clientSocket;
@@ -38,20 +32,22 @@ public class ServerConnectionTCP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Initialize lists and get components
         clientSocket = new List<Socket>();
         playerConnectionList = new List<string>();
         playerChatMessagesList = new List<string>();
         playersConnectedText = GameObject.Find("Players").GetComponent<Text>();
 
+        // Input the options for our server, TCP in this case
         serverSocket = new Socket(AddressFamily.InterNetwork,
             SocketType.Stream,
             ProtocolType.Tcp);
 
+        // Input the end point ip Address and bind it to the server socket
         ipep = new IPEndPoint(IPAddress.Parse("10.0.53.60"), port);
-
         serverSocket.Bind(ipep);
 
-        // First Thread to begin connection
+        // Begin connection in a new thread
         threadTCPConnection = new Thread(ThreadTCPConnect);
         threadTCPConnection.Start();
 
@@ -64,12 +60,13 @@ public class ServerConnectionTCP : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Return))
         {
-            // Send message to client that he connected successfully
+            // Prepare the messages to send to the clients
             string messageToClient = "[Server]: " + chatServerInput.text + "\n";
             playerChatMessagesList.Add(messageToClient);
             playerChatMessagesText.text += messageToClient;
             chatServerInput.text = "";
-            // Add it to player messages list
+
+            // Message limit behaviour
             if (playerChatMessagesList.Count > 5)
             {
                 playerChatMessagesList.RemoveAt(0);
@@ -80,6 +77,7 @@ public class ServerConnectionTCP : MonoBehaviour
                 }
             }
 
+            // Send message to the clients
             byte[] buffer = new byte[messageToClient.Length];
             buffer = Encoding.ASCII.GetBytes(messageToClient);
             for (int i = 0; i < clientSocket.Count; ++i)
@@ -87,10 +85,10 @@ public class ServerConnectionTCP : MonoBehaviour
                 clientSocket[i].Send(buffer);
             }
         }
+
         if (newPlayer)
         {
-            // Notify chat
-
+            // Message limit behaviour
             if (playerChatMessagesList.Count > 5)
             {
                 playerChatMessagesList.RemoveAt(0);
@@ -110,7 +108,7 @@ public class ServerConnectionTCP : MonoBehaviour
 
         if (newChatMessage)
         {
-            // Add it to player messages list
+            // Message limit behaviour
             if (playerChatMessagesList.Count > 5)
             {
                 playerChatMessagesList.RemoveAt(0);
@@ -125,7 +123,6 @@ public class ServerConnectionTCP : MonoBehaviour
                 playerChatMessagesText.text += playerChatMessagesList[playerChatMessagesList.Count-1] + "\n";
             }
             newChatMessage = false;
-
         }
 
         // While at least there's 1 client we can call this function
@@ -133,7 +130,6 @@ public class ServerConnectionTCP : MonoBehaviour
         {
             if (!threadReceiveTCPMessages.IsAlive)
             {
-                Debug.Log("Server started listening for messages...");
                 threadReceiveTCPMessages.Start();
                 startListening = true;
             }
@@ -143,9 +139,9 @@ public class ServerConnectionTCP : MonoBehaviour
 
     private void ThreadTCPConnect()
     {
-        // Keep listening until someone connects, then accept it
         while (clientSocket.Count < 2)
         {
+            // Keep listening until someone connects, then accept it
             serverSocket.Listen(2);
             clientSocket.Add(serverSocket.Accept());
 
@@ -154,7 +150,6 @@ public class ServerConnectionTCP : MonoBehaviour
             string clientName = "";
             int siz = clientSocket[clientSocket.Count - 1].Receive(info);
             clientName = Encoding.ASCII.GetString(info, 0, siz);
-            Debug.Log("Client connected " + siz + " Message: " + clientName);
 
             // Add the new client to the connection list
             playerConnectionList.Add(clientName);
@@ -175,7 +170,9 @@ public class ServerConnectionTCP : MonoBehaviour
         // While the client is connected, we receive messages,
         // this way we avoid creating new threads
         while (clientSocket.Count > 0)
-        {          
+        {   
+            // This select is used for checking if there's pending messages, if there's any
+            // The select will reduce the list to the many players that have pending messages
             List<Socket> receiveSockets = new List<Socket>(clientSocket);
             Socket.Select(receiveSockets, null, null, 50000);
             for (int i = 0; i < receiveSockets.Count; ++i)
@@ -187,10 +184,9 @@ public class ServerConnectionTCP : MonoBehaviour
           
                 playerChatMessagesList.Add(clientMessage);
                 newChatMessage = true;
-                Debug.Log("Client said: " + clientMessage);
 
 
-                // Send message to client that he connected successfully
+                // Send message to all clients
                 byte[] buffer = new byte[clientMessage.Length];
                 buffer = Encoding.ASCII.GetBytes(clientMessage);
                 for (int j = 0; j < clientSocket.Count; ++j)
@@ -207,18 +203,15 @@ public class ServerConnectionTCP : MonoBehaviour
     {
         // Correctly close and abort all sockets and threads
         // Close sockets
-
         for (int i = 0; i < clientSocket.Count; ++i)
         {
             clientSocket[i].Close();
-            Debug.Log("Closed client socket" + i);
         }
 
 
         if (serverSocket != null)
         {
             serverSocket.Close();
-            Debug.Log("Closed server socket");
         }
        
 
@@ -226,13 +219,11 @@ public class ServerConnectionTCP : MonoBehaviour
         if (threadTCPConnection.IsAlive)
         {
             threadTCPConnection.Abort();
-            Debug.Log("Aborted connections thread");
         }
 
         if (threadReceiveTCPMessages.IsAlive)
         {
             threadReceiveTCPMessages.Abort();
-            Debug.Log("Aborted receive messages thread");
         }
     }
 }
