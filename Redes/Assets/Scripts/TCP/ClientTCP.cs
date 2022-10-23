@@ -138,7 +138,7 @@ public class ClientTCP : MonoBehaviour
 
             chatMessagesList.Add(chatMessage);
 
-            Debug.Log(chatMessage);
+            //Debug.Log(chatMessage);
         }
     }
 
@@ -151,7 +151,13 @@ public class ClientTCP : MonoBehaviour
     {
         if (socket != null) socket.Close();
 
-        if (connectionThread != null && connectionThread.IsAlive) connectionThread.Abort();
+        connected = false;
+        if (connectionThread != null && connectionThread.IsAlive)
+        {
+            connectionThread.Abort();
+            Debug.Log("Exited thread");
+        }
+
     }
 
     string GetLocalIPAddress()

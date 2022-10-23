@@ -101,7 +101,7 @@ public class ServerConnectionTCP : MonoBehaviour
             playerChatMessagesText.text += playerConnectionList[playerConnectionList.Count - 1] + " connected!\n";
 
             // Add it to list of players
-            playersConnectedText.text += playerConnectionList[playerConnectionList.Count-1] + "\n";
+            playersConnectedText.text += playerConnectionList[playerConnectionList.Count - 1] + "\n";
             newPlayer = false;
         }
 
@@ -119,7 +119,7 @@ public class ServerConnectionTCP : MonoBehaviour
             }
             else
             {
-                playerChatMessagesText.text += playerChatMessagesList[playerChatMessagesList.Count-1] + "\n";
+                playerChatMessagesText.text += playerChatMessagesList[playerChatMessagesList.Count-1];
             }
             newChatMessage = false;
         }
@@ -200,20 +200,6 @@ public class ServerConnectionTCP : MonoBehaviour
 
     private void OnDisable()
     {
-        // Correctly close and abort all sockets and threads
-        // Close sockets
-        for (int i = 0; i < clientSocket.Count; ++i)
-        {
-            clientSocket[i].Close();
-        }
-
-
-        if (serverSocket != null)
-        {
-            serverSocket.Close();
-        }
-       
-
         // Abort Threads
         if (threadTCPConnection.IsAlive)
         {
@@ -223,6 +209,17 @@ public class ServerConnectionTCP : MonoBehaviour
         if (threadReceiveTCPMessages.IsAlive)
         {
             threadReceiveTCPMessages.Abort();
+        }
+
+        // Correctly close and abort all sockets and threads
+        // Close sockets
+        for (int i = 0; i < clientSocket.Count; ++i)
+        {
+            clientSocket[i].Close();
+        }
+        if (serverSocket != null)
+        {
+            serverSocket.Close();
         }
     }
 
