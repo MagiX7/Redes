@@ -101,7 +101,7 @@ public class ServerConnectionTCP : MonoBehaviour
                 }
             }
        
-            playerChatMessagesText.text += playerConnectionList[playerConnectionList.Count - 1] + "\n";
+            playerChatMessagesText.text += playerConnectionList[playerConnectionList.Count - 1] + " connected!\n";
 
             // Add it to list of players
             playersConnectedText.text += playerConnectionList[playerConnectionList.Count-1] + "\n";
@@ -195,7 +195,7 @@ public class ServerConnectionTCP : MonoBehaviour
                 buffer = Encoding.ASCII.GetBytes(clientMessage);
                 for (int j = 0; j < clientSocket.Count; ++j)
                 {
-                        clientSocket[j].Send(buffer);
+                    clientSocket[j].Send(buffer);
                 }
             }            
         }
