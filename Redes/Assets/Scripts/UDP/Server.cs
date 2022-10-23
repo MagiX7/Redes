@@ -34,6 +34,7 @@ public class Server : MonoBehaviour
     [SerializeField] Text chat;
     [SerializeField] InputField input;
     [SerializeField] Text connectedPeople;
+    [SerializeField] Text ipText;
 
     void Start()
     {
@@ -41,16 +42,19 @@ public class Server : MonoBehaviour
 
         data = new byte[1024];
 
-        ipep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
+        string serverIp = GetLocalIPAddress();
+        ipep = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
         serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         serverSocket.Bind(ipep);
 
-        remote = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
+        remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
         receiveMsgsThread = new Thread(RecieveMessages);
         receiveMsgsThread.Start();
 
         connectedPeople.text += ("You (Server)\n");
+
+        ipText.text += serverIp;
     }
     
     private void OnDisable()
