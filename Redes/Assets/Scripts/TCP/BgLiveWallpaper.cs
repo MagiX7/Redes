@@ -14,7 +14,6 @@ public class BgLiveWallpaper : MonoBehaviour
         initialPosY = this.transform.position.y;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (this.transform.position.x > initialPosX + 30.0f || this.transform.position.x < initialPosX - 30.0f)
