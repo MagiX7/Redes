@@ -47,7 +47,7 @@ public class ServerConnectionTCP : MonoBehaviour
             SocketType.Stream,
             ProtocolType.Tcp);
 
-        ipep = new IPEndPoint(IPAddress.Parse("10.0.53.60"), port);
+        ipep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), port);
 
         serverSocket.Bind(ipep);
 
@@ -234,5 +234,18 @@ public class ServerConnectionTCP : MonoBehaviour
             threadReceiveTCPMessages.Abort();
             Debug.Log("Aborted receive messages thread");
         }
+    }
+
+    string GetLocalIPAddress()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        return "Null";
     }
 }

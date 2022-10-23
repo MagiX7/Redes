@@ -41,7 +41,7 @@ public class ClientTCP : MonoBehaviour
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         // Create an endpoint with our ip adress (Client)
-        ipep = new IPEndPoint(IPAddress.Parse("192.168.0.31"), port);
+        ipep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), port);
         Debug.Log("Connecting");
         // Bind socket with our ip
        // socket.Bind(ipep);
@@ -153,4 +153,18 @@ public class ClientTCP : MonoBehaviour
 
         if (connectionThread != null && connectionThread.IsAlive) connectionThread.Abort();
     }
+
+    string GetLocalIPAddress()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        return "Null";
+    }
+
 }
