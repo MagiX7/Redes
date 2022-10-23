@@ -53,7 +53,7 @@ public class Server : MonoBehaviour
         receiveMsgsThread.Start();
 
         connectedPeople.text += ("You (Server)\n");
-
+        chat.text += "Server created successfully!\n";
         ipText.text += serverIp;
     }
     
