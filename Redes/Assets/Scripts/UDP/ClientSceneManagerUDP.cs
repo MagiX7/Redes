@@ -4,7 +4,7 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ClientSceneManager : MonoBehaviour
+public class ClientSceneManagerUDP : MonoBehaviour
 {
     [SerializeField] GameObject userInputs;
     [SerializeField] GameObject chat;
@@ -13,7 +13,7 @@ public class ClientSceneManager : MonoBehaviour
     [SerializeField] GameObject chatInput;
     [SerializeField] GameObject connectButton;
     
-    [SerializeField] Client clientScript;
+    [SerializeField] ClientUDP clientScript;
 
     InputField serverIpInputField;
     InputField userNameInputField;

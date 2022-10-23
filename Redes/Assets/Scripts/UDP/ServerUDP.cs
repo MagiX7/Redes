@@ -10,7 +10,7 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Server : MonoBehaviour
+public class ServerUDP : MonoBehaviour
 {
     Socket serverSocket;
     IPEndPoint ipep;

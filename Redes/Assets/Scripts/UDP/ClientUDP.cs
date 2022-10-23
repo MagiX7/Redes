@@ -8,7 +8,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Client : MonoBehaviour
+public class ClientUDP : MonoBehaviour
 {
     Socket clientSocket;
     IPEndPoint clientIpep;
