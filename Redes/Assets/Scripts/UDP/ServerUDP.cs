@@ -186,7 +186,7 @@ public class ServerUDP : MonoBehaviour
     {
         if (remoters.Count <= 0)
             return;
-
+        
         byte[] bytes = Serializer.SerializePlayerData(playerData);
         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }

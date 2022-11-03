@@ -5,8 +5,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public PlayerData playerData;
-    [SerializeField] ClientUDP udp;
+    //[SerializeField] ClientUDP udp;
     //[SerializeField] ServerUDP udp;
+
+    [SerializeField] UDPManager udpManager;
+    public bool isClient = false;
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +34,7 @@ public class PlayerController : MonoBehaviour
         playerData.position = transform.position;
         Debug.Log(playerData.position);
 
-        udp.SendPlayerData(playerData);
+        udpManager.SendPlayerData(playerData, isClient);
     }
 
     public PlayerData GetPlayerData() { return playerData; }
