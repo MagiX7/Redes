@@ -182,6 +182,15 @@ public class ServerUDP : MonoBehaviour
         data = new byte[1024];
     }
 
+    public void SendPlayerData(PlayerData playerData)
+    {
+        if (remoters.Count <= 0)
+            return;
+
+        byte[] bytes = Serializer.SerializePlayerData(playerData);
+        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
+    }
+
     string GetLocalIPAddress()
     {
         var host = Dns.GetHostEntry(Dns.GetHostName());

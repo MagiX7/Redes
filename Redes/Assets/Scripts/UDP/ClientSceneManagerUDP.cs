@@ -19,6 +19,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     InputField userNameInputField;
 
     [SerializeField] GameObject player;
+    [SerializeField] GameObject enemy;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +44,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
         userNameInput.SetActive(false);
         connectButton.SetActive(false);
         player.SetActive(true);
+        enemy.SetActive(true);
     }
 
 }

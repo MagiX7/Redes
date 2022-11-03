@@ -33,7 +33,8 @@ public class ClientUDP : MonoBehaviour
     [SerializeField] InputField input;
 
     [SerializeField] PlayerController player;
-    
+    [SerializeField] EnemyController enemy;
+
     void Start()
     {
         clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -93,7 +94,7 @@ public class ClientUDP : MonoBehaviour
                 case 0:
                     break;
                 case 1:
-                     player.playerData = Serializer.DeserializePlayerData(reader, stream);
+                     enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
                     break;
                 default:
                     incomingText = Encoding.ASCII.GetString(msg, 0, recv);

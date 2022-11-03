@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public PlayerData playerData;
     [SerializeField] ClientUDP udp;
+    //[SerializeField] ServerUDP udp;
 
     // Start is called before the first frame update
     void Start()
