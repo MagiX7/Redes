@@ -53,9 +53,9 @@ public static class Serializer
 
         playerData.life = reader.ReadInt32();
         playerData.damage = reader.ReadInt32();
-        playerData.position.x = reader.ReadInt32();
-        playerData.position.y = reader.ReadInt32();
-        playerData.position.z = reader.ReadInt32();
+        playerData.position.x = reader.ReadSingle();
+        playerData.position.y = reader.ReadSingle();
+        playerData.position.z = reader.ReadSingle();
         Debug.Log("deserialized!");
 
         return playerData;

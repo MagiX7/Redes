@@ -37,7 +37,7 @@ public class ServerUDP : MonoBehaviour
     [SerializeField] Text connectedPeople;
     [SerializeField] Text ipText;
 
-    [SerializeField] PlayerController player;
+    [SerializeField] EnemyController player;
     void Start()
     {
         remoters = new List<EndPoint>();
@@ -110,7 +110,7 @@ public class ServerUDP : MonoBehaviour
                 int messageType = reader.ReadInt32();
                 switch (messageType)
                 {
-                    case 0:;
+                    case 0:
                         break;
                     case 1:
                         player.playerData = Serializer.DeserializePlayerData(reader, stream);
