@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class ServerUDP : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class ServerUDP : MonoBehaviour
     [SerializeField] Text connectedPeople;
     [SerializeField] Text ipText;
 
+    [SerializeField] PlayerController player;
     void Start()
     {
         remoters = new List<EndPoint>();
@@ -100,9 +102,25 @@ public class ServerUDP : MonoBehaviour
             recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
             if (recv > 0)
             {
-                text = Encoding.ASCII.GetString(bytes, 0, recv);
-                newMessage = true;
-                data = bytes;
+                MemoryStream stream = new MemoryStream(bytes, 0, recv);
+                BinaryReader reader = new BinaryReader(stream);
+
+                stream.Seek(0, SeekOrigin.Begin);
+
+                int messageType = reader.ReadInt32();
+                switch (messageType)
+                {
+                    case 0:;
+                        break;
+                    case 1:
+                        player.playerData = Serializer.DeserializePlayerData(reader, stream);
+                        break;
+                    default:
+                        text = Encoding.ASCII.GetString(bytes, 0, recv);
+                        newMessage = true;
+                        data = bytes;
+                        break;
+                }
 
                 if (!remoters.Contains(remote))
                 {

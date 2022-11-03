@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class ClientUDP : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class ClientUDP : MonoBehaviour
     [SerializeField] Text chat;
     [SerializeField] InputField input;
 
+    [SerializeField] PlayerController player;
     
     void Start()
     {
@@ -79,9 +81,26 @@ public class ClientUDP : MonoBehaviour
         {
             byte[] msg = new byte[1024];
             recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
-            incomingText = Encoding.ASCII.GetString(msg, 0, recv);
-            newMessage = true;
-            data = msg;
+
+            MemoryStream stream = new MemoryStream(msg, 0, recv);
+            BinaryReader reader = new BinaryReader(stream);
+
+            stream.Seek(0, SeekOrigin.Begin);
+
+            int messageType = reader.ReadInt32();
+            switch(messageType)
+            {
+                case 0:
+                    break;
+                case 1:
+                     player.playerData = Serializer.DeserializePlayerData(reader, stream);
+                    break;
+                default:
+                    incomingText = Encoding.ASCII.GetString(msg, 0, recv);
+                    newMessage = true;
+                    data = msg;
+                    break;
+            }
         }
     }
 
@@ -92,6 +111,12 @@ public class ClientUDP : MonoBehaviour
         recv = data.Length;
         clientSocket.SendTo(data, recv, SocketFlags.None, remote);
         input.text = "";
+    }
+
+    public void SendPlayerData(PlayerData playerData)
+    {
+        byte[] bytes = Serializer.SerializePlayerData(playerData);
+        clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }
 
     string GetLocalIPAddress()
@@ -106,5 +131,4 @@ public class ClientUDP : MonoBehaviour
         }
         return "Null";
     }
-
 }

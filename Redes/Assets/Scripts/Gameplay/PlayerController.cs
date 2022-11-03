@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public PlayerData playerData;
+    [SerializeField] ClientUDP udp;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerData = new PlayerData();
     }
 
     // Update is called once per frame
@@ -23,5 +26,13 @@ public class PlayerController : MonoBehaviour
         {
             GetComponent<Rigidbody>().velocity = new Vector3(0, 0, z * 10);
         }
+
+        playerData.position = transform.position;
+        Debug.Log(playerData.position);
+
+        udp.SendPlayerData(playerData);
     }
+
+    public PlayerData GetPlayerData() { return playerData; }
+
 }
