@@ -5,16 +5,18 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public PlayerData playerData;
-    //[SerializeField] ClientUDP udp;
-    //[SerializeField] ServerUDP udp;
-
+    Rigidbody rb;
+    
     [SerializeField] UDPManager udpManager;
     public bool isClient = false;
+
+    float sendDataCounter = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         playerData = new PlayerData();
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -23,18 +25,23 @@ public class PlayerController : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         if(x != 0)
         {
-            GetComponent<Rigidbody>().velocity = new Vector3(x * 10,0,0);
+            rb.velocity = new Vector3(x * 10, rb.velocity.y, rb.velocity.z);
         }
         float z = Input.GetAxis("Vertical");
         if (z != 0)
         {
-            GetComponent<Rigidbody>().velocity = new Vector3(0, 0, z * 10);
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, z * 10);
         }
 
         playerData.position = transform.position;
         Debug.Log(playerData.position);
 
-        udpManager.SendPlayerData(playerData, isClient);
+        sendDataCounter += Time.deltaTime;
+        if (sendDataCounter <= 0.2f)
+        {
+            sendDataCounter = 0.0f;
+            udpManager.SendPlayerData(playerData, isClient);
+        }
     }
 
     public PlayerData GetPlayerData() { return playerData; }
