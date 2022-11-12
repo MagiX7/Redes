@@ -57,7 +57,7 @@ public static class Serializer
         playerData.position.x = reader.ReadSingle();
         playerData.position.y = reader.ReadSingle();
         playerData.position.z = reader.ReadSingle();
-        Debug.Log("deserialized!");
+        //Debug.Log("deserialized!");
 
         return playerData;
     }

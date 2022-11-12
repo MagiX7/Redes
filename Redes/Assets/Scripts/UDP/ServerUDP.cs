@@ -74,7 +74,7 @@ public class ServerUDP : MonoBehaviour
     {
         if (!clientConnected && newMessage)
         {
-            OnMessageReceived();
+            OnChatMessageReceived();
         }
         else if (clientConnected)
         {
@@ -107,42 +107,42 @@ public class ServerUDP : MonoBehaviour
 
                 stream.Seek(0, SeekOrigin.Begin);
 
-                int messageType = reader.ReadInt32();
+                MessageType messageType = (MessageType)reader.ReadInt32();
                 switch (messageType)
                 {
-                    case 0:
+                    case MessageType.NEW_USER:
                     {
-                        // New Player Connected
-                        //text = Encoding.ASCII.GetString(bytes, 0, recv);
-                        //text = text[1..];
                         text = Serializer.DeserializeString(reader, stream);
                         break;
                     }
 
-                    case 1:
+                    case MessageType.CHAT:
                     {
-                        text = Encoding.ASCII.GetString(bytes, 0, recv);
+                        //text = Encoding.ASCII.GetString(bytes, 0, recv);
+                        text = Serializer.DeserializeString(reader, stream);
                         newMessage = true;
                         data = bytes;
                         break;
                     }
 
-                    case 2:
+                    case MessageType.PLAYER_DATA:
                     {
                         player.playerData = Serializer.DeserializePlayerData(reader, stream);
                         break;
                     }
-                     
-                    default:
-                    {
-                        //text = Encoding.ASCII.GetString(bytes, 0, recv);
-                        //newMessage = true;
-                        //data = bytes;
 
-                        text = Encoding.ASCII.GetString(bytes, 0, recv);
-                        text = text[1..];
-                        break;
-                    }
+                    default: break;
+
+                    //default:
+                    //{
+                    //    //text = Encoding.ASCII.GetString(bytes, 0, recv);
+                    //    //newMessage = true;
+                    //    //data = bytes;
+                    //
+                    //    text = Encoding.ASCII.GetString(bytes, 0, recv);
+                    //    text = text[1..];
+                    //    break;
+                    //}
                 }
 
                 if (!remoters.Contains(remote))
@@ -158,7 +158,8 @@ public class ServerUDP : MonoBehaviour
                         else
                             text = lastUserName + " Connected!\n";
 
-                        bytes = Encoding.ASCII.GetBytes(text);
+                        //bytes = Encoding.ASCII.GetBytes(text);
+                        bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
                     }
                 }
@@ -166,9 +167,10 @@ public class ServerUDP : MonoBehaviour
         }
     }
 
-    void OnMessageReceived()
+    void OnChatMessageReceived()
     {
-        data = Encoding.ASCII.GetBytes(text);
+        //data = Encoding.ASCII.GetBytes(text);
+        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
         recv = data.Length;
 
         for (int i = 0; i < remoters.Count; i++)
@@ -182,7 +184,9 @@ public class ServerUDP : MonoBehaviour
 
     void OnMessageSent()
     {
-        data = Encoding.ASCII.GetBytes("[Server]: " + input.text);
+        string msg = "[Server]: " + input.text;
+        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, msg);
+        //data = Encoding.ASCII.GetBytes("[Server]: " + input.text);
         recv = data.Length;
         for (int i = 0; i < remoters.Count; i++)
         {
