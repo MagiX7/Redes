@@ -111,15 +111,37 @@ public class ServerUDP : MonoBehaviour
                 switch (messageType)
                 {
                     case 0:
+                    {
+                        // New Player Connected
+                        text = Encoding.ASCII.GetString(bytes, 0, recv);
+                        text = text[2..];
                         break;
+                    }
+
                     case 1:
-                        player.playerData = Serializer.DeserializePlayerData(reader, stream);
-                        break;
-                    default:
+                    {
                         text = Encoding.ASCII.GetString(bytes, 0, recv);
                         newMessage = true;
                         data = bytes;
                         break;
+                    }
+
+                    case 2:
+                    {
+                        player.playerData = Serializer.DeserializePlayerData(reader, stream);
+                        break;
+                    }
+                     
+                    default:
+                    {
+                        //text = Encoding.ASCII.GetString(bytes, 0, recv);
+                        //newMessage = true;
+                        //data = bytes;
+
+                        text = Encoding.ASCII.GetString(bytes, 0, recv);
+                        text = text[1..];
+                        break;
+                    }
                 }
 
                 if (!remoters.Contains(remote))

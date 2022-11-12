@@ -8,6 +8,8 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using static System.Net.Mime.MediaTypeNames;
+using UnityEngine.XR;
 
 public class ClientUDP : MonoBehaviour
 {
@@ -29,7 +31,7 @@ public class ClientUDP : MonoBehaviour
 
     string incomingText;
 
-    [SerializeField] Text chat;
+    [SerializeField] UnityEngine.UI.Text chat;
     [SerializeField] InputField input;
 
     [SerializeField] PlayerController player;
@@ -89,17 +91,26 @@ public class ClientUDP : MonoBehaviour
             stream.Seek(0, SeekOrigin.Begin);
 
             int messageType = reader.ReadInt32();
-            switch(messageType)
+            switch (messageType)
             {
                 case 0:
+                {
+                    // New Player Connected
+                    incomingText = Encoding.ASCII.GetString(msg, 0, recv);
+                    incomingText = incomingText[2..];
                     break;
+                }
                 case 1:
-                     enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
-                    break;
-                default:
                     incomingText = Encoding.ASCII.GetString(msg, 0, recv);
                     newMessage = true;
                     data = msg;
+                    break;
+                case 2:
+                     enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
+                    break;
+
+                default:
+                    
                     break;
             }
         }
@@ -107,7 +118,7 @@ public class ClientUDP : MonoBehaviour
 
     void OnMessageSent()
     {
-        string msg = "[" + userName + "]" + ": " + input.text;
+        string msg = MessageType.CHAT.ToString() + "[" + userName + "]" + ": " + input.text;
         data = Encoding.ASCII.GetBytes(msg);
         recv = data.Length;
         clientSocket.SendTo(data, recv, SocketFlags.None, remote);
