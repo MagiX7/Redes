@@ -46,7 +46,7 @@ public class ClientUDP : MonoBehaviour
         remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
         data = new byte[1024];
-        data = Encoding.ASCII.GetBytes(userName);
+        data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, userName);
         clientSocket.SendTo(data, data.Length, SocketFlags.None, remote);
         data = new byte[1024];
 
@@ -118,7 +118,7 @@ public class ClientUDP : MonoBehaviour
 
     void OnMessageSent()
     {
-        string msg = MessageType.CHAT.ToString() + "[" + userName + "]" + ": " + input.text;
+        string msg = "[" + userName + "]" + ": " + input.text;
         data = Encoding.ASCII.GetBytes(msg);
         recv = data.Length;
         clientSocket.SendTo(data, recv, SocketFlags.None, remote);

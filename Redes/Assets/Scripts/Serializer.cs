@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-enum MessageType
+public enum MessageType
 {
+    NEW_USER,
     CHAT,
     PLAYER_DATA,
 }
@@ -16,20 +17,20 @@ public static class Serializer
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write(value);
-        Debug.Log("serialized!");
-        byte[] ret = stream.GetBuffer();
-        int porsi = 0;
-        porsi += 1;
-        return ret;
+        return stream.ToArray();
     }
 
-    public static string DeserializeString(byte[] info, int length)
+    public static byte[] SerializeStringWithHeader(MessageType header, string value)
     {
-        MemoryStream stream = new MemoryStream(info, 0, length);
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write((int)header);
+        writer.Write(value);
+        return stream.ToArray();
+    }
 
-        BinaryReader reader = new BinaryReader(stream);
-        stream.Seek(0, SeekOrigin.Begin);
-        Debug.Log("deserialized!");
+    public static string DeserializeString(BinaryReader reader, MemoryStream stream)
+    {
         return reader.ReadString();
     }
 

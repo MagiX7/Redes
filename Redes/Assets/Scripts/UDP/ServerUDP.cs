@@ -113,8 +113,9 @@ public class ServerUDP : MonoBehaviour
                     case 0:
                     {
                         // New Player Connected
-                        text = Encoding.ASCII.GetString(bytes, 0, recv);
-                        text = text[2..];
+                        //text = Encoding.ASCII.GetString(bytes, 0, recv);
+                        //text = text[1..];
+                        text = Serializer.DeserializeString(reader, stream);
                         break;
                     }
 
