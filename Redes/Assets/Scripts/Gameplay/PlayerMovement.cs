@@ -19,9 +19,16 @@ public class PlayerMovement : MonoBehaviour
     // Animations
     public Animator animator;
 
+    // Online variables
+    public PlayerData playerData;
+    [SerializeField] UDPManager udpManager;
+    public bool isClient = false;
+    float sendDataCounter = 0;
+
     // Start is called before the first frame update
     void Start()
     {
+        playerData = new PlayerData();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -39,7 +46,6 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             animator.SetBool("Run", false);
-
         }
 
 
@@ -50,7 +56,19 @@ public class PlayerMovement : MonoBehaviour
             Vector3 direction = (hit.point - transform.position);
             transform.rotation = Quaternion.LookRotation(direction);
         }
+
+
+        playerData.position = transform.position;
+
+        sendDataCounter += Time.deltaTime;
+        if (sendDataCounter >= 0.2f)
+        {
+            sendDataCounter = 0.0f;
+            udpManager.SendPlayerData(playerData, isClient);
+        }
     }
+
+    public PlayerData GetPlayerData() { return playerData; }
 
     private void OnTriggerEnter(Collider other)
     {

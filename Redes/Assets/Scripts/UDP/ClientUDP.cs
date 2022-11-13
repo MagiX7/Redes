@@ -34,7 +34,6 @@ public class ClientUDP : MonoBehaviour
     [SerializeField] UnityEngine.UI.Text chat;
     [SerializeField] InputField input;
 
-    [SerializeField] PlayerController player;
     [SerializeField] EnemyController enemy;
 
     void Start()
