@@ -39,6 +39,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3197443257207600212}
     m_Modifications:
+    - target: {fileID: 2205214468985690845, guid: f26add0b8561051438426890f3bd0f19, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3826672958807468583, guid: f26add0b8561051438426890f3bd0f19, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -83,6 +87,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4490302565791019162, guid: f26add0b8561051438426890f3bd0f19, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4490302565791019165, guid: f26add0b8561051438426890f3bd0f19, type: 3}
       propertyPath: m_Name
       value: Rocket Launcher
@@ -115,7 +123,7 @@ MonoBehaviour:
   GunShotClip: {fileID: 8300000, guid: 40e71b0f7bd610849b40f150553f4702, type: 3}
   ReloadClip: {fileID: 8300000, guid: c3430338b7987524d96ce1f63db280cd, type: 3}
   source: {fileID: 5129931931554410481}
-  reloadSource: {fileID: 5129931931554410481}
+  reloadSource: {fileID: 7492742303014307254}
   audioPitch: {x: 0.9, y: 1.1}
   muzzlePrefab: {fileID: 450044020708499364, guid: 93a162fc463d2d842a8c25e141618684, type: 3}
   muzzlePosition: {fileID: 5471948555787130909}
@@ -142,5 +150,10 @@ Transform:
 --- !u!1 &6946054874931115862 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1802767607664207933, guid: f26add0b8561051438426890f3bd0f19, type: 3}
+  m_PrefabInstance: {fileID: 8746535340497723243}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &7492742303014307254 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2205214468985690845, guid: f26add0b8561051438426890f3bd0f19, type: 3}
   m_PrefabInstance: {fileID: 8746535340497723243}
   m_PrefabAsset: {fileID: 0}
