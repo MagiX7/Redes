@@ -49,6 +49,7 @@ public class RocketProjectile : MonoBehaviour
         {
             instigator.GetComponent<PlayerMovement>().SetScore();
             collision.gameObject.GetComponent<PlayerMovement>().Die();
+            collision.gameObject.GetComponent<EnemyController>().Die();
         }
 
         Destroy(gameObject, 5.0f);

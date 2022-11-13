@@ -35,10 +35,11 @@ public class PlayerController : MonoBehaviour
 
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
+
         //Debug.Log(playerData.position);
 
         sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.001f)
+        if (sendDataCounter >= 0.2f)
         {
             sendDataCounter = 0.0f;
             udpManager.SendPlayerData(playerData, isClient);

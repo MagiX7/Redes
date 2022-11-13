@@ -29,9 +29,22 @@ public class EnemyController : MonoBehaviour
 
         transform.position = playerData.position;
         transform.rotation = playerData.rotation;
+
+        if (playerData.life <= 0)
+        {
+            Die();
+        }
         //Debug.Log(playerData.position);
 
         //udp.SendPlayerData(playerData);
+    }
+
+    public void Die()
+    {
+        playerData.life = 0;
+        //audioSource.Play();
+        //Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
+        Destroy(this.gameObject, 1.0f);
     }
 
     public PlayerData GetPlayerData() { return playerData; }
