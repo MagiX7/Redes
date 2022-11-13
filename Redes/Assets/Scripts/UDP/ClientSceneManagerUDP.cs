@@ -44,7 +44,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
         userNameInput.SetActive(false);
         connectButton.SetActive(false);
         player.SetActive(true);
-        player.GetComponent<PlayerController>().isClient = true;
+        player.GetComponent<PlayerMovement>().isClient = true;
         enemy.SetActive(true);
     }
 
