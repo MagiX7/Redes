@@ -19,16 +19,9 @@ public class PlayerMovement : MonoBehaviour
     // Animations
     public Animator animator;
 
-    // Server variables
-    public PlayerData playerData;
-    [SerializeField] UDPManager udpManager;
-    public bool isClient = false;
-    float sendDataCounter = 0;
-
     // Start is called before the first frame update
     void Start()
     {
-        playerData = new PlayerData();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -49,14 +42,6 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-        playerData.position = transform.position;
-
-        sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.2f)
-        {
-            sendDataCounter = 0.0f;
-            udpManager.SendPlayerData(playerData, isClient);
-        }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -90,12 +75,11 @@ public class PlayerMovement : MonoBehaviour
     {
         Time.timeScale = 1.0f;
     }
+
     public void Die()
     {
         audioSource.Play();
         Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
         Destroy(this.gameObject, 1.0f);
     }
-
-    public PlayerData GetPlayerData() { return playerData; }
 }
