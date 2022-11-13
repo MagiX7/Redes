@@ -44,6 +44,10 @@ public static class Serializer
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.y);
         writer.Write(playerData.position.z);
+        writer.Write(playerData.rotation.x);
+        writer.Write(playerData.rotation.y);
+        writer.Write(playerData.rotation.z);
+        writer.Write(playerData.rotation.w);
 
         return stream.GetBuffer();
     }
@@ -57,6 +61,10 @@ public static class Serializer
         playerData.position.x = reader.ReadSingle();
         playerData.position.y = reader.ReadSingle();
         playerData.position.z = reader.ReadSingle();
+        playerData.rotation.x = reader.ReadSingle();
+        playerData.rotation.y = reader.ReadSingle();
+        playerData.rotation.z = reader.ReadSingle();
+        playerData.rotation.w = reader.ReadSingle();
         //Debug.Log("deserialized!");
 
         return playerData;

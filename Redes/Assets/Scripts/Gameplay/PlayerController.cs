@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
         }
 
         playerData.position = transform.position;
+        playerData.rotation = transform.rotation;
         //Debug.Log(playerData.position);
 
         sendDataCounter += Time.deltaTime;

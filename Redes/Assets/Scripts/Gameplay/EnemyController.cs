@@ -28,6 +28,7 @@ public class EnemyController : MonoBehaviour
         //}
 
         transform.position = playerData.position;
+        transform.rotation = playerData.rotation;
         //Debug.Log(playerData.position);
 
         //udp.SendPlayerData(playerData);

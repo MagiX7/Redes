@@ -59,9 +59,10 @@ public class PlayerMovement : MonoBehaviour
 
 
         playerData.position = transform.position;
+        playerData.rotation = transform.rotation;
 
         sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.2f)
+        if (sendDataCounter >= 0.05f)
         {
             sendDataCounter = 0.0f;
             udpManager.SendPlayerData(playerData, isClient);
