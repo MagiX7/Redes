@@ -44,7 +44,7 @@ public class EnemyController : MonoBehaviour
         playerData.life = 0;
         //audioSource.Play();
         //Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
-        Destroy(this.gameObject, 1.0f);
+        //Destroy(this.gameObject, 1.0f);
     }
 
     public PlayerData GetPlayerData() { return playerData; }

@@ -61,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
+        Debug.Log(playerData.life);
         if (playerData.life <= 0)
         {
             Die();
@@ -103,8 +104,8 @@ public class PlayerMovement : MonoBehaviour
     public void Die()
     {
         playerData.life = 0;
-        audioSource.Play();
-        Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
-        Destroy(this.gameObject, 1.0f);
+        //audioSource.Play();
+        //Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
+        //Destroy(this.gameObject, 1.0f);
     }
 }

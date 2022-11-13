@@ -48,7 +48,6 @@ public class RocketProjectile : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             instigator.GetComponent<PlayerMovement>().SetScore();
-            collision.gameObject.GetComponent<PlayerMovement>().Die();
             collision.gameObject.GetComponent<EnemyController>().Die();
         }
 
