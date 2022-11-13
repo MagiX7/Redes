@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(playerData.position);
 
         sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.2f)
+        if (sendDataCounter >= 0.001f)
         {
             sendDataCounter = 0.0f;
             udpManager.SendPlayerData(playerData, isClient);
