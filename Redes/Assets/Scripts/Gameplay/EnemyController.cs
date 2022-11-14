@@ -11,6 +11,7 @@ public class EnemyController : MonoBehaviour
 
     public GameObject deathPrefab;
     bool died = false;
+    bool gotHit = false;
 
     void Start()
     {
@@ -28,6 +29,11 @@ public class EnemyController : MonoBehaviour
         transform.position = playerData.position;
         transform.rotation = playerData.rotation;
 
+        if (gotHit)
+        {
+            playerData.life -= 1;
+            gotHit = false;
+        }
         if (!died && playerData.life <= 0)
         {
             Die();
@@ -49,9 +55,10 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Rocket")
         {
-            playerData.life -= 1;
+            gotHit = true;
         }
     }
+
 
     public PlayerData GetPlayerData() { return playerData; }
 }

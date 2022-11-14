@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     // Private variables
     AudioSource audioSource;
     bool died = false;
+    bool gotHit = false;
 
     // Weapons
     public GameObject rocketLauncher;
@@ -71,6 +72,11 @@ public class PlayerMovement : MonoBehaviour
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
+        if (gotHit)
+        {
+            playerData.life -= 1;
+            gotHit = false;
+        }
         if (!died && playerData.life <= 0)
         {
             Die();
@@ -103,7 +109,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Rocket")
         {
-            playerData.life -= 1;
+            gotHit = true;
         }
     }
 
