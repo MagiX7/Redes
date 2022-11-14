@@ -14,6 +14,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         playerData = new PlayerData();
+        rocketLauncherController = rocketLauncher.GetComponent<RocketLauncherController>();
     }
 
     void Update()

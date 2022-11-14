@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     {
         playerData = new PlayerData();
         audioSource = GetComponent<AudioSource>();
-        rocketLauncherController = GetComponent<RocketLauncherController>();
+        rocketLauncherController = rocketLauncher.GetComponent<RocketLauncherController>();
     }
 
     // Update is called once per frame
