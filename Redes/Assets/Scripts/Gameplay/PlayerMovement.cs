@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Weapons
     public GameObject rocketLauncher;
-    RocketLauncherController rocketLauncherController;
+    [SerializeField] RocketLauncherController rocketLauncherController;
     bool canShoot = true;
 
     // Animations
@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     // Online variables
     public PlayerData playerData;
     [SerializeField] UDPManager udpManager;
-    [HideInInspector] public bool isClient = false;
+    public bool isClient = false;
     float sendDataCounter = 0;
 
 
@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     {
         playerData = new PlayerData();
         audioSource = GetComponent<AudioSource>();
-        rocketLauncherController = rocketLauncher.GetComponent<RocketLauncherController>();
+        //rocketLauncherController = rocketLauncher.GetComponent<RocketLauncherController>();
     }
 
     // Update is called once per frame
@@ -64,8 +64,8 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && canShoot)
         {
             rocketLauncherController.FireWeapon();
+            udpManager.SendNewRocketRequest(canShoot, isClient);
             canShoot = false;
-            udpManager.SendNewRocketRequest(isClient);
             Invoke("ReEnableDisabledProjectile", 3.0f);
         }
 

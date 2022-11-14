@@ -6,15 +6,15 @@ public class EnemyController : MonoBehaviour
 {
     public PlayerData playerData;
 
-    public GameObject rocketLauncher;
-    RocketLauncherController rocketLauncherController;
+    //public GameObject rocketLauncher;
+    [SerializeField] RocketLauncherController rocketLauncherController;
     [HideInInspector] public bool canShoot = false;
 
 
     void Start()
     {
         playerData = new PlayerData();
-        rocketLauncherController = rocketLauncher.GetComponent<RocketLauncherController>();
+        //rocketLauncherController = rocketLauncher.GetComponent<RocketLauncherController>();
     }
 
     void Update()

@@ -43,11 +43,11 @@ public class RocketLauncherController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && canShoot)
-        {
-            FireWeapon();
-            canShoot = false;
-        }
+        //if (Input.GetMouseButtonDown(0) && canShoot)
+        //{
+        //    FireWeapon();
+        //    canShoot = false;
+        //}
     }
 
     public void FireWeapon()

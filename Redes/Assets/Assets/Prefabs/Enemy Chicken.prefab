@@ -604,7 +604,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2571123329732090334
 Transform:
   m_ObjectHideFlags: 0
@@ -693,6 +693,7 @@ MonoBehaviour:
   weaponPosition: {fileID: 2567400715606173918}
   deathPrefab: {fileID: 5136708558052637636, guid: cbd5eb8666c121e4b9a541302cdf0d9e, type: 3}
   rocketLauncher: {fileID: 1779786038251886847, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
+  rocketLauncherController: {fileID: 0}
   animator: {fileID: 2519173214810777580}
   udpManager: {fileID: 0}
   isClient: 1
@@ -804,7 +805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fdcfd861d1f44647ad0ee1765cc8f72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rocketLauncher: {fileID: 1779786038251886847, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
+  rocketLauncherController: {fileID: 2387115954424128638}
   canShoot: 1
 --- !u!1 &2568672165135435150
 GameObject:
@@ -1065,6 +1066,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2571123329732090334}
     m_Modifications:
+    - target: {fileID: 142733432, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
+      propertyPath: instigator
+      value: 
+      objectReference: {fileID: 2568623838012824784}
     - target: {fileID: 1779786038251886847, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
       propertyPath: m_Name
       value: RocketLauncherWeapon
@@ -1120,3 +1125,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3197443257207600212, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
   m_PrefabInstance: {fileID: 2387115954566845446}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2387115954424128638 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 142733432, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
+  m_PrefabInstance: {fileID: 2387115954566845446}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e1351273eb7284daacdcc518b0b441, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
