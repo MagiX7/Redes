@@ -598,7 +598,6 @@ GameObject:
   - component: {fileID: 2567400715466048717}
   - component: {fileID: 166838785797031483}
   - component: {fileID: 2387115955721153074}
-  - component: {fileID: 2387115955385762424}
   m_Layer: 0
   m_Name: Enemy Chicken
   m_TagString: Player
@@ -807,20 +806,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rocketLauncher: {fileID: 1779786038251886847, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
   canShoot: 1
---- !u!114 &2387115955385762424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2568623838012824784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fdcfd861d1f44647ad0ee1765cc8f72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rocketLauncher: {fileID: 0}
-  canShoot: 0
 --- !u!1 &2568672165135435150
 GameObject:
   m_ObjectHideFlags: 0
