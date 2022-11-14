@@ -8,7 +8,7 @@ public class EnemyController : MonoBehaviour
 
     public GameObject rocketLauncher;
     RocketLauncherController rocketLauncherController;
-    [HideInInspector] public bool canShoot = true;
+    [HideInInspector] public bool canShoot = false;
 
 
     void Start()
