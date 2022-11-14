@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
 
     // Weapons
     public GameObject rocketLauncher;
+    RocketLauncherController rocketLauncherController;
+    bool canShoot = true;
 
     // Animations
     public Animator animator;
@@ -22,14 +24,16 @@ public class PlayerMovement : MonoBehaviour
     // Online variables
     public PlayerData playerData;
     [SerializeField] UDPManager udpManager;
-    public bool isClient = false;
+    [HideInInspector] public bool isClient = false;
     float sendDataCounter = 0;
+
 
     // Start is called before the first frame update
     void Start()
     {
         playerData = new PlayerData();
         audioSource = GetComponent<AudioSource>();
+        rocketLauncherController = GetComponent<RocketLauncherController>();
     }
 
     // Update is called once per frame
@@ -55,6 +59,14 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 direction = (hit.point - transform.position);
             transform.rotation = Quaternion.LookRotation(direction);
+        }
+
+        if (Input.GetMouseButtonDown(0) && canShoot)
+        {
+            rocketLauncherController.FireWeapon();
+            canShoot = false;
+            udpManager.SendNewRocketRequest(isClient);
+            Invoke("ReEnableDisabledProjectile", 3.0f);
         }
 
 
@@ -107,5 +119,10 @@ public class PlayerMovement : MonoBehaviour
         //audioSource.Play();
         //Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
         //Destroy(this.gameObject, 1.0f);
+    }
+
+    private void ReEnableDisabledProjectile()
+    {
+        canShoot = true;
     }
 }

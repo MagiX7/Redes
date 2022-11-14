@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System;
 
 public class UDPManager : MonoBehaviour
 {
@@ -14,13 +15,17 @@ public class UDPManager : MonoBehaviour
 
     public void SendPlayerData(PlayerData playerData, bool isClient)
     {
-        if (isClient)
-        {
-            client.SendPlayerData(playerData);
-        }
-        else
-        {
-            server.SendPlayerData(playerData);
-        }
+        byte[] bytes = Serializer.SerializePlayerData(playerData);
+
+        if (isClient) client.Send(bytes);
+        else server.Send(bytes);
+    }
+
+    public void SendNewRocketRequest(bool isClient)
+    {
+        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.SHOOT, isClient);
+
+        if (isClient) client.Send(bytes);
+        else server.Send(bytes);
     }
 }

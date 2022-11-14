@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 public enum MessageType
@@ -8,6 +9,7 @@ public enum MessageType
     NEW_USER,
     CHAT,
     PLAYER_DATA,
+    SHOOT,
 }
 
 public static class Serializer
@@ -69,4 +71,27 @@ public static class Serializer
 
         return playerData;
     }
+
+    public static byte[] SerializeBoolWithHeader(MessageType header, bool value)
+    {
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write((int)header);
+        writer.Write(value);
+        return stream.ToArray();
+    }
+
+    public static byte[] SerializeBool(bool value)
+    {
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write(value);
+        return stream.ToArray();
+    }
+
+    public static bool DeserializeBool(BinaryReader reader, MemoryStream stream)
+    {
+        return reader.ReadBoolean();
+    }
+
 }

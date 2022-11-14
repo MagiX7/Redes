@@ -21,6 +21,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     [SerializeField] GameObject player;
     [SerializeField] GameObject enemy;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,5 +48,4 @@ public class ClientSceneManagerUDP : MonoBehaviour
         player.GetComponent<PlayerMovement>().isClient = true;
         enemy.SetActive(true);
     }
-
 }

@@ -18,8 +18,8 @@ public class ClientUDP : MonoBehaviour
 
     int recv = 0;
     byte[] data;
-    public string clientIp;
-    public string serverIp;
+    [HideInInspector] public string clientIp;
+    [HideInInspector] public string serverIp;
     [HideInInspector] public string userName;
     
     EndPoint remote = null;
@@ -108,6 +108,12 @@ public class ClientUDP : MonoBehaviour
                      enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
                     break;
 
+                case MessageType.SHOOT:
+                {
+                    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
+                    break;
+                }
+
                 default:
                     break;
             }
@@ -124,9 +130,8 @@ public class ClientUDP : MonoBehaviour
         input.text = "";
     }
 
-    public void SendPlayerData(PlayerData playerData)
+    public void Send(byte[] bytes)
     {
-        byte[] bytes = Serializer.SerializePlayerData(playerData);
         clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }
 

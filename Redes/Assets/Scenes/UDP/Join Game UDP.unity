@@ -1547,6 +1547,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fdcfd861d1f44647ad0ee1765cc8f72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rocketLauncher: {fileID: 1779786038251886847, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
+  canShoot: 1
 --- !u!1 &814072177
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,6 +1761,7 @@ MonoBehaviour:
   clientScript: {fileID: 645908010}
   player: {fileID: 905594674}
   enemy: {fileID: 738371659}
+  requestNewRocket: 0
 --- !u!4 &908946558
 Transform:
   m_ObjectHideFlags: 0
@@ -1966,6 +1969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit

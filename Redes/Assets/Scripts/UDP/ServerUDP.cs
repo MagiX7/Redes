@@ -10,6 +10,7 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class ServerUDP : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class ServerUDP : MonoBehaviour
     [SerializeField] Text connectedPeople;
     [SerializeField] Text ipText;
 
-    [SerializeField] EnemyController player;
+    [SerializeField] EnemyController enemy;
     void Start()
     {
         remoters = new List<EndPoint>();
@@ -127,7 +128,13 @@ public class ServerUDP : MonoBehaviour
 
                     case MessageType.PLAYER_DATA:
                     {
-                        player.playerData = Serializer.DeserializePlayerData(reader, stream);
+                        enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
+                        break;
+                    }
+
+                    case MessageType.SHOOT:
+                    {
+                        enemy.canShoot = Serializer.DeserializeBool(reader, stream);
                         break;
                     }
 
@@ -209,12 +216,17 @@ public class ServerUDP : MonoBehaviour
         data = new byte[1024];
     }
 
-    public void SendPlayerData(PlayerData playerData)
+    public void Send(byte[] bytes)
     {
         if (remoters.Count <= 0)
             return;
         
-        byte[] bytes = Serializer.SerializePlayerData(playerData);
+        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
+    }
+
+    public void SendRocket()
+    {
+        byte[] bytes = Serializer.SerializeBool(true);
         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }
 
