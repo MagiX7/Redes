@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Private variables
     AudioSource audioSource;
+    bool died = false;
 
     // Weapons
     public GameObject rocketLauncher;
@@ -28,15 +29,12 @@ public class PlayerMovement : MonoBehaviour
     float sendDataCounter = 0;
 
 
-    // Start is called before the first frame update
     void Start()
     {
         playerData = new PlayerData();
         audioSource = GetComponent<AudioSource>();
-        //rocketLauncherController = rocketLauncher.GetComponent<RocketLauncherController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         float verticalAxis = Input.GetAxis("Vertical");
@@ -73,8 +71,7 @@ public class PlayerMovement : MonoBehaviour
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
-        Debug.Log(playerData.life);
-        if (playerData.life <= 0)
+        if (!died && playerData.life <= 0)
         {
             Die();
         }
@@ -102,6 +99,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Rocket")
+        {
+            playerData.life -= 1;
+        }
+    }
+
     public void SetScore()
     {
         Time.timeScale = 0.2f;
@@ -115,10 +120,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void Die()
     {
+        died = true;
         playerData.life = 0;
         //audioSource.Play();
-        //Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
-        //Destroy(this.gameObject, 1.0f);
+        Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
+        Destroy(this.gameObject, 1.0f);
     }
 
     private void ReEnableDisabledProjectile()

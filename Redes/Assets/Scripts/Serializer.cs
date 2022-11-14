@@ -41,7 +41,7 @@ public static class Serializer
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)MessageType.PLAYER_DATA);
-        writer.Write(playerData.life);
+        //writer.Write(playerData.life);
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.y);
@@ -58,7 +58,7 @@ public static class Serializer
     {
         PlayerData playerData = new PlayerData();
 
-        playerData.life = reader.ReadInt32();
+        //playerData.life = reader.ReadInt32();
         playerData.damage = reader.ReadInt32();
         playerData.position.x = reader.ReadSingle();
         playerData.position.y = reader.ReadSingle();
