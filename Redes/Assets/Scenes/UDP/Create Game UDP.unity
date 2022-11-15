@@ -279,56 +279,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 162767418}
   m_CullTransparentMesh: 1
---- !u!1 &182432257
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 182432259}
-  - component: {fileID: 182432258}
-  m_Layer: 0
-  m_Name: SceneManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &182432258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 182432257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f6a2c65c73e002439e2dbb3217189ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chat: {fileID: 1979357217}
-  chatInput: {fileID: 1369479067}
-  connectButton: {fileID: 0}
-  clientScript: {fileID: 0}
-  player: {fileID: 4189374797123235908}
-  enemy: {fileID: 2387115955121328598}
---- !u!4 &182432259
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 182432257}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.006851, y: 25.112051, z: -22.509348}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &212952213
 GameObject:
   m_ObjectHideFlags: 0
@@ -1970,6 +1920,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2133486109}
   - component: {fileID: 2133486108}
+  - component: {fileID: 2133486110}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -2006,6 +1957,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2133486110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133486107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6a2c65c73e002439e2dbb3217189ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chat: {fileID: 1979357217}
+  chatInput: {fileID: 1369479067}
+  connectButton: {fileID: 0}
+  clientScript: {fileID: 0}
+  player: {fileID: 4189374797123235908}
+  enemy: {fileID: 2387115955121328598}
 --- !u!1 &2141615669
 GameObject:
   m_ObjectHideFlags: 0
@@ -2092,6 +2061,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2387115955721153074, guid: 66664d2b5f5ed97448fb4425357ccefb, type: 3}
+      propertyPath: sceneManager
+      value: 
+      objectReference: {fileID: 2133486110}
     - target: {fileID: 2567400715466048717, guid: 66664d2b5f5ed97448fb4425357ccefb, type: 3}
       propertyPath: cam
       value: 
@@ -2178,6 +2151,10 @@ PrefabInstance:
       propertyPath: udpManager
       value: 
       objectReference: {fileID: 2133486108}
+    - target: {fileID: 4080866164303568178, guid: d0811edf039b34243be6d20e3772e784, type: 3}
+      propertyPath: sceneManager
+      value: 
+      objectReference: {fileID: 2133486110}
     - target: {fileID: 4082107046740313391, guid: d0811edf039b34243be6d20e3772e784, type: 3}
       propertyPath: m_Name
       value: Player Chicken

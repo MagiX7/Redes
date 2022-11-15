@@ -132,10 +132,15 @@ public class PlayerMovement : MonoBehaviour
         died = true;
         life = 0;
         //audioSource.Play();
-        Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
-        Destroy(this.gameObject, 1.0f);
-
+        //GetComponent<Renderer>().enabled = false;
+        Invoke("DisableChicken", 1.0f);
+        //Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
         sceneManager.EndGame();
+    }
+
+    void DisableChicken()
+    {
+        gameObject.SetActive(false);
     }
 
     private void ReEnableDisabledProjectile()

@@ -49,8 +49,9 @@ public class EnemyController : MonoBehaviour
         died = true;
         life = 0;
         //audioSource.Play();
-        Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
-        Destroy(this.gameObject, 1.0f);
+        //GetComponent<Renderer>().enabled = false;
+        Invoke("DisableChicken", 1.0f);
+        //Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
         sceneManager.EndGame();
     }
 
@@ -61,6 +62,11 @@ public class EnemyController : MonoBehaviour
         {
             gotHit = true;
         }
+    }
+
+    void DisableChicken()
+    {
+        gameObject.SetActive(false);
     }
 
     public PlayerData GetPlayerData() { return playerData; }

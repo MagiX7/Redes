@@ -43,13 +43,19 @@ public class ClientSceneManagerUDP : MonoBehaviour
         serverIpInput = GameObject.Find("Server IP Input");
         userNameInput = GameObject.Find("Username Input");
 
-        if (serverIpInput != null)
-            serverIpInputField = serverIpInput.GetComponentInChildren<InputField>();
-        if (userNameInput != null)
-            userNameInputField = userNameInput.GetComponentInChildren<InputField>();
-
         fadeImage = GameObject.Find("Fade").GetComponent<Image>();
-        fadeImage.color = new Color(0, 0, 0, 0);
+        if (serverIpInput != null)
+        {
+            serverIpInputField = serverIpInput.GetComponentInChildren<InputField>();
+            userNameInputField = userNameInput.GetComponentInChildren<InputField>();
+        }
+        else
+        {
+            fadeImage.color = new Color(0, 0, 0, 0);
+        }
+
+        initialPlayerPos = player.transform.position;
+        initialEnemyPos = enemy.transform.position;
     }
 
     void Update()
@@ -74,6 +80,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
             }
             else
             {
+                UpdateScene();
                 fadingInCompleted = false;
                 fadingOut = true;
                 startingNewGame = true;
@@ -106,18 +113,12 @@ public class ClientSceneManagerUDP : MonoBehaviour
     {
         fadingOut = true;
         
-        //chatInput.SetActive(true);
-
         ToggleGameUI(true);
 
-        //chat.SetActive(true);
         clientScript.gameObject.SetActive(true);
         clientScript.serverIp = serverIpInputField.text;
         clientScript.userName = userNameInputField.text;
-        
-        //serverIpInput.SetActive(false);
-        //userNameInput.SetActive(false);
-        //connectButton.SetActive(false);
+
         player.SetActive(true);
         player.GetComponent<PlayerMovement>().isClient = true;
         enemy.SetActive(true);
@@ -127,11 +128,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     {
         gameEnded = true;
         fadingIn = true;
-        ToggleGameUI(false);
-
-        player.transform.position = initialPlayerPos;
-        enemy.transform.position = initialEnemyPos;
-        // TODO: Replace players, load meshes from new lvl etc
+        ToggleGameUI(false);        
     }
 
     void ToggleGameUI(bool value)
@@ -147,6 +144,17 @@ public class ClientSceneManagerUDP : MonoBehaviour
                 connectButton.SetActive(!value);
             }
         }
+    }
+
+    void UpdateScene()
+    {
+        // TODO: Replace players, load meshes from new level etc
+
+        player.SetActive(true);
+        player.transform.position = initialPlayerPos;
+
+        enemy.SetActive(true);
+        enemy.transform.position = initialEnemyPos;
     }
 
 }
