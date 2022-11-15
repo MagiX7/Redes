@@ -62,10 +62,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && canShoot)
         {
-            rocketLauncherController.FireWeapon();
-            udpManager.SendNewRocketRequest(canShoot, isClient);
             canShoot = false;
             Invoke("ReEnableDisabledProjectile", 3.0f);
+            rocketLauncherController.FireWeapon();
+            udpManager.SendNewRocketRequest(true, isClient);
         }
 
 
