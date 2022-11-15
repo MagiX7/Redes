@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ClientSceneManagerUDP : MonoBehaviour
 {
-    [SerializeField] GameObject userInputs;
+    // UI
     [SerializeField] GameObject chat;
     GameObject serverIpInput;
     GameObject userNameInput;
@@ -18,9 +18,24 @@ public class ClientSceneManagerUDP : MonoBehaviour
     InputField serverIpInputField;
     InputField userNameInputField;
 
+    // Players
     [SerializeField] GameObject player;
     [SerializeField] GameObject enemy;
+    Vector3 initialPlayerPos = Vector3.zero;
+    Vector3 initialEnemyPos = Vector3.zero;
 
+
+    // Fade
+    Image fadeImage;
+    bool fadingIn = false;
+    bool fadingInCompleted = false;
+    bool fadingOut = false;
+
+
+    // Utility
+    float blackScreenCounter = 5.0f;
+    bool gameEnded = false;
+    bool startingNewGame = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,24 +43,110 @@ public class ClientSceneManagerUDP : MonoBehaviour
         serverIpInput = GameObject.Find("Server IP Input");
         userNameInput = GameObject.Find("Username Input");
 
-        serverIpInputField = serverIpInput.GetComponentInChildren<InputField>();
-        userNameInputField = userNameInput.GetComponentInChildren<InputField>();
+        if (serverIpInput != null)
+            serverIpInputField = serverIpInput.GetComponentInChildren<InputField>();
+        if (userNameInput != null)
+            userNameInputField = userNameInput.GetComponentInChildren<InputField>();
+
+        fadeImage = GameObject.Find("Fade").GetComponent<Image>();
+        fadeImage.color = new Color(0, 0, 0, 0);
+    }
+
+    void Update()
+    {
+        if (fadingIn)
+        {
+            Color color = fadeImage.color;
+            color.a += Time.deltaTime * 3.0f;
+            fadeImage.color = color;
+
+            if (color.a > 1.01f)
+            {
+                fadingIn = false;
+                fadingInCompleted = true;
+            }
+        }
+        else if (fadingInCompleted)
+        {
+            if (blackScreenCounter > 0.0f)
+            {
+                blackScreenCounter -= Time.deltaTime;
+            }
+            else
+            {
+                fadingInCompleted = false;
+                fadingOut = true;
+                startingNewGame = true;
+            }
+        }
+        else if (fadingOut)
+        {
+            Color color = fadeImage.color;
+            color.a -= Time.fixedDeltaTime * 3.0f;
+            fadeImage.color = color;
+
+            if (color.a < -0.01f)
+            {
+                fadingOut = false;
+                fadingInCompleted = false;
+                fadingIn = false;
+            }
+        }
+
+        if (gameEnded && startingNewGame)
+        {
+            ToggleGameUI(true);
+            startingNewGame = false;
+            gameEnded = false;
+        }
+
     }
 
     public void StartConnection()
     {
-        chatInput.SetActive(true);
+        fadingOut = true;
+        
+        //chatInput.SetActive(true);
 
-        chat.SetActive(true);
+        ToggleGameUI(true);
+
+        //chat.SetActive(true);
         clientScript.gameObject.SetActive(true);
         clientScript.serverIp = serverIpInputField.text;
         clientScript.userName = userNameInputField.text;
         
-        serverIpInput.SetActive(false);
-        userNameInput.SetActive(false);
-        connectButton.SetActive(false);
+        //serverIpInput.SetActive(false);
+        //userNameInput.SetActive(false);
+        //connectButton.SetActive(false);
         player.SetActive(true);
         player.GetComponent<PlayerMovement>().isClient = true;
         enemy.SetActive(true);
     }
+
+    public void EndGame()
+    {
+        gameEnded = true;
+        fadingIn = true;
+        ToggleGameUI(false);
+
+        player.transform.position = initialPlayerPos;
+        enemy.transform.position = initialEnemyPos;
+        // TODO: Replace players, load meshes from new lvl etc
+    }
+
+    void ToggleGameUI(bool value)
+    {
+        chat.SetActive(value);
+        chatInput.SetActive(value);
+        if (!gameEnded)
+        {
+            if (serverIpInput != null)
+            {
+                serverIpInput.SetActive(!value);
+                userNameInput.SetActive(!value);
+                connectButton.SetActive(!value);
+            }
+        }
+    }
+
 }

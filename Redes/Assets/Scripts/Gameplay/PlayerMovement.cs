@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,11 +10,13 @@ public class PlayerMovement : MonoBehaviour
     public Camera cam;
     public GameObject weaponPosition;
     public GameObject deathPrefab;
+    public ClientSceneManagerUDP sceneManager;
 
     // Private variables
     AudioSource audioSource;
     bool died = false;
     bool gotHit = false;
+    int life = 5;
 
     // Weapons
     public GameObject rocketLauncher;
@@ -74,10 +77,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (gotHit)
         {
-            playerData.life -= 1;
+            life -= 1;
             gotHit = false;
         }
-        if (!died && playerData.life <= 0)
+        if (!died && life <= 0)
         {
             Die();
         }
@@ -127,10 +130,12 @@ public class PlayerMovement : MonoBehaviour
     public void Die()
     {
         died = true;
-        playerData.life = 0;
+        life = 0;
         //audioSource.Play();
         Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
         Destroy(this.gameObject, 1.0f);
+
+        sceneManager.EndGame();
     }
 
     private void ReEnableDisabledProjectile()

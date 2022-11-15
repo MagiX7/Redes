@@ -9,9 +9,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] RocketLauncherController rocketLauncherController;
     [HideInInspector] public bool canShoot = false;
 
+    public ClientSceneManagerUDP sceneManager;
+
     public GameObject deathPrefab;
     bool died = false;
     bool gotHit = false;
+    int life = 5;
 
     void Start()
     {
@@ -31,10 +34,10 @@ public class EnemyController : MonoBehaviour
 
         if (gotHit)
         {
-            playerData.life -= 1;
+            life -= 5;
             gotHit = false;
         }
-        if (!died && playerData.life <= 0)
+        if (!died && life <= 0)
         {
             Die();
         }
@@ -44,10 +47,11 @@ public class EnemyController : MonoBehaviour
     public void Die()
     {
         died = true;
-        playerData.life = 0;
+        life = 0;
         //audioSource.Play();
         Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
         Destroy(this.gameObject, 1.0f);
+        sceneManager.EndGame();
     }
 
 
@@ -58,7 +62,6 @@ public class EnemyController : MonoBehaviour
             gotHit = true;
         }
     }
-
 
     public PlayerData GetPlayerData() { return playerData; }
 }
