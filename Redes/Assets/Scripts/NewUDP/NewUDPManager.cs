@@ -29,7 +29,7 @@ public class NewUDPManager : MonoBehaviour
     {
         string player = enemyIp.ToString();
 
-        GameObject enemy = GameObject.Instantiate(enemyPrefab);
+        GameObject enemy = Instantiate(enemyPrefab, new Vector3(0, 0, 0), Quaternion.identity);
         player = player.Substring(0, player.LastIndexOf(":"));
         NewEnemyController aux = enemy.GetComponent<NewEnemyController>();
         aux.ip = player;

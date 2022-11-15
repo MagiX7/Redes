@@ -439,6 +439,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 310421489}
   m_CullTransparentMesh: 1
+--- !u!1 &442244524 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4082107046740313391, guid: d0811edf039b34243be6d20e3772e784, type: 3}
+  m_PrefabInstance: {fileID: 4189374797123235907}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &645908007
 GameObject:
   m_ObjectHideFlags: 0
@@ -1381,10 +1386,10 @@ RectTransform:
   m_Father: {fileID: 2141615670}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 145, y: -12.446809}
-  m_SizeDelta: {x: 270, y: 14.893618}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 270, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1581083291
 MonoBehaviour:
@@ -1910,6 +1915,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2133486109}
   - component: {fileID: 2133486110}
+  - component: {fileID: 2133486111}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -1948,6 +1954,24 @@ MonoBehaviour:
   client: {fileID: 0}
   enemyPrefab: {fileID: 2568623838012824784, guid: 66664d2b5f5ed97448fb4425357ccefb, type: 3}
   enemies: []
+--- !u!114 &2133486111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133486107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6a2c65c73e002439e2dbb3217189ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chat: {fileID: 1979357217}
+  chatInput: {fileID: 1369479067}
+  connectButton: {fileID: 0}
+  clientScript: {fileID: 0}
+  player: {fileID: 442244524}
+  enemy: {fileID: 0}
 --- !u!1 &2141615669
 GameObject:
   m_ObjectHideFlags: 0
@@ -2107,6 +2131,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1424794733}
     - target: {fileID: 6699428821630818336, guid: d0811edf039b34243be6d20e3772e784, type: 3}
+      propertyPath: speed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699428821630818336, guid: d0811edf039b34243be6d20e3772e784, type: 3}
       propertyPath: animator
       value: 
       objectReference: {fileID: 4189374797123235909}
@@ -2126,7 +2154,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6699428821630818336, guid: d0811edf039b34243be6d20e3772e784, type: 3}
   m_PrefabInstance: {fileID: 4189374797123235907}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 442244524}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed0ad7b33a8fa0f448d24ef9c1ba10a6, type: 3}

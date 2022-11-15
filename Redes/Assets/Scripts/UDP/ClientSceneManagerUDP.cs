@@ -55,7 +55,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
         }
 
         initialPlayerPos = player.transform.position;
-        initialEnemyPos = enemy.transform.position;
+        //initialEnemyPos = enemy.transform.position;
     }
 
     void Update()
@@ -121,7 +121,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
         player.SetActive(true);
         player.GetComponent<PlayerMovement>().isClient = true;
-        enemy.SetActive(true);
+        //enemy.SetActive(true);
     }
 
     public void EndGame()
@@ -153,8 +153,8 @@ public class ClientSceneManagerUDP : MonoBehaviour
         player.SetActive(true);
         player.transform.position = initialPlayerPos;
 
-        enemy.SetActive(true);
-        enemy.transform.position = initialEnemyPos;
+        //enemy.SetActive(true);
+        //enemy.transform.position = initialEnemyPos;
     }
 
 }
