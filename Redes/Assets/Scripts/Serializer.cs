@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
 
 public enum MessageType
@@ -10,6 +12,7 @@ public enum MessageType
     CHAT,
     PLAYER_DATA,
     SHOOT,
+    NEW_PLAYER,
 }
 
 public static class Serializer
@@ -41,13 +44,15 @@ public static class Serializer
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)MessageType.PLAYER_DATA);
+        //writer.Write(playerData.life);
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
+        writer.Write(playerData.position.y);
         writer.Write(playerData.position.z);
-        Vector3 rot = playerData.rotation.eulerAngles;
-        writer.Write(rot.x);
-        writer.Write(rot.y);
-        writer.Write(rot.z);
+        writer.Write(playerData.rotation.x);
+        writer.Write(playerData.rotation.y);
+        writer.Write(playerData.rotation.z);
+        writer.Write(playerData.rotation.w);
 
         return stream.GetBuffer();
     }
@@ -56,15 +61,16 @@ public static class Serializer
     {
         PlayerData playerData = new PlayerData();
 
+        //playerData.life = reader.ReadInt32();
         playerData.damage = reader.ReadInt32();
         playerData.position.x = reader.ReadSingle();
+        playerData.position.y = reader.ReadSingle();
         playerData.position.z = reader.ReadSingle();
-        
-        Vector3 euler = new Vector3();
-        euler.x = reader.ReadSingle();
-        euler.y = reader.ReadSingle();
-        euler.z = reader.ReadSingle();
-        playerData.rotation = Quaternion.Euler(euler);
+        playerData.rotation.x = reader.ReadSingle();
+        playerData.rotation.y = reader.ReadSingle();
+        playerData.rotation.z = reader.ReadSingle();
+        playerData.rotation.w = reader.ReadSingle();
+        //Debug.Log("deserialized!");
 
         return playerData;
     }
@@ -91,4 +97,71 @@ public static class Serializer
         return reader.ReadBoolean();
     }
 
+    // NEW ///////////////////////////////////////////////////////////
+
+    public static byte[] SerializePlayerList(List<EndPoint> playerList)
+    {
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write((int)MessageType.NEW_PLAYER);
+        writer.Write(playerList.Count);
+        foreach (EndPoint player in playerList)
+        {
+            writer.Write(player.ToString());
+        }
+
+        return stream.GetBuffer();
+    }
+
+    public static List<string> DeserializePlayerList(BinaryReader reader, MemoryStream stream)
+    {
+        List<string> playerList = new List<string>();
+        string player = "null";
+
+        int count = reader.ReadInt32();
+
+        for (int i = 0; i < count; i++)
+        {
+            player = reader.ReadString();
+            player = player.Substring(0, player.LastIndexOf(":"));
+            playerList.Add(player);
+        }
+
+        return playerList;
+    }
+
+    public static byte[] NewSerializePlayerData(PlayerData playerData, string ip)
+    {
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write((int)MessageType.PLAYER_DATA);
+        writer.Write(ip);
+        writer.Write(playerData.damage);
+        writer.Write(playerData.position.x);
+        writer.Write(playerData.position.y);
+        writer.Write(playerData.position.z);
+        writer.Write(playerData.rotation.x);
+        writer.Write(playerData.rotation.y);
+        writer.Write(playerData.rotation.z);
+        writer.Write(playerData.rotation.w);
+
+        return stream.GetBuffer();
+    }
+
+    public static PlayerData NewDeserializePlayerData(BinaryReader reader, MemoryStream stream, ref string enemyIp)
+    {
+        PlayerData playerData = new PlayerData();
+
+        enemyIp = reader.ReadString();
+        playerData.damage = reader.ReadInt32();
+        playerData.position.x = reader.ReadSingle();
+        playerData.position.y = reader.ReadSingle();
+        playerData.position.z = reader.ReadSingle();
+        playerData.rotation.x = reader.ReadSingle();
+        playerData.rotation.y = reader.ReadSingle();
+        playerData.rotation.z = reader.ReadSingle();
+        playerData.rotation.w = reader.ReadSingle();
+
+        return playerData;
+    }
 }

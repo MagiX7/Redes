@@ -594,10 +594,9 @@ GameObject:
   - component: {fileID: 2571123329732090334}
   - component: {fileID: 2519173214810777580}
   - component: {fileID: 2567400715466048713}
+  - component: {fileID: 9137851492290618638}
   - component: {fileID: 2567400715466048712}
-  - component: {fileID: 2567400715466048717}
   - component: {fileID: 166838785797031483}
-  - component: {fileID: 2387115955721153074}
   m_Layer: 0
   m_Name: Enemy Chicken
   m_TagString: Player
@@ -663,6 +662,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &9137851492290618638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2568623838012824784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b1fb61dc551b90449f3736da28f4419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ip: 
+  udpManager: {fileID: 0}
 --- !u!65 &2567400715466048712
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -676,27 +689,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.54319626, y: 0.50186336, z: 0.5869512}
   m_Center: {x: 0, y: 0.24470213, z: 0}
---- !u!114 &2567400715466048717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2568623838012824784}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60dad964e72a7a648be04c8e3c223b8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 5
-  cam: {fileID: 0}
-  weaponPosition: {fileID: 2567400715606173918}
-  deathPrefab: {fileID: 5136708558052637636, guid: cbd5eb8666c121e4b9a541302cdf0d9e, type: 3}
-  rocketLauncher: {fileID: 1779786038251886847, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
-  rocketLauncherController: {fileID: 0}
-  animator: {fileID: 2519173214810777580}
-  udpManager: {fileID: 0}
-  isClient: 1
 --- !u!82 &166838785797031483
 AudioSource:
   m_ObjectHideFlags: 0
@@ -793,20 +785,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2387115955721153074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2568623838012824784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fdcfd861d1f44647ad0ee1765cc8f72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rocketLauncherController: {fileID: 2387115954424128638}
-  canShoot: 1
 --- !u!1 &2568672165135435150
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,14 +1103,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3197443257207600212, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
   m_PrefabInstance: {fileID: 2387115954566845446}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2387115954424128638 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 142733432, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
-  m_PrefabInstance: {fileID: 2387115954566845446}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24e1351273eb7284daacdcc518b0b441, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

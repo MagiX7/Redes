@@ -525,8 +525,8 @@ GameObject:
   - component: {fileID: 4176804773123603987}
   - component: {fileID: 4080866164303568182}
   - component: {fileID: 4080866164303568183}
-  - component: {fileID: 4080866164303568178}
   - component: {fileID: 1824979859243868100}
+  - component: {fileID: 6699428821630818336}
   m_Layer: 0
   m_Name: Player Chicken
   m_TagString: Player
@@ -605,27 +605,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.54319626, y: 0.50186336, z: 0.5869512}
   m_Center: {x: 0, y: 0.24470213, z: 0}
---- !u!114 &4080866164303568178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4082107046740313391}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60dad964e72a7a648be04c8e3c223b8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 5
-  cam: {fileID: 0}
-  weaponPosition: {fileID: 4080866163637334305}
-  deathPrefab: {fileID: 5136708558052637636, guid: cbd5eb8666c121e4b9a541302cdf0d9e, type: 3}
-  rocketLauncher: {fileID: 1779786038251886847, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
-  rocketLauncherController: {fileID: 4189374799019248070}
-  animator: {fileID: 4176804773123603987}
-  udpManager: {fileID: 0}
-  isClient: 1
 --- !u!82 &1824979859243868100
 AudioSource:
   m_ObjectHideFlags: 0
@@ -722,6 +701,27 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6699428821630818336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4082107046740313391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0ad7b33a8fa0f448d24ef9c1ba10a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1
+  cam: {fileID: 0}
+  weaponPosition: {fileID: 0}
+  deathPrefab: {fileID: 0}
+  rocketLauncher: {fileID: 0}
+  rocketLauncherController: {fileID: 0}
+  animator: {fileID: 0}
+  udpManager: {fileID: 0}
+  isClient: 0
 --- !u!1 &4082112591920774125
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,14 +1110,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3197443257207600212, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
   m_PrefabInstance: {fileID: 4189374799145204158}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4189374799019248070 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 142733432, guid: 9ed86316e6e2fd645880c866dbd794d2, type: 3}
-  m_PrefabInstance: {fileID: 4189374799145204158}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24e1351273eb7284daacdcc518b0b441, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
