@@ -34,7 +34,7 @@ public class EnemyController : MonoBehaviour
 
         if (gotHit)
         {
-            life -= 5;
+            life -= 1;
             gotHit = false;
         }
         if (!died && life <= 0)
