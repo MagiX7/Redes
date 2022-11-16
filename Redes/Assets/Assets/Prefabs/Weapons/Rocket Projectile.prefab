@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac838e2f7830334c964389fb0aab8ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 25
+  speed: 15
   collisionLayerMask:
     serializedVersion: 2
     m_Bits: 1
