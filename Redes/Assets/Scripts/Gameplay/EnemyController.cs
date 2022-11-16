@@ -15,7 +15,7 @@ public class EnemyController : MonoBehaviour
     public GameObject deathPrefab;
     bool died = false;
     bool gotHit = false;
-    int life = 5;
+    [HideInInspector] public int life = 5;
 
     // UI Variables
     [SerializeField] Text playerHPText;

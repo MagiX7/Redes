@@ -152,9 +152,13 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
         player.SetActive(true);
         player.transform.position = initialPlayerPos;
+        player.GetComponent<PlayerMovement>().life = 5;
 
         enemy.SetActive(true);
         enemy.transform.position = initialEnemyPos;
+        enemy.GetComponent<EnemyController>().life = 5;
+
+
     }
 
 }

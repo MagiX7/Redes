@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     AudioSource audioSource;
     bool died = false;
     bool gotHit = false;
-    int life = 5;
+    [HideInInspector] public int life = 5;
 
     // Weapons
     public GameObject rocketLauncher;
