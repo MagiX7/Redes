@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class EnemyController : MonoBehaviour
     bool died = false;
     bool gotHit = false;
     int life = 5;
+
+    // UI Variables
+    [SerializeField] Text playerHPText;
 
     void Start()
     {
@@ -35,6 +39,7 @@ public class EnemyController : MonoBehaviour
         if (gotHit)
         {
             life -= 1;
+            playerHPText.text = life.ToString();
             gotHit = false;
         }
         if (!died && life <= 0)

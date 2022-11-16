@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class PlayerMovement : MonoBehaviour
     public bool isClient = false;
     float sendDataCounter = 0;
 
+    // UI Variables
+    [SerializeField] Text playerHPText;
 
     void Start()
     {
@@ -78,6 +81,7 @@ public class PlayerMovement : MonoBehaviour
         if (gotHit)
         {
             life -= 1;
+            playerHPText.text = life.ToString();
             gotHit = false;
         }
         if (!died && life <= 0)
