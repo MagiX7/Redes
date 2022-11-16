@@ -60,6 +60,11 @@ public class EnemyController : MonoBehaviour
         sceneManager.EndGame();
     }
 
+    public void ResetStats()
+    {
+        life = 5;
+        playerHPText.text = life.ToString();
+    }
 
     private void OnCollisionEnter(Collision collision)
     {

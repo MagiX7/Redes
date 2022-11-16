@@ -142,6 +142,12 @@ public class PlayerMovement : MonoBehaviour
         sceneManager.EndGame();
     }
 
+    public void ResetStats()
+    {
+        life = 5;
+        playerHPText.text = life.ToString();
+    }
+
     void DisableChicken()
     {
         gameObject.SetActive(false);
