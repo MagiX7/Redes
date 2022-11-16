@@ -191,8 +191,8 @@ GameObject:
   m_Component:
   - component: {fileID: 323248439922596483}
   - component: {fileID: 91128310120046435}
-  - component: {fileID: 7870026953430193671}
   - component: {fileID: 6274458244602202516}
+  - component: {fileID: 193554767}
   m_Layer: 0
   m_Name: Rocket Projectile
   m_TagString: Rocket
@@ -232,19 +232,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &7870026953430193671
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4092872357349286730}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6274458244602202516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,6 +253,19 @@ MonoBehaviour:
   inFlightAudioSource: {fileID: 136168842684345051}
   disableOnHit: {fileID: 4361980691020798282}
   instigator: {fileID: 0}
+--- !u!65 &193554767
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4092872357349286730}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.32287586, y: 0.28209025, z: 1.0479994}
+  m_Center: {x: 0, y: -0.008441895, z: -0.006646633}
 --- !u!1001 &4483190134865152260
 PrefabInstance:
   m_ObjectHideFlags: 0
