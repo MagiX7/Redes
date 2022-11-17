@@ -17,12 +17,17 @@ public class EnemyController : MonoBehaviour
     bool gotHit = false;
     [HideInInspector] public int life = 5;
 
+    private float speed = 5.0f;
+
     // UI Variables
     [SerializeField] Text playerHPText;
+
+    Vector3 prevPos;
 
     void Start()
     {
         playerData = new PlayerData();
+        prevPos = playerData.position;
     }
 
     void Update()
@@ -33,7 +38,14 @@ public class EnemyController : MonoBehaviour
             playerData.shooted = false;
         }
 
-        transform.position = playerData.position;
+        //if (transform.position != playerData.position)
+        //{
+        //    transform.position = Vector3.Lerp(prevPos, playerData.position,  Time.deltaTime / 0.2f);
+        //}
+
+        transform.Translate(playerData.movementDirection * speed * Time.deltaTime);
+
+        //transform.position = playerData.position;
         transform.rotation = playerData.rotation;
 
         if (gotHit)

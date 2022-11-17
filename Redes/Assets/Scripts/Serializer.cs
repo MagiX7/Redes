@@ -44,6 +44,8 @@ public static class Serializer
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.z);
+        writer.Write(playerData.movementDirection.x);
+        writer.Write(playerData.movementDirection.y);
         Vector3 rot = playerData.rotation.eulerAngles;
         writer.Write(rot.x);
         writer.Write(rot.y);
@@ -61,7 +63,8 @@ public static class Serializer
         playerData.damage = reader.ReadInt32();
         playerData.position.x = reader.ReadSingle();
         playerData.position.z = reader.ReadSingle();
-        
+        playerData.movementDirection.x = reader.ReadSingle();
+        playerData.movementDirection.y = reader.ReadSingle();
         Vector3 euler = new Vector3();
         euler.x = reader.ReadSingle();
         euler.y = reader.ReadSingle();

@@ -36,6 +36,7 @@ public class ClientUDP : MonoBehaviour
 
     [SerializeField] EnemyController enemy;
 
+    
     void Start()
     {
         clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);

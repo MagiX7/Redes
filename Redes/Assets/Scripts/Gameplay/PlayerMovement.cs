@@ -62,7 +62,8 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 1000))
         {
-            Vector3 direction = (hit.point - transform.position);
+            Vector3 direction = (hit.point - transform.position).normalized;
+            playerData.movementDirection = direction;
             transform.rotation = Quaternion.LookRotation(direction);
         }
 
@@ -91,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.05f)
+        if (sendDataCounter >= 0.2f)
         {
             sendDataCounter = 0.0f;
             udpManager.SendPlayerData(playerData, isClient);
