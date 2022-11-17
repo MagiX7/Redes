@@ -69,9 +69,10 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && canShoot)
         {
             canShoot = false;
+            playerData.shooted = true;
             Invoke("ReEnableDisabledProjectile", 3.0f);
             rocketLauncherController.FireWeapon();
-            udpManager.SendNewRocketRequest(true, isClient);
+            //udpManager.SendNewRocketRequest(true, isClient);
         }
 
 
@@ -94,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
         {
             sendDataCounter = 0.0f;
             udpManager.SendPlayerData(playerData, isClient);
+            playerData.shooted = false;
         }
     }
 

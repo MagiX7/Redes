@@ -8,7 +8,7 @@ public class EnemyController : MonoBehaviour
     [HideInInspector] public PlayerData playerData;
 
     [SerializeField] RocketLauncherController rocketLauncherController;
-    [HideInInspector] public bool canShoot = false;
+    //[HideInInspector] public bool canShoot = false;
 
     public ClientSceneManagerUDP sceneManager;
 
@@ -27,10 +27,10 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        if (canShoot)
+        if (playerData.shooted)
         {
             rocketLauncherController.FireWeapon();
-            canShoot = false;
+            playerData.shooted = false;
         }
 
         transform.position = playerData.position;
@@ -46,7 +46,6 @@ public class EnemyController : MonoBehaviour
         {
             Die();
         }
-
     }
 
     public void Die()

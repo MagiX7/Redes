@@ -49,6 +49,8 @@ public static class Serializer
         writer.Write(rot.y);
         writer.Write(rot.z);
 
+        writer.Write(playerData.shooted);
+
         return stream.GetBuffer();
     }
 
@@ -65,6 +67,8 @@ public static class Serializer
         euler.y = reader.ReadSingle();
         euler.z = reader.ReadSingle();
         playerData.rotation = Quaternion.Euler(euler);
+
+        playerData.shooted = reader.ReadBoolean();
 
         return playerData;
     }

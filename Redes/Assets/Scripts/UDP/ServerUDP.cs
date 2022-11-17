@@ -132,11 +132,11 @@ public class ServerUDP : MonoBehaviour
                         break;
                     }
 
-                    case MessageType.SHOOT:
-                    {
-                        enemy.canShoot = Serializer.DeserializeBool(reader, stream);
-                        break;
-                    }
+                    //case MessageType.SHOOT:
+                    //{
+                    //    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
+                    //    break;
+                    //}
 
                     default: break;
 
