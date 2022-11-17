@@ -24,6 +24,8 @@ public class EnemyController : MonoBehaviour
 
     Vector3 prevPos;
 
+    float correctionTimer = 0.0f;
+
     void Start()
     {
         playerData = new PlayerData();
@@ -38,12 +40,24 @@ public class EnemyController : MonoBehaviour
             playerData.shooted = false;
         }
 
+        correctionTimer += Time.deltaTime;
+        if (correctionTimer >= 0.2f)
+        {
+            transform.position = playerData.position;
+            prevPos = transform.position;
+        }
+        else
+        {
+            transform.position = Vector3.Lerp(prevPos, playerData.position, Time.deltaTime / 0.2f);
+
+        }
+
         //if (transform.position != playerData.position)
         //{
-        //    transform.position = Vector3.Lerp(prevPos, playerData.position,  Time.deltaTime / 0.2f);
+        //    transform.position = Vector3.Lerp(prevPos, playerData.position, Time.deltaTime / 0.2f);
         //}
 
-        transform.Translate(playerData.movementDirection * speed * Time.deltaTime);
+        //transform.Translate(playerData.movementDirection * speed * Time.deltaTime);
 
         //transform.position = playerData.position;
         transform.rotation = playerData.rotation;
