@@ -42,6 +42,8 @@ public class NewServerUDP : MonoBehaviour
     [SerializeField] NewUDPManager udpManager;
     string enemyIp;
     bool newPlayer = false;
+    bool updateEnemy = false;
+    PlayerData dataAux;
 
     // Start is called before the first frame update
     void Start()
@@ -85,6 +87,20 @@ public class NewServerUDP : MonoBehaviour
         {
             OnNewPlayer();
             newPlayer = false;
+        }
+        if(updateEnemy)
+        {
+            if (enemyIp == GetLocalIPAddress())
+            {
+                NewPlayerController aux = player.GetComponent<NewPlayerController>();
+                aux.playerData = dataAux;
+            }
+            else
+            {
+                udpManager.UpdateEnemy(dataAux, enemyIp);
+                SendPlayerData(dataAux);
+            }
+            updateEnemy = false;
         }
     }
 
@@ -166,17 +182,8 @@ public class NewServerUDP : MonoBehaviour
                     break;
 
                 case MessageType.PLAYER_DATA:
-                    PlayerData dataAux = Serializer.NewDeserializePlayerData(reader, stream, ref enemyIp);
-                    if (enemyIp == GetLocalIPAddress())
-                    {
-                        NewPlayerController aux = player.GetComponent<NewPlayerController>();
-                        aux.playerData = dataAux;
-                    }
-                    else
-                    {
-                        udpManager.UpdateEnemy(dataAux, enemyIp);
-                        SendPlayerData(dataAux);
-                    }
+                    dataAux = Serializer.NewDeserializePlayerData(reader, stream, ref enemyIp);
+                    updateEnemy = true;
                     break;
 
                 case MessageType.SHOOT:
@@ -249,7 +256,7 @@ public class NewServerUDP : MonoBehaviour
 
         for (int i = 0; i < remoters.Count; i++)
         {
-            serverSocket.SendTo(bytes, recv, SocketFlags.None, remoters[i]);
+            serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
         }
     }
 
