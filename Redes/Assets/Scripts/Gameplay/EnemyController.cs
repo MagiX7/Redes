@@ -20,7 +20,7 @@ public class EnemyController : MonoBehaviour
     private float speed = 5.0f;
 
     // UI Variables
-    [SerializeField] Text playerHPText;
+    public HealthBar healthBar;
 
     Vector3 prevPos;
 
@@ -30,6 +30,7 @@ public class EnemyController : MonoBehaviour
     {
         playerData = new PlayerData();
         prevPos = playerData.position;
+        healthBar.SetMaxHealth(5);
     }
 
     void Update()
@@ -65,7 +66,7 @@ public class EnemyController : MonoBehaviour
         if (gotHit)
         {
             life -= 1;
-            playerHPText.text = life.ToString();
+            healthBar.SetHealth(life);
             gotHit = false;
         }
         if (!died && life <= 0)
@@ -88,7 +89,7 @@ public class EnemyController : MonoBehaviour
     public void ResetStats()
     {
         life = 5;
-        playerHPText.text = life.ToString();
+        healthBar.SetHealth(life);
     }
 
     private void OnCollisionEnter(Collision collision)

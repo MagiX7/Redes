@@ -34,12 +34,14 @@ public class PlayerMovement : MonoBehaviour
     float sendDataCounter = 0;
 
     // UI Variables
-    [SerializeField] Text playerHPText;
+    public HealthBar healthBar;
 
     void Start()
     {
         playerData = new PlayerData();
         audioSource = GetComponent<AudioSource>();
+
+        healthBar.SetMaxHealth(5);
     }
 
     void Update()
@@ -83,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
         if (gotHit)
         {
             life -= 1;
-            playerHPText.text = life.ToString();
+            healthBar.SetHealth(life);
             gotHit = false;
         }
         if (!died && life <= 0)
@@ -148,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
     public void ResetStats()
     {
         life = 5;
-        playerHPText.text = life.ToString();
+        healthBar.SetHealth(life);
     }
 
     void DisableChicken()
