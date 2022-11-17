@@ -162,9 +162,11 @@ public static class Serializer
         playerData.rotation.z = reader.ReadSingle();
         playerData.rotation.w = reader.ReadSingle();
         int size = reader.ReadInt32();
+        size += 1;
         byte[] bytes = new byte[size];
         bytes = reader.ReadBytes(size);
         enemyIp = ASCIIEncoding.ASCII.GetString(bytes);
+        enemyIp = enemyIp.Substring(1);
 
         return playerData;
     }
