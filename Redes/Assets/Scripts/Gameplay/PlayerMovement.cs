@@ -46,6 +46,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!sceneManager.gameStarted)
+            return;
+
         float verticalAxis = Input.GetAxis("Vertical");
         float horizontalAxis = Input.GetAxis("Horizontal");
         if (verticalAxis != 0.0f || horizontalAxis != 0.0f)

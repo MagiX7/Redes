@@ -36,6 +36,10 @@ public class ClientSceneManagerUDP : MonoBehaviour
     float blackScreenCounter = 5.0f;
     bool gameEnded = false;
     bool startingNewGame = false;
+    public bool gameStarted = false;
+
+    // UI variables
+    [SerializeField] GameObject[] UIToDeactivate;
 
     // Start is called before the first frame update
     void Start()
@@ -109,7 +113,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     }
 
-    public void StartConnection()
+    public void StartClientConnection()
     {
         fadingOut = true;
         
@@ -124,6 +128,16 @@ public class ClientSceneManagerUDP : MonoBehaviour
         enemy.SetActive(true);
     }
 
+    public void StartServerConnection()
+    {
+        fadingOut = true;
+        gameStarted = true;
+        for (int i = 0; i < UIToDeactivate.Length; ++i)
+        {
+            UIToDeactivate[i].gameObject.SetActive(false);
+        }
+    }
+
     public void EndGame()
     {
         gameEnded = true;
@@ -132,7 +146,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     }
 
     void ToggleGameUI(bool value)
-    {
+    { 
         chat.SetActive(value);
         chatInput.SetActive(value);
         if (!gameEnded)
