@@ -13,7 +13,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     [SerializeField] GameObject chatInput;
     [SerializeField] GameObject connectButton;
     
-    [SerializeField] ClientUDP clientScript;
+    [SerializeField] NewClientUDP clientScript;
 
     InputField serverIpInputField;
     InputField userNameInputField;
@@ -120,7 +120,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
         clientScript.userName = userNameInputField.text;
 
         player.SetActive(true);
-        player.GetComponent<PlayerMovement>().isClient = true;
+        player.GetComponent<NewPlayerController>().isClient = true;
         //enemy.SetActive(true);
     }
 

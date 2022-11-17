@@ -135,7 +135,6 @@ public static class Serializer
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)MessageType.PLAYER_DATA);
-        writer.Write(ip);
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.y);
@@ -144,6 +143,8 @@ public static class Serializer
         writer.Write(playerData.rotation.y);
         writer.Write(playerData.rotation.z);
         writer.Write(playerData.rotation.w);
+        writer.Write(ip.Length);
+        writer.Write(ip);
 
         return stream.GetBuffer();
     }
@@ -152,7 +153,6 @@ public static class Serializer
     {
         PlayerData playerData = new PlayerData();
 
-        enemyIp = reader.ReadString();
         playerData.damage = reader.ReadInt32();
         playerData.position.x = reader.ReadSingle();
         playerData.position.y = reader.ReadSingle();
@@ -161,6 +161,10 @@ public static class Serializer
         playerData.rotation.y = reader.ReadSingle();
         playerData.rotation.z = reader.ReadSingle();
         playerData.rotation.w = reader.ReadSingle();
+        int size = reader.ReadInt32();
+        byte[] bytes = new byte[size];
+        bytes = reader.ReadBytes(size);
+        enemyIp = ASCIIEncoding.ASCII.GetString(bytes);
 
         return playerData;
     }

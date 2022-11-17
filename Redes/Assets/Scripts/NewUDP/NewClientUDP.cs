@@ -39,6 +39,8 @@ public class NewClientUDP : MonoBehaviour
     [SerializeField] NewPlayerController player;
     [SerializeField] NewUDPManager udpManager;
     string enemyIp;
+    bool updateEnemy;
+    PlayerData dataAux;
 
     // Start is called before the first frame update
     void Start()
@@ -74,6 +76,17 @@ public class NewClientUDP : MonoBehaviour
     void Update()
     {
         MessagesUpdate();
+        if (updateEnemy)
+        {
+            if (enemyIp == GetLocalIPAddress())
+            {
+                NewPlayerController aux = player.GetComponent<NewPlayerController>();
+                aux.playerData = dataAux;
+            }
+            else
+                udpManager.UpdateEnemy(dataAux, enemyIp);
+            updateEnemy = false;
+        }
     }
 
     void MessagesUpdate()
@@ -122,14 +135,8 @@ public class NewClientUDP : MonoBehaviour
                 data = msg;
                 break;
             case MessageType.PLAYER_DATA:
-                PlayerData dataAux = Serializer.NewDeserializePlayerData(reader, stream, ref enemyIp);
-                if (enemyIp == GetLocalIPAddress())
-                {
-                    NewPlayerController aux = player.GetComponent<NewPlayerController>();
-                    aux.playerData = dataAux;
-                }
-                else
-                    udpManager.UpdateEnemy(dataAux, enemyIp);
+                dataAux = Serializer.NewDeserializePlayerData(reader, stream, ref enemyIp);
+                updateEnemy = true;
                 break;
 
             //case MessageType.SHOOT:
@@ -174,7 +181,9 @@ public class NewClientUDP : MonoBehaviour
 
     public void SendPlayerData(PlayerData data)
     {
+        byte[] bytes = Serializer.NewSerializePlayerData(data, GetLocalIPAddress());
 
+        clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }
 
     string GetLocalIPAddress()
