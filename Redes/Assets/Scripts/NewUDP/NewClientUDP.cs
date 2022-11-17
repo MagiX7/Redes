@@ -138,6 +138,23 @@ public class NewClientUDP : MonoBehaviour
             case MessageType.NEW_PLAYER:
                 listOfPlayers = Serializer.DeserializePlayerList(reader, stream);
                 listOfPlayers.Remove(GetLocalIPAddress());
+                for (int i = 0; i < listOfPlayers.Count; i++)
+                {
+                    string auxIp = listOfPlayers[i];
+                    bool found = false;
+
+                    foreach (var enemy in udpManager.enemies)
+                    {
+                        if (enemy.GetComponent<NewEnemyController>().ip == auxIp)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                        udpManager.NewEnemy(auxIp);
+                }
                 break;
 
             default:

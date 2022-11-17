@@ -41,6 +41,7 @@ public class NewServerUDP : MonoBehaviour
     [SerializeField] NewPlayerController player;
     [SerializeField] NewUDPManager udpManager;
     string enemyIp;
+    bool newPlayer = false;
 
     // Start is called before the first frame update
     void Start()
@@ -79,6 +80,12 @@ public class NewServerUDP : MonoBehaviour
     void Update()
     {
         MessagesUpdate();
+
+        if (newPlayer)
+        {
+            OnNewPlayer();
+            newPlayer = false;
+        }
     }
 
     void MessagesUpdate()
@@ -134,7 +141,7 @@ public class NewServerUDP : MonoBehaviour
                         else
                             text = lastUserName + " Connected!\n";
 
-                        OnNewPlayer();
+                        newPlayer = true;
 
                         bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);

@@ -36,6 +36,15 @@ public class NewUDPManager : MonoBehaviour
         aux.udpManager = this;
         enemies.Add(enemy);
     }
+    public void NewEnemy(string enemyIp)
+    {
+        GameObject enemy = Instantiate(enemyPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        enemyIp = enemyIp.Substring(0, enemyIp.LastIndexOf(":"));
+        NewEnemyController aux = enemy.GetComponent<NewEnemyController>();
+        aux.ip = enemyIp;
+        aux.udpManager = this;
+        enemies.Add(enemy);
+    }
 
     public void UpdateEnemy(PlayerData data, string enemyIp)
     {
