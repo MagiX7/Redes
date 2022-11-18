@@ -706,7 +706,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1520014978}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -850,7 +850,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1520014978}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1010,7 +1010,7 @@ RectTransform:
   - {fileID: 1828251087}
   - {fileID: 1803946599}
   m_Father: {fileID: 1520014978}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -1405,11 +1405,11 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1120486174}
   - {fileID: 1369479068}
   - {fileID: 1979357218}
   - {fileID: 1924563128}
   - {fileID: 1315822218}
-  - {fileID: 1120486174}
   - {fileID: 1061434953}
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -2048,7 +2048,7 @@ RectTransform:
   - {fileID: 212952214}
   - {fileID: 1343537489}
   m_Father: {fileID: 1520014978}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -2195,7 +2195,7 @@ RectTransform:
   - {fileID: 162767419}
   - {fileID: 1948980235}
   m_Father: {fileID: 1520014978}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -2326,6 +2326,7 @@ MonoBehaviour:
   player: {fileID: 4189374797123235908}
   enemy: {fileID: 2387115955121328598}
   gameStarted: 0
+  clientJoined: 0
   UIToDeactivate:
   - {fileID: 1369479067}
   - {fileID: 1979357217}

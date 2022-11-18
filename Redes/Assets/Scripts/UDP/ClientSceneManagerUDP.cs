@@ -56,10 +56,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
             serverIpInputField = serverIpInput.GetComponentInChildren<InputField>();
             userNameInputField = userNameInput.GetComponentInChildren<InputField>();
         }
-        else
-        {
-            fadeImage.color = new Color(0, 0, 0, 0);
-        }
 
         initialPlayerPos = player.transform.position;
         initialEnemyPos = enemy.transform.position;
@@ -75,7 +71,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
         if (gameStarted)
         {
-            ToggleGameUI(false);
             gameStarted = false;
         }
 
