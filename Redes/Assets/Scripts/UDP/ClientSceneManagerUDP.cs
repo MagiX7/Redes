@@ -69,10 +69,10 @@ public class ClientSceneManagerUDP : MonoBehaviour
             clientJoined = false;
         }
 
-        if (gameStarted)
-        {
-            gameStarted = false;
-        }
+        //if (gameStarted)
+        //{
+        //    gameStarted = false;
+        //}
 
         if (fadingIn)
         {
