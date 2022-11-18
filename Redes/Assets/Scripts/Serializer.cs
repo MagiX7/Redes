@@ -10,6 +10,7 @@ public enum MessageType
     CHAT,
     PLAYER_DATA,
     SHOOT,
+    START_GAME,
 }
 
 public static class Serializer

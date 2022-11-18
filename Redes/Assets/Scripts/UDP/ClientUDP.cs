@@ -35,6 +35,7 @@ public class ClientUDP : MonoBehaviour
     [SerializeField] InputField input;
 
     [SerializeField] EnemyController enemy;
+    [SerializeField] ClientSceneManagerUDP sceneManager;
 
     
     void Start()
@@ -52,7 +53,6 @@ public class ClientUDP : MonoBehaviour
 
         receiveMsgsThread = new Thread(RecieveMessages);
         receiveMsgsThread.Start();
-
     }
 
     private void OnDisable()
@@ -107,6 +107,10 @@ public class ClientUDP : MonoBehaviour
                     break;
                 case MessageType.PLAYER_DATA:
                      enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
+                    break;
+
+                case MessageType.START_GAME:
+                    sceneManager.StartClientConnection();
                     break;
 
                 //case MessageType.SHOOT:

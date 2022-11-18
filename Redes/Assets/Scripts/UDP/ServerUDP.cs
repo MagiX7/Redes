@@ -224,11 +224,17 @@ public class ServerUDP : MonoBehaviour
         data = new byte[1024];
     }
 
+    public void SendClientGameStart()
+    {
+        byte[] bytes = Serializer.SerializeString("Game is about to start!");
+        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
+    }
+
     public void Send(byte[] bytes)
     {
         if (remoters.Count <= 0)
             return;
-        
+
         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }
 

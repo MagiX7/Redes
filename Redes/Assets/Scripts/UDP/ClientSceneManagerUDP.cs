@@ -12,7 +12,8 @@ public class ClientSceneManagerUDP : MonoBehaviour
     GameObject userNameInput;
     [SerializeField] GameObject chatInput;
     [SerializeField] GameObject connectButton;
-    
+
+    [SerializeField] ServerUDP serverUDP;
     [SerializeField] ClientUDP clientScript;
 
     InputField serverIpInputField;
@@ -136,6 +137,9 @@ public class ClientSceneManagerUDP : MonoBehaviour
         {
             UIToDeactivate[i].gameObject.SetActive(false);
         }
+
+        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.START_GAME, true);
+        serverUDP.Send(bytes);
     }
 
     public void EndGame()
