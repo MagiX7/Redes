@@ -210,10 +210,10 @@ public class ServerUDP : MonoBehaviour
 
     void OnClientConnected()
     {
-        for (int i = 0; i < UIToDeactivate.Length; ++i)
-        {
-            UIToDeactivate[i].gameObject.SetActive(false);
-        }
+        //for (int i = 0; i < UIToDeactivate.Length; ++i)
+        //{
+        //    UIToDeactivate[i].gameObject.SetActive(false);
+        //}
         chat.text += (lastUserName + " Connected!\n");
         connectedPeople.text += (lastUserName + "\n");
 

@@ -1049,6 +1049,7 @@ MonoBehaviour:
   chat: {fileID: 239256173}
   input: {fileID: 188336782}
   enemy: {fileID: 801625642}
+  sceneManager: {fileID: 908946557}
 --- !u!1 &651124968
 GameObject:
   m_ObjectHideFlags: 0
@@ -1592,9 +1593,12 @@ MonoBehaviour:
   chat: {fileID: 572441365}
   chatInput: {fileID: 188336781}
   connectButton: {fileID: 1281345105}
+  serverUDP: {fileID: 0}
   clientScript: {fileID: 645908010}
   player: {fileID: 896945116}
   enemy: {fileID: 801625643}
+  gameStarted: 0
+  UIToDeactivate: []
 --- !u!4 &908946558
 Transform:
   m_ObjectHideFlags: 0
@@ -1802,6 +1806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -2004,8 +2009,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 908946557}
-        m_TargetAssemblyTypeName: ClientSceneManager, Assembly-CSharp
-        m_MethodName: StartConnection
+        m_TargetAssemblyTypeName: ClientSceneManagerUDP, Assembly-CSharp
+        m_MethodName: StartClientConnection
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

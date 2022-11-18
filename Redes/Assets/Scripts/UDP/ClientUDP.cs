@@ -110,7 +110,7 @@ public class ClientUDP : MonoBehaviour
                     break;
 
                 case MessageType.START_GAME:
-                    sceneManager.StartClientConnection();
+                    sceneManager.StartClient();
                     break;
 
                 //case MessageType.SHOOT:

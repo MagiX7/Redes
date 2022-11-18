@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ClientSceneManagerUDP : MonoBehaviour
@@ -38,6 +39,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     bool gameEnded = false;
     bool startingNewGame = false;
     public bool gameStarted = false;
+    [HideInInspector] public bool clientJoined = false;
 
     // UI variables
     [SerializeField] GameObject[] UIToDeactivate;
@@ -65,6 +67,18 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     void Update()
     {
+        if (clientJoined)
+        {
+            StartClientConnection();
+            clientJoined = false;
+        }
+
+        if (gameStarted)
+        {
+            ToggleGameUI(false);
+            gameStarted = false;
+        }
+
         if (fadingIn)
         {
             Color color = fadeImage.color;
@@ -114,10 +128,16 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     }
 
+    public void StartClient()
+    {
+        clientJoined = true;
+    }
+
     public void StartClientConnection()
     {
         fadingOut = true;
-        
+        gameStarted = true;
+
         ToggleGameUI(true);
 
         clientScript.gameObject.SetActive(true);
@@ -150,7 +170,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     }
 
     void ToggleGameUI(bool value)
-    { 
+    {
         chat.SetActive(value);
         chatInput.SetActive(value);
         if (!gameEnded)

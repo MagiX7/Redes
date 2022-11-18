@@ -781,6 +781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -2320,6 +2321,7 @@ MonoBehaviour:
   chat: {fileID: 1979357217}
   chatInput: {fileID: 1369479067}
   connectButton: {fileID: 0}
+  serverUDP: {fileID: 645908008}
   clientScript: {fileID: 0}
   player: {fileID: 4189374797123235908}
   enemy: {fileID: 2387115955121328598}
