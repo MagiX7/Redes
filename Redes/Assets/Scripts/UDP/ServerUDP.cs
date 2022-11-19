@@ -117,10 +117,16 @@ public class ServerUDP : MonoBehaviour
         {
             // Receive
             byte[] bytes = new byte[1024];
+            if (serverConnectionTCP.GetClientSockets().Count <= 0)
+                continue;
+
             List<Socket> receiveSockets = new List<Socket>(serverConnectionTCP.GetClientSockets());
             List<Socket> writeSockets = new List<Socket>(serverConnectionTCP.GetClientSockets());
-            Socket.Select(receiveSockets, writeSockets, null, 50000);
+            //if (receiveSockets.Count <= 0 && writeSockets.Count <= 0)
+            //    continue;
 
+            Socket.Select(receiveSockets, writeSockets, null, 50000);
+           
             for (int i = 0; i < receiveSockets.Count; ++i)
             {
                 recv = receiveSockets[i].Receive(bytes);

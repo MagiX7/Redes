@@ -13,7 +13,7 @@ public class ClientTCP : MonoBehaviour
     public IPEndPoint ipep;
     bool connected = false;
     bool startListening = false;
-    int port = 3438;
+    int port = 5345;
     Thread connectionThread;
     Thread receiveMessagesThread;
 

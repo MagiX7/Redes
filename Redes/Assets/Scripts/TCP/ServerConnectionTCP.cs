@@ -14,7 +14,7 @@ public class ServerConnectionTCP : MonoBehaviour
     private Socket serverSocket;
     private List<Socket> clientSocket;
     private IPEndPoint ipep;
-    private int port = 3438;
+    private int port = 5345;
     private Thread threadTCPConnection;
     private Thread threadReceiveTCPMessages;
     private bool startListening = false;
@@ -24,7 +24,7 @@ public class ServerConnectionTCP : MonoBehaviour
     public InputField chatServerInput;
     private bool newChatMessage = false;
     bool newPlayer = false;
-    private Text playersConnectedText;
+    public Text playersConnectedText;
     List<string> playerConnectionList;
     public Text playerChatMessagesText;
     List<string> playerChatMessagesList;
@@ -34,7 +34,6 @@ public class ServerConnectionTCP : MonoBehaviour
         clientSocket = new List<Socket>();
         playerConnectionList = new List<string>();
         playerChatMessagesList = new List<string>();
-        playersConnectedText = GameObject.Find("Players").GetComponent<Text>();
 
         serverSocket = new Socket(AddressFamily.InterNetwork,
             SocketType.Stream,
