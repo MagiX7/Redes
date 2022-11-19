@@ -18,6 +18,7 @@ public class ServerUDP : MonoBehaviour
     IPEndPoint ipep;
     int recv = 0;
     byte[] data;
+    byte[] dataToSend;
 
     EndPoint remote = null;
 
@@ -26,6 +27,8 @@ public class ServerUDP : MonoBehaviour
 
     bool newMessage = false;
     bool messageSent = false;
+    bool sendMessage = false;
+    bool sendData = false;
 
     bool clientConnected = false;
     string lastUserName = string.Empty;
@@ -45,6 +48,7 @@ public class ServerUDP : MonoBehaviour
         remoters = new List<EndPoint>();
 
         data = new byte[1024];
+        dataToSend = new byte[1024];
 
         string serverIp = GetLocalIPAddress();
         ipep = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
@@ -74,18 +78,9 @@ public class ServerUDP : MonoBehaviour
 
     void Update()
     {
-        if (!clientConnected && newMessage)
-        {
-            OnChatMessageReceived();
-        }
-        else if (clientConnected)
-        {
-            OnClientConnected();
-        }
-
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            OnMessageSent();
+            sendMessage = true;
         }
         if (messageSent)
         {
@@ -100,6 +95,7 @@ public class ServerUDP : MonoBehaviour
     {
         while (!finished)
         {
+            // Receive
             byte[] bytes = new byte[1024];
             recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
             if (recv > 0)
@@ -110,48 +106,7 @@ public class ServerUDP : MonoBehaviour
                 stream.Seek(0, SeekOrigin.Begin);
 
                 MessageType messageType = (MessageType)reader.ReadInt32();
-                switch (messageType)
-                {
-                    case MessageType.NEW_USER:
-                    {
-                        text = Serializer.DeserializeString(reader, stream);
-                        break;
-                    }
-
-                    case MessageType.CHAT:
-                    {
-                        //text = Encoding.ASCII.GetString(bytes, 0, recv);
-                        text = Serializer.DeserializeString(reader, stream);
-                        newMessage = true;
-                        data = bytes;
-                        break;
-                    }
-
-                    case MessageType.PLAYER_DATA:
-                    {
-                        enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
-                        break;
-                    }
-
-                    //case MessageType.SHOOT:
-                    //{
-                    //    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
-                    //    break;
-                    //}
-
-                    default: break;
-
-                    //default:
-                    //{
-                    //    //text = Encoding.ASCII.GetString(bytes, 0, recv);
-                    //    //newMessage = true;
-                    //    //data = bytes;
-                    //
-                    //    text = Encoding.ASCII.GetString(bytes, 0, recv);
-                    //    text = text[1..];
-                    //    break;
-                    //}
-                }
+                MsgType(bytes, stream, reader, messageType);
 
                 if (!remoters.Contains(remote))
                 {
@@ -172,6 +127,75 @@ public class ServerUDP : MonoBehaviour
                     }
                 }
             }
+
+            // Send
+            if (!clientConnected && newMessage)
+            {
+                OnChatMessageReceived();
+            }
+            else if (clientConnected)
+            {
+                OnClientConnected();
+            }
+
+            if (sendMessage)
+            {
+                OnMessageSent();
+                sendMessage = false;
+            }
+
+            if (sendData)
+            {
+                serverSocket.SendTo(dataToSend, dataToSend.Length, SocketFlags.None, remote);
+                sendData = false;
+                dataToSend = new byte[1024];
+            }
+        }
+    }
+
+    private void MsgType(byte[] bytes, MemoryStream stream, BinaryReader reader, MessageType messageType)
+    {
+        switch (messageType)
+        {
+            case MessageType.NEW_USER:
+                {
+                    text = Serializer.DeserializeString(reader, stream);
+                    break;
+                }
+
+            case MessageType.CHAT:
+                {
+                    //text = Encoding.ASCII.GetString(bytes, 0, recv);
+                    text = Serializer.DeserializeString(reader, stream);
+                    newMessage = true;
+                    data = bytes;
+                    break;
+                }
+
+            case MessageType.PLAYER_DATA:
+                {
+                    enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
+                    break;
+                }
+
+            //case MessageType.SHOOT:
+            //{
+            //    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
+            //    break;
+            //}
+
+            default: break;
+
+                //default:
+                //{
+                //    //text = Encoding.ASCII.GetString(bytes, 0, recv);
+                //    //newMessage = true;
+                //    //data = bytes;
+                //
+                //    text = Encoding.ASCII.GetString(bytes, 0, recv);
+                //    text = text[1..];
+                //    break;
+                //}
         }
     }
 
@@ -217,24 +241,13 @@ public class ServerUDP : MonoBehaviour
         data = new byte[1024];
     }
 
-    public void SendClientGameStart()
-    {
-        byte[] bytes = Serializer.SerializeString("Game is about to start!");
-        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
-    }
-
     public void Send(byte[] bytes)
     {
         if (remoters.Count <= 0)
             return;
 
-        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
-    }
-
-    public void SendRocket()
-    {
-        byte[] bytes = Serializer.SerializeBool(true);
-        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
+        sendData = true;
+        dataToSend = bytes;
     }
 
     string GetLocalIPAddress()

@@ -18,6 +18,7 @@ public class ClientUDP : MonoBehaviour
 
     int recv = 0;
     byte[] data;
+    byte[] dataToSend;
     [HideInInspector] public string clientIp;
     [HideInInspector] public string serverIp;
     [HideInInspector] public string userName;
@@ -28,6 +29,8 @@ public class ClientUDP : MonoBehaviour
 
     bool finished = false;
     bool newMessage = false;
+    bool sendMessage = false;
+    bool sendData = false;
 
     string incomingText;
 
@@ -51,7 +54,7 @@ public class ClientUDP : MonoBehaviour
         clientSocket.SendTo(data, data.Length, SocketFlags.None, remote);
         data = new byte[1024];
 
-        receiveMsgsThread = new Thread(RecieveMessages);
+        receiveMsgsThread = new Thread(RecieveAndSendMessages);
         receiveMsgsThread.Start();
     }
 
@@ -74,14 +77,16 @@ public class ClientUDP : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
+            sendMessage = true;
             OnMessageSent();
         }
     }
 
-    void RecieveMessages()
+    void RecieveAndSendMessages()
     {
         while (!finished)
         {
+            // Receive
             byte[] msg = new byte[1024];
             recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
 
@@ -91,37 +96,58 @@ public class ClientUDP : MonoBehaviour
             stream.Seek(0, SeekOrigin.Begin);
 
             MessageType messageType = (MessageType)reader.ReadInt32();
-            switch (messageType)
+            MsgType(msg, stream, reader, messageType);
+
+            // Send
+            if (sendMessage)
             {
-                case MessageType.NEW_USER:
+                OnMessageSent();
+                sendMessage = false;
+            }
+
+            if (sendData)
+            {
+                clientSocket.SendTo(dataToSend, dataToSend.Length, SocketFlags.None, remote);
+                sendData = false;
+                dataToSend = new byte[1024];
+            }
+        }
+
+       
+    }
+
+    void MsgType(byte[] msg, MemoryStream stream, BinaryReader reader, MessageType messageType)
+    {
+        switch (messageType)
+        {
+            case MessageType.NEW_USER:
                 {
                     // New Player Connected
                     incomingText = Serializer.DeserializeString(reader, stream);
                     break;
                 }
-                case MessageType.CHAT:
-                    //incomingText = Encoding.ASCII.GetString(msg, 0, recv);
-                    incomingText = Serializer.DeserializeString(reader, stream);
-                    newMessage = true;
-                    data = msg;
-                    break;
-                case MessageType.PLAYER_DATA:
-                     enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
-                    break;
+            case MessageType.CHAT:
+                //incomingText = Encoding.ASCII.GetString(msg, 0, recv);
+                incomingText = Serializer.DeserializeString(reader, stream);
+                newMessage = true;
+                data = msg;
+                break;
+            case MessageType.PLAYER_DATA:
+                enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
+                break;
 
-                case MessageType.START_GAME:
-                    sceneManager.StartClient();
-                    break;
+            case MessageType.START_GAME:
+                sceneManager.StartClient();
+                break;
 
-                //case MessageType.SHOOT:
-                //{
-                //    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
-                //    break;
-                //}
+            //case MessageType.SHOOT:
+            //{
+            //    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
+            //    break;
+            //}
 
-                default:
-                    break;
-            }
+            default:
+                break;
         }
     }
 
@@ -137,7 +163,8 @@ public class ClientUDP : MonoBehaviour
 
     public void Send(byte[] bytes)
     {
-        clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
+        sendData = true;
+        dataToSend = bytes;
     }
 
     string GetLocalIPAddress()
