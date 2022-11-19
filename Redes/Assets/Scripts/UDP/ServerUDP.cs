@@ -14,6 +14,9 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class ServerUDP : MonoBehaviour
 {
+    // Server TCP
+    [SerializeField] ServerConnectionTCP serverConnectionTCP;
+
     Socket serverSocket;
     IPEndPoint ipep;
     int recv = 0;
@@ -89,6 +92,23 @@ public class ServerUDP : MonoBehaviour
             data = new byte[1024];
             messageSent = false;
         }
+        // Send
+        if (!clientConnected && newMessage)
+        {
+            OnChatMessageReceived();
+        }
+
+        if (clientConnected)
+        {
+            chat.text += (lastUserName + " Connected!\n");
+            connectedPeople.text += (lastUserName + "\n");
+
+            clientConnected = false;
+            lastUserName = string.Empty;
+
+            newMessage = false;
+            data = new byte[1024];
+        }
     }
 
     void RecieveMessages()
@@ -97,9 +117,14 @@ public class ServerUDP : MonoBehaviour
         {
             // Receive
             byte[] bytes = new byte[1024];
-            recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
-            if (recv > 0)
+            List<Socket> receiveSockets = new List<Socket>(serverConnectionTCP.GetClientSockets());
+            List<Socket> writeSockets = new List<Socket>(serverConnectionTCP.GetClientSockets());
+            Socket.Select(receiveSockets, writeSockets, null, 50000);
+
+            for (int i = 0; i < receiveSockets.Count; ++i)
             {
+                recv = receiveSockets[i].Receive(bytes);
+
                 MemoryStream stream = new MemoryStream(bytes, 0, recv);
                 BinaryReader reader = new BinaryReader(stream);
 
@@ -108,48 +133,60 @@ public class ServerUDP : MonoBehaviour
                 MessageType messageType = (MessageType)reader.ReadInt32();
                 MsgType(bytes, stream, reader, messageType);
 
-                if (!remoters.Contains(remote))
+                // TODO: This was moved to TCP
+                //if (!remoters.Contains(remote))
+                //{
+                //    clientConnected = true;
+                //    lastUserName = text;
+                //    remoters.Add(remote);
+
+                //    for (int j = 0; j < remoters.Count; j++)
+                //    {
+                //        if (remote == remoters[j])
+                //            text = "Welcome to the UDP server";
+                //        else
+                //            text = lastUserName + " Connected!\n";
+
+                //        //bytes = Encoding.ASCII.GetBytes(text);
+                //        bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
+                //        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[j]);
+                //    }
+                //}
+            }
+
+            for (int i = 0; i < writeSockets.Count; ++i)
+            {
+                //serverSocket.SendTo(data, recv, SocketFlags.None, writeSockets[i].LocalEndPoint);
+               
+                Debug.Log("ONMESSAGESENTT");
+                Debug.Log(sendMessage + "BOLEANA");
+                if (sendMessage)
                 {
-                    clientConnected = true;
-                    lastUserName = text;
-                    remoters.Add(remote);
+                    OnMessageSent();
+                    sendMessage = false;
+                }
 
-                    for (int i = 0; i < remoters.Count; i++)
-                    {
-                        if (remote == remoters[i])
-                            text = "Welcome to the UDP server";
-                        else
-                            text = lastUserName + " Connected!\n";
-
-                        //bytes = Encoding.ASCII.GetBytes(text);
-                        bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
-                        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
-                    }
+                if (sendData)
+                {
+                    serverSocket.SendTo(dataToSend, dataToSend.Length, SocketFlags.None, writeSockets[i].LocalEndPoint);
+                    sendData = false;
+                    dataToSend = new byte[1024];
                 }
             }
 
-            // Send
+            recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
+           
+
             if (!clientConnected && newMessage)
             {
-                OnChatMessageReceived();
+                for (int i = 0; i < remoters.Count; i++)
+                    serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
             }
-            else if (clientConnected)
-            {
-                OnClientConnected();
-            }
-
-            if (sendMessage)
-            {
-                OnMessageSent();
-                sendMessage = false;
-            }
-
-            if (sendData)
-            {
-                serverSocket.SendTo(dataToSend, dataToSend.Length, SocketFlags.None, remote);
-                sendData = false;
-                dataToSend = new byte[1024];
-            }
+            //else if (clientConnected)
+            //{
+            //    OnClientConnected();
+            //}
+            
         }
     }
 
@@ -204,9 +241,6 @@ public class ServerUDP : MonoBehaviour
         //data = Encoding.ASCII.GetBytes(text);
         data = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
         recv = data.Length;
-
-        for (int i = 0; i < remoters.Count; i++)
-            serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
 
         chat.text += (text + "\n");
 

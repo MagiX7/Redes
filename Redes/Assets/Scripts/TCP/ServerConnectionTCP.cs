@@ -51,71 +51,6 @@ public class ServerConnectionTCP : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Return))
-        {
-            // Prepare the messages to send to the clients
-            string messageToClient = "[Server]: " + chatServerInput.text + "\n";
-            playerChatMessagesList.Add(messageToClient);
-            playerChatMessagesText.text += messageToClient;
-            chatServerInput.text = "";
-
-            // Message limit behaviour
-            if (playerChatMessagesList.Count > 5)
-            {
-                playerChatMessagesList.RemoveAt(0);
-                playerChatMessagesText.text = "";
-                for (int i = 0; i < playerChatMessagesList.Count; ++i)
-                {
-                    playerChatMessagesText.text += playerChatMessagesList[i];
-                }
-            }
-
-            byte[] buffer = new byte[messageToClient.Length];
-            buffer = Encoding.ASCII.GetBytes(messageToClient);
-            for (int i = 0; i < clientSocket.Count; ++i)
-            {
-                clientSocket[i].Send(buffer);
-            }
-        }
-
-        if (newPlayer)
-        {
-            // Message limit behaviour
-            if (playerChatMessagesList.Count > 5)
-            {
-                playerChatMessagesList.RemoveAt(0);
-                playerChatMessagesText.text = "";
-                for (int j = 0; j < playerChatMessagesList.Count; ++j)
-                {
-                    playerChatMessagesText.text += playerChatMessagesList[j];
-                }
-            }
-       
-            playerChatMessagesText.text += playerConnectionList[playerConnectionList.Count - 1] + " connected!\n";
-
-            playersConnectedText.text += playerConnectionList[playerConnectionList.Count - 1] + "\n";
-            newPlayer = false;
-        }
-
-        if (newChatMessage)
-        {
-            // Message limit behaviour
-            if (playerChatMessagesList.Count > 5)
-            {
-                playerChatMessagesList.RemoveAt(0);
-                playerChatMessagesText.text = "";
-                for (int j = 0; j < playerChatMessagesList.Count; ++j)
-                {
-                    playerChatMessagesText.text += playerChatMessagesList[j];
-                }
-            }
-            else
-            {
-                playerChatMessagesText.text += playerChatMessagesList[playerChatMessagesList.Count-1];
-            }
-            newChatMessage = false;
-        }
-
         if (clientSocket.Count > 0 && !startListening)
         {
             if (!threadReceiveTCPMessages.IsAlive)
@@ -211,5 +146,10 @@ public class ServerConnectionTCP : MonoBehaviour
             }
         }
         return "Null";
+    }
+
+    public List<Socket> GetClientSockets()
+    {
+        return clientSocket;
     }
 }
