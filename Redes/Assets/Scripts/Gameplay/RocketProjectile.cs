@@ -27,7 +27,7 @@ public class RocketProjectile : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject, 9.0f);
+        //Destroy(this.gameObject, 9.0f);
     }
     private void Update()
     {
