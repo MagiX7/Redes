@@ -65,6 +65,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
         if (clientJoined)
         {
             StartClientConnection();
+            HideUIChat(false);
             clientJoined = false;
         }
 
@@ -111,6 +112,15 @@ public class ClientSceneManagerUDP : MonoBehaviour
         if (gameEnded && startingNewGame)
         {
             ToggleGameUI(true);
+            
+            if (serverUDP != null)
+            {
+                for (int i = 0; i < UIToDeactivate.Length; ++i)
+                {
+                    UIToDeactivate[i].gameObject.SetActive(true);
+                }
+            }
+            gameStarted = false;
             startingNewGame = false;
             gameEnded = false;
         }
@@ -120,12 +130,12 @@ public class ClientSceneManagerUDP : MonoBehaviour
     public void StartClient()
     {
         clientJoined = true;
+        gameStarted = true;
     }
 
     public void StartClientConnection()
     {
         fadingOut = true;
-        gameStarted = true;
 
         ToggleGameUI(true);
 
@@ -136,6 +146,12 @@ public class ClientSceneManagerUDP : MonoBehaviour
         player.SetActive(true);
         player.GetComponent<PlayerMovement>().isClient = true;
         enemy.SetActive(true);
+    }
+
+    void HideUIChat(bool value)
+    {
+        chat.SetActive(value);
+        chatInput.SetActive(value);
     }
 
     public void StartServerConnection()

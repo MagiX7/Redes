@@ -25,6 +25,10 @@ public class RocketProjectile : MonoBehaviour
 
     public GameObject instigator;
 
+    private void Start()
+    {
+        Destroy(gameObject, 9.0f);
+    }
     private void Update()
     {
         // --- Check to see if the target has been hit. We don't want to update the position if the target was hit ---
