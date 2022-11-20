@@ -100,7 +100,6 @@ public class ClientUDP : MonoBehaviour
                     break;
                 }
                 case MessageType.CHAT:
-                    //incomingText = Encoding.ASCII.GetString(msg, 0, recv);
                     incomingText = Serializer.DeserializeString(reader, stream);
                     newMessage = true;
                     data = msg;
@@ -113,12 +112,6 @@ public class ClientUDP : MonoBehaviour
                     sceneManager.StartClient();
                     break;
 
-                //case MessageType.SHOOT:
-                //{
-                //    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
-                //    break;
-                //}
-
                 default:
                     break;
             }
@@ -128,7 +121,6 @@ public class ClientUDP : MonoBehaviour
     void OnMessageSent()
     {
         string msg = "[" + userName + "]" + ": " + input.text;
-        //data = Encoding.ASCII.GetBytes(msg);
         data = Serializer.SerializeStringWithHeader(MessageType.CHAT, msg);
         recv = data.Length;
         clientSocket.SendTo(data, recv, SocketFlags.None, remote);

@@ -44,7 +44,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
     // UI variables
     [SerializeField] GameObject[] UIToDeactivate;
 
-    // Start is called before the first frame update
     void Start()
     {
         serverIpInput = GameObject.Find("Server IP Input");
@@ -68,11 +67,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
             StartClientConnection();
             clientJoined = false;
         }
-
-        //if (gameStarted)
-        //{
-        //    gameStarted = false;
-        //}
 
         if (fadingIn)
         {

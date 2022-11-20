@@ -120,7 +120,6 @@ public class ServerUDP : MonoBehaviour
 
                     case MessageType.CHAT:
                     {
-                        //text = Encoding.ASCII.GetString(bytes, 0, recv);
                         text = Serializer.DeserializeString(reader, stream);
                         newMessage = true;
                         data = bytes;
@@ -133,24 +132,8 @@ public class ServerUDP : MonoBehaviour
                         break;
                     }
 
-                    //case MessageType.SHOOT:
-                    //{
-                    //    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
-                    //    break;
-                    //}
-
-                    default: break;
-
-                    //default:
-                    //{
-                    //    //text = Encoding.ASCII.GetString(bytes, 0, recv);
-                    //    //newMessage = true;
-                    //    //data = bytes;
-                    //
-                    //    text = Encoding.ASCII.GetString(bytes, 0, recv);
-                    //    text = text[1..];
-                    //    break;
-                    //}
+                    default: 
+                        break;
                 }
 
                 if (!remoters.Contains(remote))
@@ -177,7 +160,6 @@ public class ServerUDP : MonoBehaviour
 
     void OnChatMessageReceived()
     {
-        //data = Encoding.ASCII.GetBytes(text);
         data = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
         recv = data.Length;
 
@@ -194,7 +176,6 @@ public class ServerUDP : MonoBehaviour
     {
         string msg = "[Server]: " + input.text;
         data = Serializer.SerializeStringWithHeader(MessageType.CHAT, msg);
-        //data = Encoding.ASCII.GetBytes("[Server]: " + input.text);
         recv = data.Length;
         for (int i = 0; i < remoters.Count; i++)
         {

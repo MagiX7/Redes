@@ -78,7 +78,6 @@ public class PlayerMovement : MonoBehaviour
             playerData.shooted = true;
             Invoke("ReEnableDisabledProjectile", 3.0f);
             rocketLauncherController.FireWeapon();
-            //udpManager.SendNewRocketRequest(true, isClient);
         }
 
 
@@ -96,8 +95,9 @@ public class PlayerMovement : MonoBehaviour
             Die();
         }
 
+        // This code is to test lag mitigation techniques
         sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.2f)
+        if (sendDataCounter >= 0.0f)
         {
             sendDataCounter = 0.0f;
             udpManager.SendPlayerData(playerData, isClient);
@@ -143,10 +143,7 @@ public class PlayerMovement : MonoBehaviour
     {
         died = true;
         life = 0;
-        //audioSource.Play();
-        //GetComponent<Renderer>().enabled = false;
         Invoke("DisableChicken", 1.0f);
-        //Instantiate(deathPrefab, this.transform.position, Quaternion.identity);
         sceneManager.EndGame();
     }
 
