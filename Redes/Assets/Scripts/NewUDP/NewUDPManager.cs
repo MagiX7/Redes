@@ -30,7 +30,7 @@ public class NewUDPManager : MonoBehaviour
         string player = enemyIp.ToString();
 
         GameObject enemy = Instantiate(enemyPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        player = player.Substring(0, player.LastIndexOf(":"));
+        player = player.Substring(0, player.LastIndexOf(":") - 1);
         NewEnemyController aux = enemy.GetComponent<NewEnemyController>();
         aux.ip = player;
         aux.udpManager = this;
@@ -39,7 +39,7 @@ public class NewUDPManager : MonoBehaviour
     public void NewEnemy(string enemyIp)
     {
         GameObject enemy = Instantiate(enemyPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        enemyIp = enemyIp.Substring(0, enemyIp.LastIndexOf(":"));
+        enemyIp = enemyIp.Substring(0, enemyIp.LastIndexOf(":") - 1);
         NewEnemyController aux = enemy.GetComponent<NewEnemyController>();
         aux.ip = enemyIp;
         aux.udpManager = this;
