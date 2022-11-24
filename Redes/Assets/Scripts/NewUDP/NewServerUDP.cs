@@ -240,7 +240,9 @@ public class NewServerUDP : MonoBehaviour
     void OnNewPlayer()
     {
         byte[] bytes = new byte[1024];
+        remoters.Add(ipep);
         bytes = Serializer.SerializePlayerList(remoters);
+        remoters.Remove(ipep);
 
         for (int i = 0; i < remoters.Count; i++)
         {
