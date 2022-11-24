@@ -28,6 +28,7 @@ public class NewClientUDP : MonoBehaviour
 
     bool finished = false;
     bool newMessage = false;
+    bool newPlayer = false;
 
     string incomingText;
 
@@ -76,6 +77,7 @@ public class NewClientUDP : MonoBehaviour
     void Update()
     {
         MessagesUpdate();
+
         if (updateEnemy)
         {
             if (enemyIp == GetLocalIPAddress())
@@ -86,6 +88,12 @@ public class NewClientUDP : MonoBehaviour
             else
                 udpManager.UpdateEnemy(dataAux, enemyIp);
             updateEnemy = false;
+        }
+
+        if (newPlayer)
+        {
+            OnNewPlayer();
+            newPlayer = false;
         }
     }
 
@@ -145,27 +153,32 @@ public class NewClientUDP : MonoBehaviour
             case MessageType.NEW_PLAYER:
                 listOfPlayers = Serializer.DeserializePlayerList(reader, stream);
                 listOfPlayers.Remove(GetLocalIPAddress());
-                for (int i = 0; i < listOfPlayers.Count; i++)
-                {
-                    string auxIp = listOfPlayers[i];
-                    bool found = false;
-
-                    foreach (var enemy in udpManager.enemies)
-                    {
-                        if (enemy.GetComponent<NewEnemyController>().ip == auxIp)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found)
-                        udpManager.NewEnemy(auxIp);
-                }
+                newPlayer = true;
                 break;
 
             default:
                 break;
+        }
+    }
+
+    private void OnNewPlayer()
+    {
+        for (int i = 0; i < listOfPlayers.Count; i++)
+        {
+            string auxIp = listOfPlayers[i];
+            bool found = false;
+
+            foreach (var enemy in udpManager.enemies)
+            {
+                if (enemy.GetComponent<NewEnemyController>().ip == auxIp)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                udpManager.NewEnemy(auxIp);
         }
     }
 
