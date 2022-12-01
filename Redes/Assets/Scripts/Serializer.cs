@@ -99,36 +99,36 @@ public static class Serializer
 
     // NEW ///////////////////////////////////////////////////////////
 
-    public static byte[] SerializePlayerList(List<EndPoint> playerList)
-    {
-        MemoryStream stream = new MemoryStream();
-        BinaryWriter writer = new BinaryWriter(stream);
-        writer.Write((int)MessageType.NEW_PLAYER);
-        writer.Write(playerList.Count);
-        foreach (EndPoint player in playerList)
-        {
-            writer.Write(player.ToString());
-        }
+    //public static byte[] SerializePlayerList(List<EndPoint> playerList)
+    //{
+    //    MemoryStream stream = new MemoryStream();
+    //    BinaryWriter writer = new BinaryWriter(stream);
+    //    writer.Write((int)MessageType.NEW_PLAYER);
+    //    writer.Write(playerList.Count);
+    //    foreach (EndPoint player in playerList)
+    //    {
+    //        writer.Write(player.ToString());
+    //    }
 
-        return stream.GetBuffer();
-    }
+    //    return stream.GetBuffer();
+    //}
 
-    public static List<string> DeserializePlayerList(BinaryReader reader, MemoryStream stream)
-    {
-        List<string> playerList = new List<string>();
-        string player = "null";
+    //public static List<string> DeserializePlayerList(BinaryReader reader, MemoryStream stream)
+    //{
+    //    List<string> playerList = new List<string>();
+    //    string player = "null";
 
-        int count = reader.ReadInt32();
+    //    int count = reader.ReadInt32();
 
-        for (int i = 0; i < count; i++)
-        {
-            player = reader.ReadString();
-            player = player.Substring(0, player.LastIndexOf(":"));
-            playerList.Add(player);
-        }
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        player = reader.ReadString();
+    //        player = player.Substring(0, player.LastIndexOf(":"));
+    //        playerList.Add(player);
+    //    }
 
-        return playerList;
-    }
+    //    return playerList;
+    //}
 
     public static byte[] NewSerializePlayerData(PlayerData playerData, string ip)
     {

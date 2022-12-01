@@ -91,10 +91,7 @@ public class NewServerUDP : MonoBehaviour
         if(updateEnemy)
         {
             if (enemyIp == GetLocalIPAddress())
-            {
-                NewPlayerController aux = player.GetComponent<NewPlayerController>();
-                aux.playerData = dataAux;
-            }
+                player.GetComponent<NewPlayerController>().playerData = dataAux;
             else
             {
                 udpManager.UpdateEnemy(dataAux, enemyIp);
@@ -240,9 +237,7 @@ public class NewServerUDP : MonoBehaviour
     void OnNewPlayer()
     {
         byte[] bytes = new byte[1024];
-        remoters.Add(ipep);
-        bytes = Serializer.SerializePlayerList(remoters);
-        remoters.Remove(ipep);
+        bytes = Serializer.SerializeStringWithHeader(MessageType.NEW_PLAYER, remote.ToString());
 
         for (int i = 0; i < remoters.Count; i++)
         {
@@ -254,7 +249,7 @@ public class NewServerUDP : MonoBehaviour
 
     public void SendPlayerData(PlayerData data)
     {
-        byte[] bytes = Serializer.NewSerializePlayerData(data, GetLocalIPAddress());
+        byte[] bytes = Serializer.NewSerializePlayerData(data, enemyIp);
 
         for (int i = 0; i < remoters.Count; i++)
         {

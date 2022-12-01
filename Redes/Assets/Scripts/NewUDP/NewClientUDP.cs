@@ -39,6 +39,7 @@ public class NewClientUDP : MonoBehaviour
 
     [SerializeField] NewPlayerController player;
     [SerializeField] NewUDPManager udpManager;
+    string newEnemyIp;
     string enemyIp;
     bool updateEnemy;
     PlayerData dataAux;
@@ -81,10 +82,7 @@ public class NewClientUDP : MonoBehaviour
         if (updateEnemy)
         {
             if (enemyIp == GetLocalIPAddress())
-            {
-                NewPlayerController aux = player.GetComponent<NewPlayerController>();
-                aux.playerData = dataAux;
-            }
+                player.GetComponent<NewPlayerController>().playerData = dataAux;
             else
                 udpManager.UpdateEnemy(dataAux, enemyIp);
             updateEnemy = false;
@@ -92,6 +90,7 @@ public class NewClientUDP : MonoBehaviour
 
         if (newPlayer)
         {
+            listOfPlayers.Add(newEnemyIp);
             OnNewPlayer();
             newPlayer = false;
         }
@@ -151,9 +150,9 @@ public class NewClientUDP : MonoBehaviour
             //    enemy.canShoot = Serializer.DeserializeBool(reader, stream);
             //    break;
             case MessageType.NEW_PLAYER:
-                listOfPlayers = Serializer.DeserializePlayerList(reader, stream);
-                listOfPlayers.Remove(GetLocalIPAddress());
-                newPlayer = true;
+                newEnemyIp = Serializer.DeserializeString(reader, stream);
+                if (newEnemyIp != GetLocalIPAddress())
+                    newPlayer = true;
                 break;
 
             default:
