@@ -137,12 +137,16 @@ public static class Serializer
         writer.Write((int)MessageType.PLAYER_DATA);
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
-        writer.Write(playerData.position.y);
+        //writer.Write(playerData.position.y);
         writer.Write(playerData.position.z);
-        writer.Write(playerData.rotation.x);
-        writer.Write(playerData.rotation.y);
-        writer.Write(playerData.rotation.z);
-        writer.Write(playerData.rotation.w);
+        //writer.Write(playerData.rotation.x);
+        //writer.Write(playerData.rotation.y);
+        //writer.Write(playerData.rotation.z);
+        //writer.Write(playerData.rotation.w);
+        Vector3 rot = playerData.rotation.eulerAngles;
+        writer.Write(rot.x);
+        writer.Write(rot.y);
+        writer.Write(rot.z);
         writer.Write(ip.Length);
         writer.Write(ip);
 
@@ -155,12 +159,19 @@ public static class Serializer
 
         playerData.damage = reader.ReadInt32();
         playerData.position.x = reader.ReadSingle();
-        playerData.position.y = reader.ReadSingle();
+        //playerData.position.y = reader.ReadSingle();
         playerData.position.z = reader.ReadSingle();
-        playerData.rotation.x = reader.ReadSingle();
-        playerData.rotation.y = reader.ReadSingle();
-        playerData.rotation.z = reader.ReadSingle();
-        playerData.rotation.w = reader.ReadSingle();
+
+        Vector3 rot = new Vector3();
+        rot.x = reader.ReadSingle();
+        rot.y = reader.ReadSingle();
+        rot.z = reader.ReadSingle();
+        playerData.rotation = Quaternion.Euler(rot);
+
+        //playerData.rotation.x = reader.ReadSingle();
+        //playerData.rotation.y = reader.ReadSingle();
+        //playerData.rotation.z = reader.ReadSingle();
+        //playerData.rotation.w = reader.ReadSingle();
         int size = reader.ReadInt32();
         size += 1;
         byte[] bytes = new byte[size];

@@ -249,7 +249,7 @@ public class NewServerUDP : MonoBehaviour
 
     public void SendPlayerData(PlayerData data)
     {
-        byte[] bytes = Serializer.NewSerializePlayerData(data, enemyIp);
+        byte[] bytes = Serializer.NewSerializePlayerData(data, GetLocalIPAddress());
 
         for (int i = 0; i < remoters.Count; i++)
         {
