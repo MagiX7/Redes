@@ -23,6 +23,7 @@ public class ClientUDP : MonoBehaviour
     [HideInInspector] public string userName;
     
     EndPoint remote = null;
+    int netId = -1;
 
     Thread receiveMsgsThread;
 
@@ -47,7 +48,7 @@ public class ClientUDP : MonoBehaviour
         remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
         data = new byte[1024];
-        data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, userName);
+        data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, netId, userName);
         clientSocket.SendTo(data, data.Length, SocketFlags.None, remote);
         data = new byte[1024];
 
@@ -121,7 +122,7 @@ public class ClientUDP : MonoBehaviour
     void OnMessageSent()
     {
         string msg = "[" + userName + "]" + ": " + input.text;
-        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, msg);
+        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, msg);
         recv = data.Length;
         clientSocket.SendTo(data, recv, SocketFlags.None, remote);
         input.text = "";
@@ -131,6 +132,13 @@ public class ClientUDP : MonoBehaviour
     {
         clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }
+
+    public void SetNetId(int value)
+    {
+        netId = value;
+    }
+
+    public int GetNetId() { return netId; }
 
     string GetLocalIPAddress()
     {

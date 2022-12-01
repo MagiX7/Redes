@@ -23,11 +23,12 @@ public static class Serializer
         return stream.ToArray();
     }
 
-    public static byte[] SerializeStringWithHeader(MessageType header, string value)
+    public static byte[] SerializeStringWithHeader(MessageType header, int netId, string value)
     {
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)header);
+        writer.Write(netId);
         writer.Write(value);
         return stream.ToArray();
     }
@@ -37,11 +38,12 @@ public static class Serializer
         return reader.ReadString();
     }
 
-    public static byte[] SerializePlayerData(PlayerData playerData)
+    public static byte[] SerializePlayerData(PlayerData playerData, int netId)
     {
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)MessageType.PLAYER_DATA);
+        writer.Write(netId);
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.z);

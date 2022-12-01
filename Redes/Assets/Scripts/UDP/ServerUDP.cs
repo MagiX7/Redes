@@ -31,6 +31,8 @@ public class ServerUDP : MonoBehaviour
 
     string text;
     List<EndPoint> remoters;
+    int clientsNetId = 1;
+    int netId = 0;
 
     [SerializeField] Text chat;
     [SerializeField] InputField input;
@@ -38,6 +40,8 @@ public class ServerUDP : MonoBehaviour
     [SerializeField] Text ipText;
 
     [SerializeField] EnemyController enemy;
+
+    ConnectionsManager connectionsManager;
 
     void Start()
     {
@@ -58,6 +62,9 @@ public class ServerUDP : MonoBehaviour
         connectedPeople.text += ("You (Server)\n");
         chat.text += "Server created successfully!\n";
         ipText.text += serverIp;
+
+
+        connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
     }
     
     private void OnDisable()
@@ -103,37 +110,7 @@ public class ServerUDP : MonoBehaviour
             recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
             if (recv > 0)
             {
-                MemoryStream stream = new MemoryStream(bytes, 0, recv);
-                BinaryReader reader = new BinaryReader(stream);
-
-                stream.Seek(0, SeekOrigin.Begin);
-
-                MessageType messageType = (MessageType)reader.ReadInt32();
-                switch (messageType)
-                {
-                    case MessageType.NEW_USER:
-                    {
-                        text = Serializer.DeserializeString(reader, stream);
-                        break;
-                    }
-
-                    case MessageType.CHAT:
-                    {
-                        text = Serializer.DeserializeString(reader, stream);
-                        newMessage = true;
-                        data = bytes;
-                        break;
-                    }
-
-                    case MessageType.PLAYER_DATA:
-                    {
-                        enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
-                        break;
-                    }
-
-                    default: 
-                        break;
-                }
+                connectionsManager.OnMessageReceived(bytes);
 
                 if (!remoters.Contains(remote))
                 {
@@ -146,10 +123,13 @@ public class ServerUDP : MonoBehaviour
                         if (remote == remoters[i])
                             text = "Welcome to the UDP server";
                         else
+                        {
+                            connectionsManager.OnNewClient(clientsNetId++);
                             text = lastUserName + " Connected!\n";
+                        }
 
                         //bytes = Encoding.ASCII.GetBytes(text);
-                        bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
+                        bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
                     }
                 }
@@ -159,7 +139,7 @@ public class ServerUDP : MonoBehaviour
 
     void OnChatMessageReceived()
     {
-        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, text);
+        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
         recv = data.Length;
 
         for (int i = 0; i < remoters.Count; i++)
@@ -174,7 +154,7 @@ public class ServerUDP : MonoBehaviour
     void OnMessageSent()
     {
         string msg = "[Server]: " + input.text;
-        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, msg);
+        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, msg);
         recv = data.Length;
         for (int i = 0; i < remoters.Count; i++)
         {

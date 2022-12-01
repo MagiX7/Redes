@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 
     float sendDataCounter = 0;
 
+    int netId = -1;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +43,7 @@ public class PlayerController : MonoBehaviour
         if (sendDataCounter >= 0.2f)
         {
             sendDataCounter = 0.0f;
-            udpManager.SendPlayerData(playerData, isClient);
+            udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
         }
     }
 

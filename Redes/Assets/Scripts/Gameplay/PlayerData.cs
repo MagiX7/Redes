@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerData
 {
-    //public int life = 5;
     public int damage = 1;
     public bool shooted = false;
     public Vector3 position = Vector3.zero;
