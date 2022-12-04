@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -44,6 +45,8 @@ public class ClientSceneManagerUDP : MonoBehaviour
     bool startingNewGame = false;
     public bool gameStarted = false;
     [HideInInspector] public bool clientJoined = false;
+    bool newChatMessage = false;
+    string latestChatMessage = string.Empty;
 
     // UI variables
     [SerializeField] GameObject[] UIToDeactivate;
@@ -136,7 +139,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
         {
             if (serverUDP != null)
             {
-                string msg = "[Server]: " + chatInput.text;
+                string msg = "[Server]: " + chatInput.text + "\n";
                 chatText.text += msg;
                 chatInput.text = string.Empty;
 
@@ -151,6 +154,12 @@ public class ClientSceneManagerUDP : MonoBehaviour
             }
         }
 
+        if (newChatMessage)
+        {
+            chatText.text += latestChatMessage + "\n";
+            latestChatMessage = string.Empty;
+            newChatMessage = false;
+        }
 
     }
 
@@ -233,7 +242,8 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     public void OnNewChatMessage(string message)
     {
-        chatText.text += message + "\n";
+        latestChatMessage = message;
+        newChatMessage = true;
     }
 
     public void UpdateUsersList(string message)

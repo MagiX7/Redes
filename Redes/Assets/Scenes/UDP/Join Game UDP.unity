@@ -1589,6 +1589,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chatGameObject: {fileID: 572441365}
+  chatText: {fileID: 239256173}
   chatInputGameObject: {fileID: 188336781}
   connectButton: {fileID: 1281345105}
   connectedPeople: {fileID: 0}
