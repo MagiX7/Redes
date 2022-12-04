@@ -142,7 +142,7 @@ public class ServerUDP : MonoBehaviour
                         }
                         else
                         {
-                            text = lastUserName + " Connected!\n";
+                            text = lastUserName + " Connected!";
                             sceneManager.OnNewChatMessage(text);
                             connectionsManager.OnNewClient(clientsNetId++);
                         }

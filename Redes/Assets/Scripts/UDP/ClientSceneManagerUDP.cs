@@ -139,9 +139,10 @@ public class ClientSceneManagerUDP : MonoBehaviour
         {
             if (serverUDP != null)
             {
-                string msg = "[Server]: " + chatInput.text + "\n";
-                chatText.text += msg;
-                chatInput.text = string.Empty;
+                string msg = "[Server]: " + chatInput.text;
+                OnNewChatMessage(msg);
+                //chatText.text += msg;
+                //chatInput.text = string.Empty;
 
                 byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, serverUDP.GetNetId(), msg);
                 serverUDP.Send(bytes);
@@ -149,6 +150,10 @@ public class ClientSceneManagerUDP : MonoBehaviour
             else
             {
                 string msg = "[" + clientUDP.GetUserName() + "]" + ": " + chatInput.text;
+                OnNewChatMessage(msg);
+                //chatText.text += msg;
+                //chatInput.text = string.Empty;
+
                 byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, clientUDP.GetNetId(), msg);
                 clientUDP.Send(bytes);
             }
@@ -158,6 +163,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
         {
             chatText.text += latestChatMessage + "\n";
             latestChatMessage = string.Empty;
+            chatInput.text = string.Empty;
             newChatMessage = false;
         }
 
