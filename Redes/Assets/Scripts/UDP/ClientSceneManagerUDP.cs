@@ -19,7 +19,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     [SerializeField] Text connectedPeople;
 
     [SerializeField] ServerUDP serverUDP;
-    [SerializeField] ClientUDP clientScript;
+    [SerializeField] ClientUDP clientUDP;
 
     InputField serverIpInputField;
     InputField userNameInputField;
@@ -134,14 +134,20 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return) && chatInput.text.Length > 0)
         {
-            string msg = "[Server]: " + chatInput.text;
-            chatText.text += msg;
-            chatInput.text = string.Empty;
-
             if (serverUDP != null)
             {
+                string msg = "[Server]: " + chatInput.text;
+                chatText.text += msg;
+                chatInput.text = string.Empty;
+
                 byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, serverUDP.GetNetId(), msg);
                 serverUDP.Send(bytes);
+            }
+            else
+            {
+                string msg = "[" + clientUDP.GetUserName() + "]" + ": " + chatInput.text;
+                byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, clientUDP.GetNetId(), msg);
+                clientUDP.Send(bytes);
             }
         }
 
@@ -150,6 +156,9 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     public void StartClient()
     {
+        if (clientUDP == null)
+            return;
+
         clientJoined = true;
         gameStarted = true;
     }
@@ -160,9 +169,9 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
         ToggleGameUI(true);
 
-        clientScript.gameObject.SetActive(true);
-        clientScript.serverIp = serverIpInputField.text;
-        clientScript.userName = userNameInputField.text;
+        clientUDP.gameObject.SetActive(true);
+        clientUDP.serverIp = serverIpInputField.text;
+        clientUDP.userName = userNameInputField.text;
 
         player.SetActive(true);
         player.GetComponent<PlayerMovement>().isClient = true;

@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 using UnityEngine.XR;
+using UnityEngine.SceneManagement;
 
 public class ClientUDP : MonoBehaviour
 {
@@ -28,16 +29,15 @@ public class ClientUDP : MonoBehaviour
     Thread receiveMsgsThread;
 
     bool finished = false;
-    bool newMessage = false;
+    //bool newMessage = false;
 
-    string incomingText;
+    //string incomingText;
 
-    [SerializeField] UnityEngine.UI.Text chat;
-    [SerializeField] InputField input;
+    //[SerializeField] InputField input;
 
     [SerializeField] EnemyController enemy;
     [SerializeField] ClientSceneManagerUDP sceneManager;
-
+    ConnectionsManager connectionsManager;
     
     void Start()
     {
@@ -54,6 +54,8 @@ public class ClientUDP : MonoBehaviour
 
         receiveMsgsThread = new Thread(RecieveMessages);
         receiveMsgsThread.Start();
+
+        connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
     }
 
     private void OnDisable()
@@ -67,65 +69,71 @@ public class ClientUDP : MonoBehaviour
 
     void Update()
     {
-        if (newMessage)
-        {
-            chat.text += (incomingText + "\n");
-            newMessage = false;
-        }
+        //if (newMessage)
+        //{
+        //    //chat.text += (incomingText + "\n");
+        //    sceneManager.OnNewChatMessage(incomingText);
+        //    newMessage = false;
+        //}
 
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            OnMessageSent();
-        }
+        //if (Input.GetKeyDown(KeyCode.Return))
+        //{
+        //    OnMessageSent();
+        //}
     }
 
     void RecieveMessages()
     {
         while (!finished)
         {
-            byte[] msg = new byte[1024];
-            recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
+            byte[] bytes = new byte[1024];
+            recv = clientSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
 
-            MemoryStream stream = new MemoryStream(msg, 0, recv);
-            BinaryReader reader = new BinaryReader(stream);
-
-            stream.Seek(0, SeekOrigin.Begin);
-
-            MessageType messageType = (MessageType)reader.ReadInt32();
-            switch (messageType)
+            if (recv > 0)
             {
-                case MessageType.NEW_USER:
-                {
-                    // New Player Connected
-                    incomingText = Serializer.DeserializeString(reader, stream);
-                    break;
-                }
-                case MessageType.CHAT:
-                    incomingText = Serializer.DeserializeString(reader, stream);
-                    newMessage = true;
-                    data = msg;
-                    break;
-                case MessageType.PLAYER_DATA:
-                     enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
-                    break;
-
-                case MessageType.START_GAME:
-                    sceneManager.StartClient();
-                    break;
-
-                default:
-                    break;
+                connectionsManager.OnMessageReceived(bytes, out _);
             }
+
+            //MemoryStream stream = new MemoryStream(bytes, 0, recv);
+            //BinaryReader reader = new BinaryReader(stream);
+            //
+            //stream.Seek(0, SeekOrigin.Begin);
+            //
+            //MessageType messageType = (MessageType)reader.ReadInt32();
+            //switch (messageType)
+            //{
+            //    case MessageType.NEW_USER:
+            //    {
+            //        // New Player Connected
+            //        incomingText = Serializer.DeserializeString(reader, stream);
+            //        break;
+            //    }
+            //    case MessageType.CHAT:
+            //        incomingText = Serializer.DeserializeString(reader, stream);
+            //        newMessage = true;
+            //        data = bytes;
+            //        break;
+            //    case MessageType.PLAYER_DATA:
+            //         enemy.playerData = Serializer.DeserializePlayerData(reader, stream);
+            //        break;
+            //
+            //    case MessageType.START_GAME:
+            //        sceneManager.StartClient();
+            //        break;
+            //
+            //    default:
+            //        break;
+            //}
         }
     }
 
     void OnMessageSent()
     {
-        string msg = "[" + userName + "]" + ": " + input.text;
-        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, msg);
-        recv = data.Length;
-        clientSocket.SendTo(data, recv, SocketFlags.None, remote);
-        input.text = "";
+        //string msg = "[" + userName + "]" + ": " + input.text;
+        //data = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, msg);
+        //recv = data.Length;
+        //clientSocket.SendTo(data, recv, SocketFlags.None, remote);
+        //input.text = "";
     }
 
     public void Send(byte[] bytes)
@@ -139,6 +147,8 @@ public class ClientUDP : MonoBehaviour
     }
 
     public int GetNetId() { return netId; }
+
+    public string GetUserName() { return userName; }
 
     string GetLocalIPAddress()
     {

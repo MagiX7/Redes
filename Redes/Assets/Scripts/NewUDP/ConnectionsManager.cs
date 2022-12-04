@@ -102,6 +102,13 @@ public class ConnectionsManager : MonoBehaviour
                 break;
             }
 
+            case MessageType.START_GAME:
+            {
+                sceneManager.StartClient();
+                chatText = string.Empty;
+                break;
+            }
+
             default:
             {
                 chatText = string.Empty;
