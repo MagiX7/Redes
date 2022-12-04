@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ConnectionsManager : MonoBehaviour
 {
@@ -12,6 +14,8 @@ public class ConnectionsManager : MonoBehaviour
     string chatText;
     bool newChatMessage = false;
     byte[] latestData;
+
+    [SerializeField] ClientSceneManagerUDP sceneManager;
 
     List<int> clients;
 
@@ -38,11 +42,6 @@ public class ConnectionsManager : MonoBehaviour
         lastNetId = netId;
     }
 
-    public void OnClientDisconnected()
-    {
-
-    }
-
     void ClientConnected()
     {
         GameObject latestClient = Instantiate(player, Vector3.zero, Quaternion.identity);
@@ -51,13 +50,18 @@ public class ConnectionsManager : MonoBehaviour
         clients.Add(lastNetId);
     }
 
+    public void OnClientDisconnected()
+    {
+
+    }
+
     void ClientDisconnected()
     {
 
     }
 
 
-    public void OnMessageReceived(byte[] bytes)
+    public void OnMessageReceived(byte[] bytes, out string chatText)
     {
         MemoryStream stream = new MemoryStream(bytes, 0, bytes.Length);
         BinaryReader reader = new BinaryReader(stream);
@@ -71,6 +75,7 @@ public class ConnectionsManager : MonoBehaviour
             case MessageType.NEW_USER:
             {
                 chatText = Serializer.DeserializeString(reader, stream);
+                sceneManager.OnNewChatMessage(chatText);
                 // Send message to the client with its net id
                 break;
             }
@@ -78,8 +83,7 @@ public class ConnectionsManager : MonoBehaviour
             case MessageType.CHAT:
             {
                 chatText = Serializer.DeserializeString(reader, stream);
-                newChatMessage = true;
-                latestData = bytes;
+                sceneManager.OnNewChatMessage(chatText);
                 break;
             }
 
@@ -94,13 +98,20 @@ public class ConnectionsManager : MonoBehaviour
                         break;
                     }
                 }
-                
+                chatText = string.Empty;
                 break;
             }
 
             default:
+            {
+                chatText = string.Empty;
                 break;
+            }
         }
+
     }
+
+
+
 
 }

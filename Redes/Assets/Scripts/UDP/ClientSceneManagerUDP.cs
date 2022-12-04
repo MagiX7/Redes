@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Windows;
+using Input = UnityEngine.Input;
 
 public class ClientSceneManagerUDP : MonoBehaviour
 {
     // UI
-    [SerializeField] GameObject chat;
+    [SerializeField] GameObject chatGameObject;
+    Text chatText;
+    InputField chatInput;
     GameObject serverIpInput;
     GameObject userNameInput;
-    [SerializeField] GameObject chatInput;
+    [SerializeField] GameObject chatInputGameObject;
     [SerializeField] GameObject connectButton;
+    [SerializeField] Text connectedPeople;
 
     [SerializeField] ServerUDP serverUDP;
     [SerializeField] ClientUDP clientScript;
@@ -54,6 +59,9 @@ public class ClientSceneManagerUDP : MonoBehaviour
             serverIpInputField = serverIpInput.GetComponentInChildren<InputField>();
             userNameInputField = userNameInput.GetComponentInChildren<InputField>();
         }
+
+        chatText = GameObject.Find("Chat Text").GetComponent<Text>();
+        chatInput = chatInputGameObject.GetComponent<InputField>();
 
         initialPlayerPos = player.transform.position;
         initialEnemyPos = enemy.transform.position;
@@ -124,6 +132,20 @@ public class ClientSceneManagerUDP : MonoBehaviour
             gameEnded = false;
         }
 
+        if (Input.GetKeyDown(KeyCode.Return) && chatInput.text.Length > 0)
+        {
+            string msg = "[Server]: " + chatInput.text;
+            chatText.text += msg;
+            chatInput.text = string.Empty;
+
+            if (serverUDP != null)
+            {
+                byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, serverUDP.GetNetId(), msg);
+                serverUDP.Send(bytes);
+            }
+        }
+
+
     }
 
     public void StartClient()
@@ -149,8 +171,8 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     void HideUIChat(bool value)
     {
-        chat.SetActive(value);
-        chatInput.SetActive(value);
+        chatGameObject.SetActive(value);
+        chatInputGameObject.SetActive(value);
     }
 
     public void StartServerConnection()
@@ -175,8 +197,8 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     void ToggleGameUI(bool value)
     {
-        chat.SetActive(value);
-        chatInput.SetActive(value);
+        chatGameObject.SetActive(value);
+        chatInputGameObject.SetActive(value);
         if (!gameEnded)
         {
             if (serverIpInput != null)
@@ -190,8 +212,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     void UpdateScene()
     {
-        // TODO: Replace players, load meshes from new level etc
-
         player.SetActive(true);
         player.transform.position = initialPlayerPos;
         player.GetComponent<PlayerMovement>().ResetStats();
@@ -199,6 +219,20 @@ public class ClientSceneManagerUDP : MonoBehaviour
         enemy.SetActive(true);
         enemy.transform.position = initialEnemyPos;
         enemy.GetComponent<EnemyController>().ResetStats();
+    }
+
+
+    public void OnNewChatMessage(string message)
+    {
+        chatText.text += message + "\n";
+    }
+
+    public void UpdateUsersList(string message)
+    {
+        if (connectedPeople == null)
+            return;
+
+        connectedPeople.text += message + "\n";
     }
 
 }
