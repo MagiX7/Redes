@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class ConnectionsManager : MonoBehaviour
 {
-    [SerializeField] GameObject player;
+    [SerializeField] GameObject enemyPrefab;
     bool newUser = false;
     int lastNetId = -1;
 
@@ -44,7 +44,7 @@ public class ConnectionsManager : MonoBehaviour
 
     void ClientConnected()
     {
-        GameObject latestClient = Instantiate(player, Vector3.zero, Quaternion.identity);
+        GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
         latestClient.GetComponent<ClientUDP>().SetNetId(lastNetId);
         latestClient.name = lastNetId.ToString();
         clients.Add(lastNetId);

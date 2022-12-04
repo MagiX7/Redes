@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028346, g: 0.22571373, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1046,8 +1046,6 @@ MonoBehaviour:
   clientIp: 0
   serverIp: 192.168.1.42
   userName: 
-  chat: {fileID: 239256173}
-  input: {fileID: 188336782}
   enemy: {fileID: 801625642}
   sceneManager: {fileID: 908946557}
 --- !u!1 &651124968
@@ -1590,11 +1588,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6a2c65c73e002439e2dbb3217189ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chat: {fileID: 572441365}
-  chatInput: {fileID: 188336781}
+  chatGameObject: {fileID: 572441365}
+  chatInputGameObject: {fileID: 188336781}
   connectButton: {fileID: 1281345105}
+  connectedPeople: {fileID: 0}
   serverUDP: {fileID: 0}
-  clientScript: {fileID: 645908010}
+  clientUDP: {fileID: 645908010}
   player: {fileID: 896945116}
   enemy: {fileID: 801625643}
   gameStarted: 0
@@ -1807,6 +1806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -2761,6 +2761,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1865285068}
+  - component: {fileID: 1865285069}
   m_Layer: 0
   m_Name: Connections Manager
   m_TagString: Untagged
@@ -2783,6 +2784,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1865285069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865285067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 280fe1c9dd7da154aa81a578cad3ade5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 801625643}
+  sceneManager: {fileID: 908946557}
 --- !u!1 &2073009858
 GameObject:
   m_ObjectHideFlags: 0

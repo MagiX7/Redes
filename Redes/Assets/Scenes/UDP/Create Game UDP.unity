@@ -468,9 +468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51e22aab988ce44a993f981f3554172, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chat: {fileID: 1581083291}
   input: {fileID: 1369479069}
-  connectedPeople: {fileID: 310421491}
   ipText: {fileID: 1315822219}
   enemy: {fileID: 1019329511}
 --- !u!4 &645908009
@@ -776,6 +774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -2209,6 +2208,52 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a2240e0c1c5dcd4c8633e278df9a981, type: 3}
+--- !u!1 &2044547877
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2044547879}
+  - component: {fileID: 2044547878}
+  m_Layer: 0
+  m_Name: Connections Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2044547878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044547877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 280fe1c9dd7da154aa81a578cad3ade5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 2387115955121328598}
+  sceneManager: {fileID: 2133486110}
+--- !u!4 &2044547879
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044547877}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 48.696133, y: -35.809555, z: 66.760475}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2133486107
 GameObject:
   m_ObjectHideFlags: 0
@@ -2268,11 +2313,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6a2c65c73e002439e2dbb3217189ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chat: {fileID: 1979357217}
-  chatInput: {fileID: 1369479067}
+  chatGameObject: {fileID: 1979357217}
+  chatText: {fileID: 1581083291}
+  chatInputGameObject: {fileID: 1369479067}
   connectButton: {fileID: 0}
+  connectedPeople: {fileID: 310421491}
   serverUDP: {fileID: 645908008}
-  clientScript: {fileID: 0}
+  clientUDP: {fileID: 0}
   player: {fileID: 4189374797123235908}
   enemy: {fileID: 2387115955121328598}
   gameStarted: 0

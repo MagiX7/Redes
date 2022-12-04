@@ -10,7 +10,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
 {
     // UI
     [SerializeField] GameObject chatGameObject;
-    Text chatText;
+    [SerializeField] Text chatText;
     InputField chatInput;
     GameObject serverIpInput;
     GameObject userNameInput;
@@ -60,7 +60,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
             userNameInputField = userNameInput.GetComponentInChildren<InputField>();
         }
 
-        chatText = GameObject.Find("Chat Text").GetComponent<Text>();
+        //chatText = GameObject.Find("Chat Text").GetComponent<Text>();
         chatInput = chatInputGameObject.GetComponent<InputField>();
 
         initialPlayerPos = player.transform.position;
