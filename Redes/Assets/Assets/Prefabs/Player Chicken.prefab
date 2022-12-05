@@ -81,6 +81,55 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'health:'
+--- !u!1 &645908007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 645908009}
+  - component: {fileID: 645908010}
+  m_Layer: 0
+  m_Name: Client
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &645908009
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645908007}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.1976333, y: 0.11999977, z: -4.1520753}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4084039688676900897}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &645908010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645908007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0987e36e22fdefe44ba4eb19ec90743d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clientIp: 0
+  serverIp: 192.168.1.42
+  userName: 
+  enemy: {fileID: 0}
+  sceneManager: {fileID: 0}
 --- !u!1 &1098307287
 GameObject:
   m_ObjectHideFlags: 0
@@ -1356,6 +1405,7 @@ Transform:
   - {fileID: 4080866163637334310}
   - {fileID: 1620239911121997290}
   - {fileID: 1688262710}
+  - {fileID: 645908009}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1431,7 +1481,6 @@ MonoBehaviour:
   animator: {fileID: 4176804773123603987}
   udpManager: {fileID: 0}
   isClient: 1
-  playerHPText: {fileID: 0}
   healthBar: {fileID: 1488625105}
 --- !u!82 &1824979859243868100
 AudioSource:

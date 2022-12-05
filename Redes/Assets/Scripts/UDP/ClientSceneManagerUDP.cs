@@ -141,8 +141,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
             {
                 string msg = "[Server]: " + chatInput.text;
                 OnNewChatMessage(msg);
-                //chatText.text += msg;
-                //chatInput.text = string.Empty;
 
                 byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, serverUDP.GetNetId(), msg);
                 serverUDP.Send(bytes);
@@ -151,8 +149,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
             {
                 string msg = "[" + clientUDP.GetUserName() + "]" + ": " + chatInput.text;
                 OnNewChatMessage(msg);
-                //chatText.text += msg;
-                //chatInput.text = string.Empty;
 
                 byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, clientUDP.GetNetId(), msg);
                 clientUDP.Send(bytes);
