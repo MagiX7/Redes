@@ -53,12 +53,13 @@ public static class Serializer
         return reader.ReadInt32();
     }
 
-    public static byte[] SerializePlayerData(PlayerData playerData, int senderNetId)
+    public static byte[] SerializePlayerData(PlayerData playerData, int senderNetId, int affectedNetId)
     {
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)MessageType.PLAYER_DATA);
         writer.Write(senderNetId);
+        writer.Write(affectedNetId);
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.z);

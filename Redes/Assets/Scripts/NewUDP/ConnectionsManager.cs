@@ -11,19 +11,16 @@ public class ConnectionsManager : MonoBehaviour
     bool newUser = false;
     int lastNetId = -1;
 
-    string chatText;
-    bool newChatMessage = false;
-    byte[] latestData;
-
     [SerializeField] ClientSceneManagerUDP sceneManager;
 
-    List<int> clients;
+    public List<int> clientNetIds;
+    public List<GameObject> players;
 
     // Start is called before the first frame update
     void Start()
     {
-        latestData = new byte[1024];
-        clients = new List<int>();
+        clientNetIds = new List<int>();
+        players = new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -45,9 +42,9 @@ public class ConnectionsManager : MonoBehaviour
     void ClientConnected()
     {
         GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
-        //int latestClientNetId = GameObject.Find("Client").GetComponent<ClientUDP>().GetNetId();
         latestClient.name = lastNetId.ToString();
-        clients.Add(lastNetId);
+        clientNetIds.Add(lastNetId);
+        players.Add(latestClient);
     }
 
     public void OnClientDisconnected()
@@ -69,7 +66,8 @@ public class ConnectionsManager : MonoBehaviour
         stream.Seek(0, SeekOrigin.Begin);
 
         MessageType messageType = (MessageType)reader.ReadInt32();
-        int netId = reader.ReadInt32();
+        int senderNetId = reader.ReadInt32();
+        int affectedNetId = reader.ReadInt32();
         switch (messageType)
         {
             case MessageType.NEW_USER:
@@ -77,7 +75,6 @@ public class ConnectionsManager : MonoBehaviour
                 chatText = Serializer.DeserializeString(reader);
                 sceneManager.OnNewChatMessage(chatText);
                 clientNetId = -1;
-                // Send message to the client with its net id
                 break;
             }
 
@@ -98,13 +95,16 @@ public class ConnectionsManager : MonoBehaviour
 
             case MessageType.PLAYER_DATA:
             {
-                foreach(int client in clients)
+                if (affectedNetId > 0)
                 {
-                    if (client == netId)
+                    foreach (int clientId in clientNetIds)
                     {
-                        EnemyController go = GameObject.Find(client.ToString()).GetComponent<EnemyController>();
-                        go.playerData = Serializer.DeserializePlayerData(reader);
-                        break;
+                        if (clientId == affectedNetId)
+                        {
+                            EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
+                            go.playerData = Serializer.DeserializePlayerData(reader);
+                            break;
+                        }
                     }
                 }
                 chatText = string.Empty;

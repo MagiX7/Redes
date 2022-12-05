@@ -67,7 +67,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
         chatInput = chatInputGameObject.GetComponent<InputField>();
 
         initialPlayerPos = player.transform.position;
-        initialEnemyPos = enemy.transform.position;
+        //initialEnemyPos = enemy.transform.position;
     }
 
     void Update()
@@ -186,7 +186,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
         player.SetActive(true);
         player.GetComponent<PlayerMovement>().isClient = true;
-        enemy.SetActive(true);
+        //enemy.SetActive(true);
     }
 
     void HideUIChat(bool value)
@@ -236,9 +236,9 @@ public class ClientSceneManagerUDP : MonoBehaviour
         player.transform.position = initialPlayerPos;
         player.GetComponent<PlayerMovement>().ResetStats();
 
-        enemy.SetActive(true);
-        enemy.transform.position = initialEnemyPos;
-        enemy.GetComponent<EnemyController>().ResetStats();
+        //enemy.SetActive(true);
+        //enemy.transform.position = initialEnemyPos;
+        //enemy.GetComponent<EnemyController>().ResetStats();
     }
 
 

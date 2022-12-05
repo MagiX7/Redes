@@ -132,12 +132,22 @@ public class ServerUDP : MonoBehaviour
                     connectionsManager.OnNewClient(clientsNetId);
                     clientsNetId++;
 
+
                     for (int i = 0; i < remoters.Count; i++)
                     {
                         if (remote == remoters[i])
                         {
                             text = "Welcome to the UDP server";
                             sceneManager.OnNewChatMessage(text);
+                            foreach(var client in connectionsManager.players)
+                            {
+                                int affectedNetId = client.GetComponent<ClientUDP>().GetNetId();
+                                //if (affectedNetId == clientsNetId - 1)
+                                //    continue;
+                                PlayerData playerData = client.GetComponent<EnemyController>().playerData;
+                                byte[] data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
+                                serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
+                            }
                         }
                         else
                         {
@@ -148,6 +158,10 @@ public class ServerUDP : MonoBehaviour
 
                         bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
+
+
+                        
+
                     }
                 }
             }

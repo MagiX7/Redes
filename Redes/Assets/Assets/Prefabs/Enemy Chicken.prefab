@@ -1590,7 +1590,7 @@ MonoBehaviour:
   sceneManager: {fileID: 0}
   deathPrefab: {fileID: 5136708558052637636, guid: cbd5eb8666c121e4b9a541302cdf0d9e, type: 3}
   life: 5
-  playerHPText: {fileID: 0}
+  healthBar: {fileID: 2130157350}
 --- !u!1 &2568672165135435150
 GameObject:
   m_ObjectHideFlags: 0
