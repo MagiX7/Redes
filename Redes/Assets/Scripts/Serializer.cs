@@ -23,12 +23,13 @@ public static class Serializer
         return stream.ToArray();
     }
 
-    public static byte[] SerializeStringWithHeader(MessageType header, int netId, string value)
+    public static byte[] SerializeStringWithHeader(MessageType header, int senderNetId, string value)
     {
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)header);
-        writer.Write(netId);
+        writer.Write(senderNetId);
+        writer.Write(-1);
         writer.Write(value);
         return stream.ToArray();
     }
@@ -44,6 +45,7 @@ public static class Serializer
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)header);
         writer.Write(senderNetId);
+        writer.Write(-1);
         writer.Write(value);
         return stream.ToArray();
     }
@@ -101,6 +103,7 @@ public static class Serializer
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)header);
         writer.Write(senderNetId);
+        writer.Write(-1);
         writer.Write(value);
         return stream.ToArray();
     }
