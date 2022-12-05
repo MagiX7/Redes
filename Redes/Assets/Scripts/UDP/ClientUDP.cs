@@ -54,20 +54,15 @@ public class ClientUDP : MonoBehaviour
         connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         string msg = "[" + userName + "]" + ": Disconnected";
         //sceneManager.OnNewChatMessage(msg);
 
         byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.DISCONNECT, netId, msg);
-        clientSocket.Send(bytes);
+        clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
         finished = true;
 
-        Invoke("ShutDown", 3.0f);
-    }
-
-    void ShutDown()
-    {
         clientSocket.Close();
         if (receiveMsgsThread.IsAlive)
             receiveMsgsThread.Abort();
