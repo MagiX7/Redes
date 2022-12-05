@@ -11,6 +11,7 @@ public enum MessageType
     PLAYER_DATA,
     NET_ID,
     START_GAME,
+    DISCONNECT
 }
 
 public static class Serializer

@@ -122,7 +122,18 @@ public class ServerUDP : MonoBehaviour
             recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
             if (recv > 0)
             {
-                connectionsManager.OnMessageReceived(bytes, out text, out _);
+                int clientNetId = -1;
+                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out text, out clientNetId);
+
+                if (msgType == MessageType.DISCONNECT)
+                {
+                    remoters.Remove(remote);
+                    for (int i = 0; i < remoters.Count; ++i)
+                    {
+                        byte[] data = Serializer.SerializeIntWithHeader(MessageType.DISCONNECT, clientNetId, -1);
+                        serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+                    }
+                }
 
                 if (!remoters.Contains(remote))
                 {
@@ -135,41 +146,63 @@ public class ServerUDP : MonoBehaviour
                     connectionsManager.OnNewClient(clientsNetId);
                     clientsNetId++;
 
-
-                    for (int i = 0; i < remoters.Count; i++)
+                    // ESTO ES UNA PRUEBA
                     {
-                        if (remote == remoters[i])
-                        {
-                            text = "Welcome to the UDP server";
-                            sceneManager.OnNewChatMessage(text);
-                            
-                            byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
-                            serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
+                        text = "Welcome to the UDP server";
+                        sceneManager.OnNewChatMessage(text);
 
-                            foreach (var client in connectionsManager.players)
-                            {
-                                int affectedNetId = client.GetComponent<ClientUDP>().GetNetId();
-                                //if (affectedNetId == clientsNetId - 1)
-                                //    continue;
-                                PlayerData playerData = client.GetComponent<EnemyController>().playerData;
-                                data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
-                                serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
-                            }
-                        }
-                        else
-                        {
-                            text = lastUserName + " Connected!";
-                            sceneManager.OnNewChatMessage(text);
-                            //connectionsManager.OnNewClient(clientsNetId++);
-                        }
+                        byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
+                        serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
 
+                        foreach (var client in connectionsManager.players)
+                        {
+                            int affectedNetId = client.GetComponent<ClientUDP>().GetNetId();
+                            //if (affectedNetId == clientsNetId - 1)
+                            //    continue;
+                            PlayerData playerData = client.GetComponent<EnemyController>().playerData;
+                            data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
+                            serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+                        }
+                    }
+                    for (int i = 0; i < remoters.Count - 1; ++i)
+                    {
+                        text = lastUserName + " Connected!";
+                        sceneManager.OnNewChatMessage(text);
                         bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
-
-
-                        
-
                     }
+
+                    // Lo que hay arriba es más óptimo, crack, titán, portaaviones
+                    //for (int i = 0; i < remoters.Count; i++)
+                    //{
+                    //    if (remote == remoters[i])
+                    //    {
+                    //        text = "Welcome to the UDP server";
+                    //        sceneManager.OnNewChatMessage(text);
+
+                    //        byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
+                    //        serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
+
+                    //        foreach (var client in connectionsManager.players)
+                    //        {
+                    //            int affectedNetId = client.GetComponent<ClientUDP>().GetNetId();
+                    //            //if (affectedNetId == clientsNetId - 1)
+                    //            //    continue;
+                    //            PlayerData playerData = client.GetComponent<EnemyController>().playerData;
+                    //            data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
+                    //            serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        text = lastUserName + " Connected!";
+                    //        sceneManager.OnNewChatMessage(text);
+                    //        //connectionsManager.OnNewClient(clientsNetId++);
+                    //    }
+
+                    //    bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
+                    //    serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
+                    //}
                 }
             }
         }

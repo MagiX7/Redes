@@ -14,6 +14,9 @@ public class ConnectionsManager : MonoBehaviour
     bool needToUpdateEnemy = false;
     BinaryReader latestReader;
 
+    int latestSenderNetId = -1;
+    bool clientDisconnected = false;
+
     [SerializeField] ClientSceneManagerUDP sceneManager;
 
     public List<int> clientNetIds;
@@ -35,6 +38,12 @@ public class ConnectionsManager : MonoBehaviour
         {
             ClientConnected();
             newUser = false;
+        }
+
+        if (clientDisconnected)
+        {
+            OnClientDisconnected();
+            clientDisconnected = false;
         }
 
         if (needToInstantiateServer)
@@ -79,7 +88,10 @@ public class ConnectionsManager : MonoBehaviour
 
     public void OnClientDisconnected()
     {
-
+        clientNetIds.Remove(latestSenderNetId);
+        GameObject go = GameObject.Find(latestSenderNetId.ToString());
+        players.Remove(go);
+        Destroy(go);
     }
 
     void ClientDisconnected()
@@ -88,7 +100,7 @@ public class ConnectionsManager : MonoBehaviour
     }
 
 
-    public void OnMessageReceived(byte[] bytes, out string chatText, out int clientNetId)
+    public MessageType OnMessageReceived(byte[] bytes, out string chatText, out int clientNetId)
     {
         MemoryStream stream = new MemoryStream(bytes, 0, bytes.Length);
         BinaryReader reader = new BinaryReader(stream);
@@ -102,6 +114,16 @@ public class ConnectionsManager : MonoBehaviour
         {
             case MessageType.NEW_USER:
             {
+                chatText = Serializer.DeserializeString(reader);
+                sceneManager.OnNewChatMessage(chatText);
+                clientNetId = -1;
+                break;
+            }
+
+            case MessageType.DISCONNECT:
+            {
+                latestSenderNetId = senderNetId;
+                clientDisconnected = true;
                 chatText = Serializer.DeserializeString(reader);
                 sceneManager.OnNewChatMessage(chatText);
                 clientNetId = -1;
@@ -157,9 +179,6 @@ public class ConnectionsManager : MonoBehaviour
             }
         }
 
+        return messageType;
     }
-
-
-
-
 }
