@@ -38,14 +38,14 @@ public class ConnectionsManager : MonoBehaviour
 
     public void OnNewClient(int netId)
     {
-        newUser = true;
         lastNetId = netId;
+        newUser = true;
     }
 
     void ClientConnected()
     {
         GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
-        latestClient.GetComponent<ClientUDP>().SetNetId(lastNetId);
+        //int latestClientNetId = GameObject.Find("Client").GetComponent<ClientUDP>().GetNetId();
         latestClient.name = lastNetId.ToString();
         clients.Add(lastNetId);
     }
@@ -61,7 +61,7 @@ public class ConnectionsManager : MonoBehaviour
     }
 
 
-    public void OnMessageReceived(byte[] bytes, out string chatText)
+    public void OnMessageReceived(byte[] bytes, out string chatText, out int clientNetId)
     {
         MemoryStream stream = new MemoryStream(bytes, 0, bytes.Length);
         BinaryReader reader = new BinaryReader(stream);
@@ -74,16 +74,25 @@ public class ConnectionsManager : MonoBehaviour
         {
             case MessageType.NEW_USER:
             {
-                chatText = Serializer.DeserializeString(reader, stream);
+                chatText = Serializer.DeserializeString(reader);
                 sceneManager.OnNewChatMessage(chatText);
+                clientNetId = -1;
                 // Send message to the client with its net id
+                break;
+            }
+
+            case MessageType.NET_ID:
+            {
+                clientNetId = Serializer.DeserializeInt(reader);
+                chatText = string.Empty;
                 break;
             }
 
             case MessageType.CHAT:
             {
-                chatText = Serializer.DeserializeString(reader, stream);
+                chatText = Serializer.DeserializeString(reader);
                 sceneManager.OnNewChatMessage(chatText);
+                clientNetId = -1;
                 break;
             }
 
@@ -94,11 +103,12 @@ public class ConnectionsManager : MonoBehaviour
                     if (client == netId)
                     {
                         EnemyController go = GameObject.Find(client.ToString()).GetComponent<EnemyController>();
-                        go.playerData = Serializer.DeserializePlayerData(reader, stream);
+                        go.playerData = Serializer.DeserializePlayerData(reader);
                         break;
                     }
                 }
                 chatText = string.Empty;
+                clientNetId = -1;
                 break;
             }
 
@@ -106,12 +116,14 @@ public class ConnectionsManager : MonoBehaviour
             {
                 sceneManager.StartClient();
                 chatText = string.Empty;
+                clientNetId = -1;
                 break;
             }
 
             default:
             {
                 chatText = string.Empty;
+                clientNetId = -1;
                 break;
             }
         }

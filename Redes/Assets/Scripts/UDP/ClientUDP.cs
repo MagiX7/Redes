@@ -91,7 +91,9 @@ public class ClientUDP : MonoBehaviour
 
             if (recv > 0)
             {
-                connectionsManager.OnMessageReceived(bytes, out _);
+                int incomingNetId;
+                connectionsManager.OnMessageReceived(bytes, out _, out incomingNetId);
+                if(incomingNetId > 0) netId = incomingNetId;
             }
 
             //MemoryStream stream = new MemoryStream(bytes, 0, recv);

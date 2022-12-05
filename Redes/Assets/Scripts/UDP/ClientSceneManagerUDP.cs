@@ -208,7 +208,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
             UIToDeactivate[i].gameObject.SetActive(false);
         }
 
-        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.START_GAME, true);
+        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.START_GAME, serverUDP.GetNetId(),true);
         serverUDP.Send(bytes);
     }
 

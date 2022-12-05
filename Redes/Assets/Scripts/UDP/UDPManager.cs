@@ -21,11 +21,4 @@ public class UDPManager : MonoBehaviour
         else server.Send(bytes);
     }
 
-    public void SendNewRocketRequest(bool value, bool isClient)
-    {
-        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.SHOOT, value);
-
-        if (isClient) client.Send(bytes);
-        else server.Send(bytes);
-    }
 }

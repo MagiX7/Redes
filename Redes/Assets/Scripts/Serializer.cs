@@ -9,7 +9,7 @@ public enum MessageType
     NEW_USER,
     CHAT,
     PLAYER_DATA,
-    SHOOT,
+    NET_ID,
     START_GAME,
 }
 
@@ -33,17 +33,32 @@ public static class Serializer
         return stream.ToArray();
     }
 
-    public static string DeserializeString(BinaryReader reader, MemoryStream stream)
+    public static string DeserializeString(BinaryReader reader)
     {
         return reader.ReadString();
     }
 
-    public static byte[] SerializePlayerData(PlayerData playerData, int netId)
+    public static byte[] SerializeIntWithHeader(MessageType header, int senderNetId, int value)
+    {
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write((int)header);
+        writer.Write(senderNetId);
+        writer.Write(value);
+        return stream.ToArray();
+    }
+
+    public static int DeserializeInt(BinaryReader reader)
+    {
+        return reader.ReadInt32();
+    }
+
+    public static byte[] SerializePlayerData(PlayerData playerData, int senderNetId)
     {
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)MessageType.PLAYER_DATA);
-        writer.Write(netId);
+        writer.Write(senderNetId);
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.z);
@@ -59,7 +74,7 @@ public static class Serializer
         return stream.GetBuffer();
     }
 
-    public static PlayerData DeserializePlayerData(BinaryReader reader, MemoryStream stream)
+    public static PlayerData DeserializePlayerData(BinaryReader reader)
     {
         PlayerData playerData = new PlayerData();
 
@@ -79,11 +94,12 @@ public static class Serializer
         return playerData;
     }
 
-    public static byte[] SerializeBoolWithHeader(MessageType header, bool value)
+    public static byte[] SerializeBoolWithHeader(MessageType header, int senderNetId, bool value)
     {
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)header);
+        writer.Write(senderNetId);
         writer.Write(value);
         return stream.ToArray();
     }
@@ -96,7 +112,7 @@ public static class Serializer
         return stream.ToArray();
     }
 
-    public static bool DeserializeBool(BinaryReader reader, MemoryStream stream)
+    public static bool DeserializeBool(BinaryReader reader)
     {
         return reader.ReadBoolean();
     }

@@ -100,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
         if (sendDataCounter >= 0.05f)
         {
             sendDataCounter = 0.0f;
+            // TODO: The name is not an int
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
             playerData.shooted = false;
         }

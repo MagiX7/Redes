@@ -37,7 +37,7 @@ public class ServerUDP : MonoBehaviour
     int netId = 0;
 
     //[SerializeField] Text chat;
-    [SerializeField] InputField input;
+    //[SerializeField] InputField input;
     //[SerializeField] Text connectedPeople;
     [SerializeField] Text ipText;
 
@@ -103,15 +103,9 @@ public class ServerUDP : MonoBehaviour
             OnClientConnected();
         }
 
-        //if (Input.GetKeyDown(KeyCode.Return))
-        //{
-        //    OnMessageSent();
-        //}
         if (messageSent)
         {
-            sceneManager.OnNewChatMessage("[Server]: " + input.text);
-            //chat.text += ("[Server]: " + input.text + "\n");
-            input.text = "";
+            //sceneManager.OnNewChatMessage("[Server]: " + input.text);
             data = new byte[1024];
             messageSent = false;
         }
@@ -125,13 +119,18 @@ public class ServerUDP : MonoBehaviour
             recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
             if (recv > 0)
             {
-                connectionsManager.OnMessageReceived(bytes, out text);
+                connectionsManager.OnMessageReceived(bytes, out text, out _);
 
                 if (!remoters.Contains(remote))
                 {
                     clientConnected = true;
                     lastUserName = text;
                     remoters.Add(remote);
+
+                    byte[] netIdBytes = Serializer.SerializeIntWithHeader(MessageType.NET_ID, netId, clientsNetId);
+                    serverSocket.SendTo(netIdBytes, remote);
+                    connectionsManager.OnNewClient(clientsNetId);
+                    clientsNetId++;
 
                     for (int i = 0; i < remoters.Count; i++)
                     {
@@ -144,7 +143,7 @@ public class ServerUDP : MonoBehaviour
                         {
                             text = lastUserName + " Connected!";
                             sceneManager.OnNewChatMessage(text);
-                            connectionsManager.OnNewClient(clientsNetId++);
+                            //connectionsManager.OnNewClient(clientsNetId++);
                         }
 
                         bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
@@ -163,32 +162,14 @@ public class ServerUDP : MonoBehaviour
         for (int i = 0; i < remoters.Count; i++)
             serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
 
-        //chat.text += (text + "\n");
-
         newMessage = false;
         data = new byte[1024];
     }
-
-    //void OnMessageSent()
-    //{
-    //    string msg = "[Server]: " + input.text;
-    //    data = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, msg);
-    //    recv = data.Length;
-    //    for (int i = 0; i < remoters.Count; i++)
-    //    {
-    //        serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
-    //    }
-    //
-    //    messageSent = true;
-    //    data = new byte[1024];
-    //}
 
     void OnClientConnected()
     {
         sceneManager.OnNewChatMessage(lastUserName + " Connected!");
         sceneManager.UpdateUsersList(lastUserName);
-        //chat.text += (lastUserName + " Connected!\n");
-        //connectedPeople.text += (lastUserName + "\n");
 
         clientConnected = false;
         lastUserName = string.Empty;
@@ -197,30 +178,19 @@ public class ServerUDP : MonoBehaviour
         data = new byte[1024];
     }
 
-    //public void SendClientGameStart()
-    //{
-    //    byte[] bytes = Serializer.SerializeString("Game is about to start!");
-    //    serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
-    //}
-
     public void Send(byte[] bytes)
     {
         if (remoters.Count <= 0)
             return;
 
-        //serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
         dataToSend = bytes;
         needToSendMessage = true;
-
-
-
     }
 
     public int GetNetId()
     {
         return netId;
     }
-
 
     string GetLocalIPAddress()
     {
