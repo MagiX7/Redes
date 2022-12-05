@@ -10,11 +10,15 @@ public class ConnectionsManager : MonoBehaviour
     [SerializeField] GameObject enemyPrefab;
     bool newUser = false;
     int lastNetId = -1;
+    int latestAffectedNetId = -1;
+    bool needToUpdateEnemy = false;
+    BinaryReader latestReader;
 
     [SerializeField] ClientSceneManagerUDP sceneManager;
 
     public List<int> clientNetIds;
     public List<GameObject> players;
+    bool needToInstantiateServer = false;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +34,30 @@ public class ConnectionsManager : MonoBehaviour
         {
             ClientConnected();
             newUser = false;
+        }
+
+        if (needToInstantiateServer)
+        {
+            GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
+            int serverId = 0;
+            latestClient.name = serverId.ToString();
+            clientNetIds.Add(serverId);
+            players.Add(latestClient);
+            //needToInstantiateServer = false;
+        }
+
+        if (needToUpdateEnemy)
+        {
+            foreach (int clientId in clientNetIds)
+            {
+                if (clientId == latestAffectedNetId)
+                {
+                    //latestAffectedNetId = clientId;
+                    EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
+                    go.playerData = Serializer.DeserializePlayerData(latestReader);
+                    break;
+                }
+            }
         }
     }
 
@@ -95,23 +123,16 @@ public class ConnectionsManager : MonoBehaviour
 
             case MessageType.PLAYER_DATA:
             {
-                if (affectedNetId >= 0)
+                if (affectedNetId > 0)
                 {
-                    foreach (int clientId in clientNetIds)
-                    {
-                        if (clientId == affectedNetId)
-                        {
-                            EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
-                            go.playerData = Serializer.DeserializePlayerData(reader);
-                            break;
-                        }
-                    }
+                    latestAffectedNetId = affectedNetId;
+                    needToUpdateEnemy = true;
+                    latestReader = reader;
                 }
                 // Server instancing
-                if (senderNetId == affectedNetId)
+                if (!needToInstantiateServer && senderNetId == 0)
                 {
-                    GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
-                    latestClient.name = senderNetId.ToString();
+                    needToInstantiateServer = true;
                 }
                 chatText = string.Empty;
                 clientNetId = -1;

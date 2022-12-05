@@ -15,7 +15,7 @@ public class UDPManager : MonoBehaviour
 
     public void SendPlayerData(PlayerData playerData, int senderNetId, bool isClient)
     {
-        byte[] bytes = Serializer.SerializePlayerData(playerData, senderNetId, -1);
+        byte[] bytes = Serializer.SerializePlayerData(playerData, senderNetId, senderNetId);
 
         if (isClient) client.Send(bytes);
         else server.Send(bytes);

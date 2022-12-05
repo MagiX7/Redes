@@ -2662,7 +2662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 280fe1c9dd7da154aa81a578cad3ade5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 2568623838012824784, guid: 66664d2b5f5ed97448fb4425357ccefb, type: 3}
   sceneManager: {fileID: 908946557}
   clientNetIds: 
   players: []
