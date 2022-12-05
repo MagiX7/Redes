@@ -63,6 +63,11 @@ public class ClientUDP : MonoBehaviour
         clientSocket.Send(bytes);
         finished = true;
 
+        Invoke("ShutDown", 3.0f);
+    }
+
+    void ShutDown()
+    {
         clientSocket.Close();
         if (receiveMsgsThread.IsAlive)
             receiveMsgsThread.Abort();

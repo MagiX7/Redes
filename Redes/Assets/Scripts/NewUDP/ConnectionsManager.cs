@@ -124,6 +124,7 @@ public class ConnectionsManager : MonoBehaviour
             {
                 latestSenderNetId = senderNetId;
                 clientDisconnected = true;
+                //chatText = Serializer.DeserializeString(reader);
                 chatText = Serializer.DeserializeString(reader);
                 sceneManager.OnNewChatMessage(chatText);
                 clientNetId = -1;

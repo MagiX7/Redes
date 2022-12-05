@@ -130,8 +130,9 @@ public class ServerUDP : MonoBehaviour
                     remoters.Remove(remote);
                     for (int i = 0; i < remoters.Count; ++i)
                     {
-                        byte[] data = Serializer.SerializeIntWithHeader(MessageType.DISCONNECT, clientNetId, -1);
-                        serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+                        //byte[] data = Serializer.SerializeIntWithHeader(MessageType.DISCONNECT, clientNetId, -1);
+                        //serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
+                        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
                     }
                 }
 
