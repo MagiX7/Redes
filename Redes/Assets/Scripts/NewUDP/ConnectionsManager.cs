@@ -95,7 +95,7 @@ public class ConnectionsManager : MonoBehaviour
 
             case MessageType.PLAYER_DATA:
             {
-                if (affectedNetId > 0)
+                if (affectedNetId >= 0)
                 {
                     foreach (int clientId in clientNetIds)
                     {
@@ -106,6 +106,12 @@ public class ConnectionsManager : MonoBehaviour
                             break;
                         }
                     }
+                }
+                // Server instancing
+                if (senderNetId == affectedNetId)
+                {
+                    GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
+                    latestClient.name = senderNetId.ToString();
                 }
                 chatText = string.Empty;
                 clientNetId = -1;

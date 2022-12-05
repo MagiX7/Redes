@@ -41,7 +41,7 @@ public class ServerUDP : MonoBehaviour
     //[SerializeField] Text connectedPeople;
     [SerializeField] Text ipText;
 
-    [SerializeField] EnemyController enemy;
+    PlayerData serverPlayerData;
 
     ConnectionsManager connectionsManager;
     ClientSceneManagerUDP sceneManager;
@@ -70,7 +70,10 @@ public class ServerUDP : MonoBehaviour
         sceneManager.OnNewChatMessage("Server created successfully!");
         //chat.text += "Server created successfully!\n";
         ipText.text += serverIp;
-        
+
+        serverPlayerData = transform.parent.GetComponent<PlayerMovement>().playerData;
+        transform.parent.name = netId.ToString();
+
     }
     
     private void OnDisable()
@@ -139,14 +142,18 @@ public class ServerUDP : MonoBehaviour
                         {
                             text = "Welcome to the UDP server";
                             sceneManager.OnNewChatMessage(text);
-                            foreach(var client in connectionsManager.players)
+                            
+                            byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
+                            serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
+
+                            foreach (var client in connectionsManager.players)
                             {
                                 int affectedNetId = client.GetComponent<ClientUDP>().GetNetId();
                                 //if (affectedNetId == clientsNetId - 1)
                                 //    continue;
                                 PlayerData playerData = client.GetComponent<EnemyController>().playerData;
-                                byte[] data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
-                                serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
+                                data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
+                                serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
                             }
                         }
                         else

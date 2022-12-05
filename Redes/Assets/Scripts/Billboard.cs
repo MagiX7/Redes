@@ -6,6 +6,10 @@ public class Billboard : MonoBehaviour
 {
 
     public Transform cam;
+    private void Start()
+    {
+        cam = GameObject.Find("Main Camera").transform;
+    }
 
     void LateUpdate()
     {

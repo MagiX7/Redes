@@ -28,7 +28,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
 
     // Online variables
-    public PlayerData playerData;
+    public PlayerData playerData = new PlayerData();
     [SerializeField] UDPManager udpManager;
     public bool isClient = false;
     float sendDataCounter = 0;
@@ -38,7 +38,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        playerData = new PlayerData();
         audioSource = GetComponent<AudioSource>();
 
         healthBar.SetMaxHealth(5);
