@@ -19,6 +19,7 @@ public class ConnectionsManager : MonoBehaviour
     public List<int> clientNetIds;
     public List<GameObject> players;
     bool needToInstantiateServer = false;
+    bool serverInstanced = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +44,8 @@ public class ConnectionsManager : MonoBehaviour
             latestClient.name = serverId.ToString();
             clientNetIds.Add(serverId);
             players.Add(latestClient);
-            //needToInstantiateServer = false;
+            needToInstantiateServer = false;
+            serverInstanced = true;
         }
 
         if (needToUpdateEnemy)
@@ -130,7 +132,7 @@ public class ConnectionsManager : MonoBehaviour
                     latestReader = reader;
                 }
                 // Server instancing
-                if (!needToInstantiateServer && senderNetId == 0)
+                if (!serverInstanced && affectedNetId == 0)
                 {
                     needToInstantiateServer = true;
                 }
