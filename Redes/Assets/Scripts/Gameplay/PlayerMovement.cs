@@ -82,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
 
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
+        Debug.Log("Transofrm from playermove" + playerData.position.ToString());
 
         if (gotHit)
         {
@@ -96,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
 
         // This code is to test lag mitigation techniques
         sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.05f)
+        if (sendDataCounter >= 0.2f)
         {
             sendDataCounter = 0.0f;
             // TODO: The name is not an int

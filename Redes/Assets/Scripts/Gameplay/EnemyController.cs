@@ -46,12 +46,13 @@ public class EnemyController : MonoBehaviour
         {
             transform.position = playerData.position;
             prevPos = transform.position;
+            Debug.Log("TRANSFORM " + transform.position.ToString());
+            Debug.Log("TRANSFORM DATA " + playerData.position.ToString());
         }
-        else
-        {
-            transform.position = Vector3.Lerp(prevPos, playerData.position, Time.deltaTime / 0.2f);
-
-        }
+        //else
+        //{
+        //    transform.position = Vector3.Lerp(prevPos, playerData.position, Time.deltaTime / 0.2f);
+        //}
 
         //if (transform.position != playerData.position)
         //{

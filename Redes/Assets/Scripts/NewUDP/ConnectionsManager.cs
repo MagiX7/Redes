@@ -12,7 +12,7 @@ public class ConnectionsManager : MonoBehaviour
     int lastNetId = -1;
     int latestAffectedNetId = -1;
     bool needToUpdateEnemy = false;
-    BinaryReader latestReader;
+    PlayerData latestPlayerData;
 
     int latestSenderNetId = -1;
     bool clientDisconnected = false;
@@ -65,7 +65,7 @@ public class ConnectionsManager : MonoBehaviour
                 {
                     //latestAffectedNetId = clientId;
                     EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
-                    go.playerData = Serializer.DeserializePlayerData(latestReader);
+                    go.playerData = latestPlayerData;
                     break;
                 }
             }
@@ -148,11 +148,11 @@ public class ConnectionsManager : MonoBehaviour
 
             case MessageType.PLAYER_DATA:
             {
-                if (affectedNetId > 0)
+                if (affectedNetId >= 0)
                 {
                     latestAffectedNetId = affectedNetId;
                     needToUpdateEnemy = true;
-                    latestReader = reader;
+                    latestPlayerData = Serializer.DeserializePlayerData(reader);
                 }
                 // Server instancing
                 if (!serverInstanced && affectedNetId == 0)
