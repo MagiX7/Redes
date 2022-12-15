@@ -42,7 +42,7 @@ public class EnemyController : MonoBehaviour
         }
 
         correctionTimer += Time.deltaTime;
-        if (correctionTimer >= 0.2f)
+        //if (correctionTimer >= 0.2f)
         {
             transform.position = playerData.position;
             prevPos = transform.position;

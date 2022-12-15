@@ -30,6 +30,8 @@ public class ClientUDP : MonoBehaviour
     Thread receiveMsgsThread;
 
     bool finished = false;
+    bool newUser = false; // For other players
+    int latestNetId = -1;
 
     [SerializeField] EnemyController enemy;
     [SerializeField] ClientSceneManagerUDP sceneManager;
@@ -70,10 +72,16 @@ public class ClientUDP : MonoBehaviour
 
     void Update()
     {
+        if (newUser)
+        {
+            connectionsManager.OnNewClient(latestNetId);
+            newUser = false;
+        }
         if (netIdAssigned)
         {
             transform.parent.name = netId.ToString();
             netIdAssigned = false;
+            connectionsManager.OnNewClient(netId);
         }
     }
 
@@ -87,11 +95,18 @@ public class ClientUDP : MonoBehaviour
             if (recv > 0)
             {
                 int incomingNetId;
-                connectionsManager.OnMessageReceived(bytes, out _, out incomingNetId);
+                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out _, out incomingNetId);
+
                 if (incomingNetId > 0)
                 {
                     netId = incomingNetId;
                     netIdAssigned = true;
+
+                    if (msgType == MessageType.NEW_USER)
+                    {
+                        newUser = true;
+                        latestNetId = incomingNetId;
+                    }
                 }
             }
         }
