@@ -1399,7 +1399,6 @@ GameObject:
   - component: {fileID: 2567400715466048712}
   - component: {fileID: 166838785797031483}
   - component: {fileID: 2387115955721153074}
-  - component: {fileID: 5040702412794266165}
   m_Layer: 0
   m_Name: Enemy Chicken
   m_TagString: Player
@@ -1592,23 +1591,6 @@ MonoBehaviour:
   deathPrefab: {fileID: 5136708558052637636, guid: cbd5eb8666c121e4b9a541302cdf0d9e, type: 3}
   life: 5
   healthBar: {fileID: 2130157350}
---- !u!114 &5040702412794266165
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2568623838012824784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0987e36e22fdefe44ba4eb19ec90743d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clientIp: 0
-  serverIp: 192.168.1.42
-  userName: 
-  enemy: {fileID: 0}
-  sceneManager: {fileID: 0}
 --- !u!1 &2568672165135435150
 GameObject:
   m_ObjectHideFlags: 0
