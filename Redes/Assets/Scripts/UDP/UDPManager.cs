@@ -21,4 +21,12 @@ public class UDPManager : MonoBehaviour
         else server.Send(bytes);
     }
 
+    public void SendObjectData(ObjectData objectData, int senderNetId, bool isClient)
+    {
+        byte[] bytes = Serializer.SerializeObjectData(objectData, senderNetId, senderNetId);
+
+        if (isClient) client.Send(bytes);
+        else server.Send(bytes);
+    }
+
 }

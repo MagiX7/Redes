@@ -11,6 +11,7 @@ public enum MessageType
     PLAYER_DATA,
     NET_ID,
     START_GAME,
+    OBJECT_DATA,
     DISCONNECT
 }
 
@@ -122,4 +123,37 @@ public static class Serializer
         return reader.ReadBoolean();
     }
 
+
+    public static byte[] SerializeObjectData(ObjectData ObjectData, int senderNetId, int affectedNetId)
+    {
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write((int)MessageType.OBJECT_DATA);
+        writer.Write(senderNetId);
+        writer.Write(affectedNetId);
+        writer.Write(ObjectData.position.x);
+        writer.Write(ObjectData.position.y);
+        writer.Write(ObjectData.position.z);
+        Vector3 rot = ObjectData.rotation.eulerAngles;
+        writer.Write(rot.x);
+        writer.Write(rot.y);
+        writer.Write(rot.z);
+
+        return stream.GetBuffer();
+    }
+    public static ObjectData DeserializeObjectData(BinaryReader reader)
+    {
+        ObjectData objectData = new ObjectData();
+
+        objectData.position.x = reader.ReadSingle();
+        objectData.position.y = reader.ReadSingle();
+        objectData.position.z = reader.ReadSingle();
+        Vector3 euler = new Vector3();
+        euler.x = reader.ReadSingle();
+        euler.y = reader.ReadSingle();
+        euler.z = reader.ReadSingle();
+        objectData.rotation = Quaternion.Euler(euler);
+
+        return objectData;
+    }
 }

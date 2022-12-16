@@ -14,6 +14,11 @@ public class ConnectionsManager : MonoBehaviour
     bool needToUpdateEnemy = false;
     PlayerData latestPlayerData;
 
+    ObjectData latestObjectData;
+    bool needToUpdateObject = false;
+    int  latestObjectId = -1;
+    public List<GameObject> destroyableObjects;
+
     int latestSenderNetId = -1;
     bool clientDisconnected = false;
 
@@ -28,6 +33,7 @@ public class ConnectionsManager : MonoBehaviour
     void Start()
     {
         clientNetIds = new List<int>();
+        destroyableObjects = new List<GameObject>();
         players = new List<GameObject>();
     }
 
@@ -66,6 +72,20 @@ public class ConnectionsManager : MonoBehaviour
                     //latestAffectedNetId = clientId;
                     EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
                     go.playerData = latestPlayerData;
+                    break;
+                }
+            }
+        }
+
+        if (needToUpdateObject)
+        {
+            // Update the objects that are moving
+            for (int i = 0; i < destroyableObjects.Count; ++i)
+            {
+                ObjectDestructor objectDestructor = destroyableObjects[i].GetComponent<ObjectDestructor>();
+                if (objectDestructor.objectID == latestObjectId)
+                {
+                    objectDestructor.objectData = latestObjectData;
                     break;
                 }
             }
@@ -161,6 +181,19 @@ public class ConnectionsManager : MonoBehaviour
                 }
                 chatText = string.Empty;
                 clientNetId = -1;
+                break;
+            }
+
+            case MessageType.OBJECT_DATA:
+            {
+                if (affectedNetId >= 0)
+                {
+                    latestObjectId = affectedNetId;
+                    latestObjectData = Serializer.DeserializeObjectData(reader);
+                    needToUpdateObject = true;
+                }
+                    chatText = string.Empty;
+                    clientNetId = -1;
                 break;
             }
 
