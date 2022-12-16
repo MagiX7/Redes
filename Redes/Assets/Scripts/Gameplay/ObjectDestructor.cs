@@ -6,13 +6,14 @@ public class ObjectDestructor : MonoBehaviour
 {
     private Rigidbody rb;
     public float impulseForce = 10.0f;
+    private Vector3 impulse = Vector3.zero;
 
     // Online variables
     public ObjectData objectData = new ObjectData();
-    [SerializeField] UDPManager udpManager;
+    UDPManager udpManager;
     public bool isClient = false;
     private bool isMoving = false;
-    public int objectID = -1;
+    [HideInInspector] public int objectID = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -26,14 +27,17 @@ public class ObjectDestructor : MonoBehaviour
     {
         if (isMoving)
         {
-            objectData.position = this.gameObject.transform.position;
-            objectData.rotation = this.gameObject.transform.rotation;
+            //objectData.position = this.gameObject.transform.position;
+            //objectData.rotation = this.gameObject.transform.rotation;
             // Send data
             udpManager.SendObjectData(objectData, objectID, isClient);
+            rb.AddForce(impulse, ForceMode.Impulse);
+            isMoving = false;
+            impulse = Vector3.zero;
         }
 
-        if (rb.velocity == Vector3.zero)
-            isMoving = false;
+        //if (rb.velocity == Vector3.zero)
+        //    isMoving = false;
         
     }
 
@@ -41,7 +45,7 @@ public class ObjectDestructor : MonoBehaviour
     {
         if (collision.gameObject.tag == "Rocket")
         {
-            rb.AddForce(collision.gameObject.transform.forward * impulseForce, ForceMode.Impulse);
+            impulse = collision.gameObject.transform.forward * impulseForce;
             isMoving = true;
         }
     }

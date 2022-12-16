@@ -96,7 +96,8 @@ public class ClientUDP : MonoBehaviour
             if (recv > 0)
             {
                 int incomingNetId;
-                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out _, out incomingNetId);
+                int affectedNetId;
+                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out _, out incomingNetId, out affectedNetId);
 
                 if (incomingNetId > 0)
                 {
@@ -106,7 +107,7 @@ public class ClientUDP : MonoBehaviour
                     if (msgType == MessageType.NEW_USER)
                     {
                         newUser = true;
-                        latestNetId = incomingNetId;
+                        latestNetId = affectedNetId;
                     }
                 }
             }

@@ -124,7 +124,7 @@ public class ServerUDP : MonoBehaviour
             if (recv > 0)
             {
                 int clientNetId = -1;
-                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out text, out clientNetId);
+                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out text, out clientNetId, out _);
 
                 if (msgType == MessageType.DISCONNECT)
                 {
