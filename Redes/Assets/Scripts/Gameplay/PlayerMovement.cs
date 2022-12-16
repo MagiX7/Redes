@@ -131,8 +131,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetScore()
     {
-        Time.timeScale = 0.2f;
-        Invoke("ResetTimeScale", 0.3f);
+        //Time.timeScale = 0.2f;
+        //Invoke("ResetTimeScale", 0.3f);
     }
 
     void ResetTimeScale()

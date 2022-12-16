@@ -91,6 +91,7 @@ public class ServerUDP : MonoBehaviour
     {
         if (needToSendMessage)
         {
+            // World State Replication: Passive
             for (int i = 0; i < remoters.Count; i++)
                 serverSocket.SendTo(dataToSend, dataToSend.Length, SocketFlags.None, remoters[i]);
             needToSendMessage = false;

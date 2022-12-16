@@ -72,11 +72,12 @@ public class ClientUDP : MonoBehaviour
 
     void Update()
     {
-        if (newUser)
-        {
-            connectionsManager.OnNewClient(latestNetId);
-            newUser = false;
-        }
+        // TODO: Check if this works with 3 clients
+        //if (newUser)
+        //{
+        //    connectionsManager.OnNewClient(latestNetId);
+        //    newUser = false;
+        //}
         if (netIdAssigned)
         {
             transform.parent.name = netId.ToString();
