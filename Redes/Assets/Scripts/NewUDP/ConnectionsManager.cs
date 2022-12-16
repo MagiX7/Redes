@@ -52,16 +52,16 @@ public class ConnectionsManager : MonoBehaviour
             clientDisconnected = false;
         }
 
-        if (needToInstantiateServer)
-        {
-            GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
-            int serverId = 0;
-            latestClient.name = serverId.ToString();
-            clientNetIds.Add(serverId);
-            players.Add(latestClient);
-            needToInstantiateServer = false;
-            serverInstanced = true;
-        }
+        //if (needToInstantiateServer)
+        //{
+        //    GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
+        //    int serverId = 0;
+        //    latestClient.name = serverId.ToString();
+        //    clientNetIds.Add(serverId);
+        //    players.Add(latestClient);
+        //    needToInstantiateServer = false;
+        //    serverInstanced = true;
+        //}
 
         if (needToUpdateEnemy)
         {

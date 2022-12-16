@@ -73,16 +73,16 @@ public class ClientUDP : MonoBehaviour
     void Update()
     {
         // TODO: Check if this works with 3 clients
-        //if (newUser)
-        //{
-        //    connectionsManager.OnNewClient(latestNetId);
-        //    newUser = false;
-        //}
+        if (newUser)
+        {
+            connectionsManager.OnNewClient(latestNetId);
+            newUser = false;
+        }
         if (netIdAssigned)
         {
             transform.parent.name = netId.ToString();
             netIdAssigned = false;
-            connectionsManager.OnNewClient(netId);
+            //connectionsManager.OnNewClient(netId);
         }
     }
 
@@ -99,16 +99,15 @@ public class ClientUDP : MonoBehaviour
                 int affectedNetId;
                 MessageType msgType = connectionsManager.OnMessageReceived(bytes, out _, out incomingNetId, out affectedNetId);
 
-                if (incomingNetId > 0)
+                if (msgType == MessageType.NET_ID && incomingNetId > 0)
                 {
                     netId = incomingNetId;
                     netIdAssigned = true;
-
-                    if (msgType == MessageType.NEW_USER)
-                    {
-                        newUser = true;
-                        latestNetId = affectedNetId;
-                    }
+                }
+                else if (msgType == MessageType.NEW_USER)
+                {
+                    newUser = true;
+                    latestNetId = affectedNetId;
                 }
             }
         }
