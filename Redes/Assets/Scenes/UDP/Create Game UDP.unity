@@ -297,7 +297,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   impulseForce: 25
-  udpManager: {fileID: 0}
   isClient: 0
   objectID: 0
 --- !u!54 &188795693
@@ -350,7 +349,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   impulseForce: 25
-  udpManager: {fileID: 0}
   isClient: 0
   objectID: 1
 --- !u!1 &212952213
@@ -531,7 +529,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   impulseForce: 25
-  udpManager: {fileID: 0}
   isClient: 0
   objectID: 2
 --- !u!54 &335035694
@@ -872,6 +869,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -2294,6 +2292,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a2240e0c1c5dcd4c8633e278df9a981, type: 3}
+--- !u!1 &1994800782 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5225823959998039871, guid: 5a2240e0c1c5dcd4c8633e278df9a981, type: 3}
+  m_PrefabInstance: {fileID: 1994800781}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2044547877
 GameObject:
   m_ObjectHideFlags: 0
@@ -2328,6 +2331,7 @@ MonoBehaviour:
   - {fileID: 188795687}
   - {fileID: 191238844}
   - {fileID: 335035688}
+  - {fileID: 1994800782}
   sceneManager: {fileID: 2133486110}
   clientNetIds: 
   players: []
