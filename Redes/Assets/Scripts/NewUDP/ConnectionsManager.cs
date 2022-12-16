@@ -100,10 +100,10 @@ public class ConnectionsManager : MonoBehaviour
 
     void ClientConnected()
     {
-        //GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
-        //latestClient.name = lastNetId.ToString();
-        //clientNetIds.Add(lastNetId);
-        //players.Add(latestClient);
+        GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
+        latestClient.name = lastNetId.ToString();
+        clientNetIds.Add(lastNetId);
+        players.Add(latestClient);
     }
 
     public void OnClientDisconnected()
