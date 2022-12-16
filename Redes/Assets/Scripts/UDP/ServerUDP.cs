@@ -124,7 +124,8 @@ public class ServerUDP : MonoBehaviour
             if (recv > 0)
             {
                 int clientNetId = -1;
-                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out text, out clientNetId, out _);
+                int senderNetId;
+                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out text, out clientNetId, out senderNetId, out _);
 
                 if (msgType == MessageType.DISCONNECT)
                 {
@@ -147,6 +148,18 @@ public class ServerUDP : MonoBehaviour
                     serverSocket.SendTo(netIdBytes, remote);
                     connectionsManager.OnNewClient(clientsNetId);
                     clientsNetId++;
+
+
+                    //if (msgType == MessageType.NEW_USER)
+                    {
+                        for (int i = 0; i < remoters.Count; ++i)
+                        {
+                            byte[] data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, netId, "Welcome!");
+                            //serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
+                            serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
+                        }
+                    }
+
 
                     // ESTO ES UNA PRUEBA
                     {

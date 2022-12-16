@@ -120,7 +120,7 @@ public class ConnectionsManager : MonoBehaviour
     }
 
 
-    public MessageType OnMessageReceived(byte[] bytes, out string chatText, out int clientNetId, out int affectedNetId)
+    public MessageType OnMessageReceived(byte[] bytes, out string chatText, out int clientNetId, out int senderNetId, out int affectedNetId)
     {
         MemoryStream stream = new MemoryStream(bytes, 0, bytes.Length);
         BinaryReader reader = new BinaryReader(stream);
@@ -128,7 +128,7 @@ public class ConnectionsManager : MonoBehaviour
         stream.Seek(0, SeekOrigin.Begin);
 
         MessageType messageType = (MessageType)reader.ReadInt32();
-        int senderNetId = reader.ReadInt32();
+        senderNetId = reader.ReadInt32();
         affectedNetId = reader.ReadInt32();
         switch (messageType)
         {
