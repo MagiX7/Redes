@@ -105,7 +105,7 @@ public class ClientUDP : MonoBehaviour
                     netId = incomingNetId;
                     netIdAssigned = true;
                 }
-                else if (msgType == MessageType.NEW_USER)
+                else if (msgType == MessageType.NEW_USER && senderNetId != netId)
                 {
                     newUser = true;
                     latestNetId = senderNetId;

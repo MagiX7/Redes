@@ -137,6 +137,8 @@ public class ConnectionsManager : MonoBehaviour
                 chatText = Serializer.DeserializeString(reader);
                 sceneManager.OnNewChatMessage(chatText);
                 clientNetId = -1;
+                // On the server this is done when a remoters is not in the list
+                //OnNewClient(senderNetId);
                 break;
             }
 
