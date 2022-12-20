@@ -95,20 +95,26 @@ public class ServerUDP : MonoBehaviour
             text = "Welcome to the UDP server";
             sceneManager.OnNewChatMessage(text);
 
+            // Send the server playerdata
             byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
             serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+            // Send the server playerdata
 
-            //foreach (var client in connectionsManager.players)
-            //{
-            //    ClientUDP udp = client.GetComponentInChildren<ClientUDP>();
-            //    int affectedNetId = udp.GetNetId();
-            //
-            //    //if (affectedNetId == clientsNetId - 1)
-            //    //    continue;
-            //    PlayerData playerData = client.GetComponent<EnemyController>().playerData;
-            //    data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
-            //    serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
-            //}
+            // TODO: The problem here is that we send to remote, which is the latest connected client
+            // We need a way to ensure both lists, remoters and connectionsManager.players are the same (the first one is greater by 1)
+            // So we can send the required information to each client
+            foreach (var client in connectionsManager.players)
+            {
+                int clientNetId = int.Parse(client.name);
+                data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, clientNetId, "Welcome!!");
+                serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+            
+                //if (affectedNetId == clientsNetId - 1)
+                //    continue;
+                PlayerData playerData = client.GetComponent<EnemyController>().playerData;
+                data = Serializer.SerializePlayerData(playerData, netId, clientNetId);
+                serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+            }
 
             notifyExistingUsers = false;
         }
@@ -179,7 +185,6 @@ public class ServerUDP : MonoBehaviour
                         for (int i = 0; i < remoters.Count; ++i)
                         {
                             byte[] data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, netId, "Welcome!");
-                            //serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
                             serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
                         }
                     }
