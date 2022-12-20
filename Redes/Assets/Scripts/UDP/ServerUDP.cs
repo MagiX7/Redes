@@ -27,6 +27,7 @@ public class ServerUDP : MonoBehaviour
 
     bool newMessage = false;
     bool messageSent = false;
+    bool notifyExistingUsers = false;
 
     bool clientConnected = false;
     string lastUserName = string.Empty;
@@ -89,6 +90,29 @@ public class ServerUDP : MonoBehaviour
 
     void Update()
     {
+        if (notifyExistingUsers)
+        {
+            text = "Welcome to the UDP server";
+            sceneManager.OnNewChatMessage(text);
+
+            byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
+            serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+
+            //foreach (var client in connectionsManager.players)
+            //{
+            //    ClientUDP udp = client.GetComponentInChildren<ClientUDP>();
+            //    int affectedNetId = udp.GetNetId();
+            //
+            //    //if (affectedNetId == clientsNetId - 1)
+            //    //    continue;
+            //    PlayerData playerData = client.GetComponent<EnemyController>().playerData;
+            //    data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
+            //    serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+            //}
+
+            notifyExistingUsers = false;
+        }
+
         if (needToSendMessage)
         {
             // World State Replication: Passive
@@ -162,23 +186,9 @@ public class ServerUDP : MonoBehaviour
 
 
                     // ESTO ES UNA PRUEBA
-                    {
-                        text = "Welcome to the UDP server";
-                        sceneManager.OnNewChatMessage(text);
-
-                        byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
-                        serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
-
-                        foreach (var client in connectionsManager.players)
-                        {
-                            int affectedNetId = client.GetComponent<ClientUDP>().GetNetId();
-                            //if (affectedNetId == clientsNetId - 1)
-                            //    continue;
-                            PlayerData playerData = client.GetComponent<EnemyController>().playerData;
-                            data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
-                            serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
-                        }
-                    }
+                    //{
+                        notifyExistingUsers = true;
+                    //}
                     for (int i = 0; i < remoters.Count - 1; ++i)
                     {
                         text = lastUserName + " Connected!";
