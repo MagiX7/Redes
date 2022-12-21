@@ -46,8 +46,8 @@ public class EnemyController : MonoBehaviour
         {
             transform.position = playerData.position;
             prevPos = transform.position;
-            Debug.Log("TRANSFORM " + transform.position.ToString());
-            Debug.Log("TRANSFORM DATA " + playerData.position.ToString());
+            //Debug.Log("TRANSFORM " + transform.position.ToString());
+            //Debug.Log("TRANSFORM DATA " + playerData.position.ToString());
         }
         //else
         //{

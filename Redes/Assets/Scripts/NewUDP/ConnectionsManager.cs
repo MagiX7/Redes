@@ -69,6 +69,14 @@ public class ConnectionsManager : MonoBehaviour
             {
                 if (clientId == latestAffectedNetId)
                 {
+                    if (clientId == 1)
+                    {
+                        Debug.Log("Changed NETID 1");
+                    }
+                    else if (clientId == 2)
+                    {
+                        Debug.Log("Changed NETID 2");
+                    }
                     //latestAffectedNetId = clientId;
                     EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
                     go.playerData = latestPlayerData;
@@ -170,8 +178,23 @@ public class ConnectionsManager : MonoBehaviour
 
             case MessageType.PLAYER_DATA:
             {
-                if (affectedNetId >= 0)
+                if (affectedNetId == 0)
                 {
+                    Debug.Log(affectedNetId);
+                    latestAffectedNetId = affectedNetId;
+                    needToUpdateEnemy = true;
+                    latestPlayerData = Serializer.DeserializePlayerData(reader);
+                }
+                else if (affectedNetId == 1)
+                {
+                    Debug.Log(affectedNetId);
+                    latestAffectedNetId = affectedNetId;
+                    needToUpdateEnemy = true;
+                    latestPlayerData = Serializer.DeserializePlayerData(reader);
+                }
+                else if (affectedNetId == 2)
+                {
+                    Debug.Log(affectedNetId);
                     latestAffectedNetId = affectedNetId;
                     needToUpdateEnemy = true;
                     latestPlayerData = Serializer.DeserializePlayerData(reader);

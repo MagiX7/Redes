@@ -82,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
 
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
-        Debug.Log("Transofrm from playermove" + playerData.position.ToString());
+        //Debug.Log("Transofrm from playermove" + playerData.position.ToString());
 
         if (gotHit)
         {
