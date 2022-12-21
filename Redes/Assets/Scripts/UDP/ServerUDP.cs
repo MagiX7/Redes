@@ -108,7 +108,7 @@ public class ServerUDP : MonoBehaviour
             OnClientConnected();
         }
 
-        if (notifyExistingUsers)
+        if (notifyExistingUsers && !connectionsManager.newUser)
         {
             text = "Welcome to the UDP server";
             sceneManager.OnNewChatMessage(text);
@@ -128,12 +128,12 @@ public class ServerUDP : MonoBehaviour
 
                     int clientNetId = int.Parse(client.name);
                     string message = string.Empty;
-                    if (clientNetId == clientsNetId - 1)
-                    {
+                    //if (clientNetId == clientsNetId - 1)
+                    //{
                         message = text;
                         data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, clientNetId, message);
                         serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
-                    }
+                    //}
                     //else
                     //{
                     //    message = ""

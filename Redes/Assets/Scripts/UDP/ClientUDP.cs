@@ -103,6 +103,7 @@ public class ClientUDP : MonoBehaviour
                 if (msgType == MessageType.NET_ID && incomingNetId > 0)
                 {
                     netId = incomingNetId;
+                    connectionsManager.OnNewClient(senderNetId);
                     netIdAssigned = true;
                 }
                 else if (msgType == MessageType.NEW_USER && senderNetId != netId)

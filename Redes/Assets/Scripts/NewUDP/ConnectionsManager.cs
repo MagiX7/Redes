@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class ConnectionsManager : MonoBehaviour
 {
     [SerializeField] GameObject enemyPrefab;
-    bool newUser = false;
+    [HideInInspector] public bool newUser = false;
     int lastNetId = -1;
     int latestAffectedNetId = -1;
     bool needToUpdateEnemy = false;
