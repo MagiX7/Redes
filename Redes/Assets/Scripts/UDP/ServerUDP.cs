@@ -178,6 +178,12 @@ public class ServerUDP : MonoBehaviour
                     }
                 }
 
+                if (msgType == MessageType.PLAYER_DATA && connectionsManager.needToUpdateEnemy)
+                {
+                    dataToSend = bytes;
+                    needToSendMessage = true;
+                }
+
                 if (!remoters.Contains(remote))
                 {
                     clientConnected = true;

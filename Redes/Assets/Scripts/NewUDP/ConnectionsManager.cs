@@ -11,7 +11,7 @@ public class ConnectionsManager : MonoBehaviour
     [HideInInspector] public bool newUser = false;
     int lastNetId = -1;
     int latestAffectedNetId = -1;
-    bool needToUpdateEnemy = false;
+    [HideInInspector] public bool needToUpdateEnemy = false;
     PlayerData latestPlayerData;
 
     ObjectData latestObjectData;
@@ -178,35 +178,42 @@ public class ConnectionsManager : MonoBehaviour
 
             case MessageType.PLAYER_DATA:
             {
-                if (affectedNetId == 0)
-                {
-                    Debug.Log(affectedNetId);
-                    latestAffectedNetId = affectedNetId;
-                    needToUpdateEnemy = true;
-                    latestPlayerData = Serializer.DeserializePlayerData(reader);
-                }
-                else if (affectedNetId == 1)
-                {
-                    Debug.Log(affectedNetId);
-                    latestAffectedNetId = affectedNetId;
-                    needToUpdateEnemy = true;
-                    latestPlayerData = Serializer.DeserializePlayerData(reader);
-                }
-                else if (affectedNetId == 2)
-                {
-                    Debug.Log(affectedNetId);
-                    latestAffectedNetId = affectedNetId;
-                    needToUpdateEnemy = true;
-                    latestPlayerData = Serializer.DeserializePlayerData(reader);
-                }
-                // Server instancing
-                if (!serverInstanced && affectedNetId == 0)
-                {
-                    needToInstantiateServer = true;
-                }
-                chatText = string.Empty;
-                clientNetId = -1;
-                break;
+                    //if (affectedNetId == 0)
+                    //{
+                    //    Debug.Log(affectedNetId);
+                    //    latestAffectedNetId = affectedNetId;
+                    //    needToUpdateEnemy = true;
+                    //    latestPlayerData = Serializer.DeserializePlayerData(reader);
+                    //}
+                    //else if (affectedNetId == 1)
+                    //{
+                    //    Debug.Log(affectedNetId);
+                    //    latestAffectedNetId = affectedNetId;
+                    //    needToUpdateEnemy = true;
+                    //    latestPlayerData = Serializer.DeserializePlayerData(reader);
+                    //}
+                    //else if (affectedNetId == 2)
+                    //{
+                    //    Debug.Log(affectedNetId);
+                    //    latestAffectedNetId = affectedNetId;
+                    //    needToUpdateEnemy = true;
+                    //    latestPlayerData = Serializer.DeserializePlayerData(reader);
+                    //}
+                    //// Server instancing
+                    //if (!serverInstanced && affectedNetId == 0)
+                    //{
+                    //    needToInstantiateServer = true;
+                    //}
+                    int netId = int.Parse(name);
+                    if (netId != affectedNetId)
+                    {
+                        latestAffectedNetId = affectedNetId;
+                        needToUpdateEnemy = true;
+                        latestPlayerData = Serializer.DeserializePlayerData(reader);
+                    }
+                    chatText = string.Empty;
+                    clientNetId = -1;
+                    break;
             }
 
             case MessageType.OBJECT_DATA:
