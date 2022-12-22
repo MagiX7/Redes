@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1000))
+        if (Physics.Raycast(ray, out hit, 1000, 3))
         {
             Vector3 direction = (hit.point - transform.position).normalized;
             playerData.movementDirection = direction;
@@ -74,9 +74,12 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && canShoot)
         {
             canShoot = false;
-            playerData.shooted = true;
             Invoke("ReEnableDisabledProjectile", 3.0f);
-            rocketLauncherController.FireWeapon();
+            Transform rocketTrans = rocketLauncherController.FireWeapon();
+
+            playerData.shooted = true;
+            playerData.rocketPosition = rocketTrans.position;
+            playerData.rocketDirection = rocketTrans.rotation.eulerAngles;
         }
 
 

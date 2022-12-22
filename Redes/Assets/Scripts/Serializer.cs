@@ -76,6 +76,16 @@ public static class Serializer
 
         writer.Write(playerData.shooted);
 
+        if (playerData.shooted)
+        {
+            writer.Write(playerData.rocketPosition.x);
+            writer.Write(playerData.rocketPosition.y);
+            writer.Write(playerData.rocketPosition.z);
+            writer.Write(playerData.rocketDirection.x);
+            writer.Write(playerData.rocketDirection.y);
+            writer.Write(playerData.rocketDirection.z);
+        }
+
         return stream.GetBuffer();
     }
 
@@ -95,6 +105,16 @@ public static class Serializer
         playerData.rotation = Quaternion.Euler(euler);
 
         playerData.shooted = reader.ReadBoolean();
+
+        if (playerData.shooted)
+        {
+            playerData.rocketPosition.x = reader.ReadSingle();  
+            playerData.rocketPosition.y = reader.ReadSingle();
+            playerData.rocketPosition.z = reader.ReadSingle();
+            playerData.rocketDirection.x = reader.ReadSingle();
+            playerData.rocketDirection.y = reader.ReadSingle();
+            playerData.rocketDirection.z = reader.ReadSingle();
+        }
 
         return playerData;
     }
