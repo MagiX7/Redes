@@ -85,22 +85,27 @@ public class ConnectionsManager : MonoBehaviour
                     }
                 }
             }
+            mutex.ReleaseMutex();
         }
 
         if (needToUpdateObject)
         {
-            // Update the objects that are moving
-            for (int i = 0; i < destroyableObjects.Count; ++i)
+            mutex.WaitOne();
             {
-                ObjectDestructor objectDestructor = destroyableObjects[i].GetComponent<ObjectDestructor>();
-                if (objectDestructor.objectID == latestObjectId)
+                // Update the objects that are moving
+                for (int i = 0; i < destroyableObjects.Count; ++i)
                 {
-                    objectDestructor.objectData = latestObjectData;
-                    objectDestructor.SetImpulseForce();
-                    break;
+                    ObjectDestructor objectDestructor = destroyableObjects[i].GetComponent<ObjectDestructor>();
+                    if (objectDestructor.objectID == latestObjectId)
+                    {
+                        objectDestructor.objectData = latestObjectData;
+                        objectDestructor.ApplyImpulseForce();
+                        break;
+                    }
                 }
+                needToUpdateObject = false;
             }
-            needToUpdateObject = false;
+            mutex.ReleaseMutex();
         }
     }
 

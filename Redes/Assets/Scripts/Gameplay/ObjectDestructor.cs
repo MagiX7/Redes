@@ -42,8 +42,9 @@ public class ObjectDestructor : MonoBehaviour
         
     }
 
-    public void SetImpulseForce()
+    public void ApplyImpulseForce()
     {
+        Debug.Log("IMPULSED: " + objectData.impulse);
         rb.AddForce(objectData.impulse, ForceMode.Impulse);
     }
     private void OnCollisionEnter(Collision collision)
@@ -51,7 +52,7 @@ public class ObjectDestructor : MonoBehaviour
         if (collision.gameObject.tag == "Rocket")
         {
             impulse = collision.gameObject.transform.forward * impulseForce;
-            rb.AddForce(impulse, ForceMode.Impulse);
+            //rb.AddForce(impulse, ForceMode.Impulse);
             objectData.impulse = impulse;
             isMoving = true;
         }
