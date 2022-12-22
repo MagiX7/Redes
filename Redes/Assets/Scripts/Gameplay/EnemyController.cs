@@ -37,7 +37,7 @@ public class EnemyController : MonoBehaviour
     {
         if (playerData.shooted)
         {          
-            rocketLauncherController.FireWeapon(playerData.position, Quaternion.Euler(playerData.rocketDirection));
+            rocketLauncherController.FireWeapon(playerData.rocketPosition, Quaternion.Euler(playerData.rocketDirection));
             playerData.shooted = false;
         }
 
