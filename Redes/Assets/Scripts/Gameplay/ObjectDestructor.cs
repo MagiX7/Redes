@@ -31,9 +31,7 @@ public class ObjectDestructor : MonoBehaviour
             //objectData.rotation = this.gameObject.transform.rotation;
             // Send data
             udpManager.SendObjectData(objectData, objectID, isClient);
-            udpManager.SendObjectData(objectData, objectID, isClient);
-            udpManager.SendObjectData(objectData, objectID, isClient);
-            udpManager.SendObjectData(objectData, objectID, isClient);
+            
             isMoving = false;
             //rb.AddForce(impulse, ForceMode.Impulse);
             //isMoving = false;
