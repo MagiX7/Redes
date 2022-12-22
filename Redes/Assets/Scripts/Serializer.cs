@@ -151,13 +151,10 @@ public static class Serializer
         writer.Write((int)MessageType.OBJECT_DATA);
         writer.Write(senderNetId);
         writer.Write(affectedNetId);
-        writer.Write(ObjectData.position.x);
-        writer.Write(ObjectData.position.y);
-        writer.Write(ObjectData.position.z);
-        Vector3 rot = ObjectData.rotation.eulerAngles;
-        writer.Write(rot.x);
-        writer.Write(rot.y);
-        writer.Write(rot.z);
+    
+        writer.Write(ObjectData.impulse.x);
+        writer.Write(ObjectData.impulse.y);
+        writer.Write(ObjectData.impulse.z);
 
         return stream.GetBuffer();
     }
@@ -165,14 +162,9 @@ public static class Serializer
     {
         ObjectData objectData = new ObjectData();
 
-        objectData.position.x = reader.ReadSingle();
-        objectData.position.y = reader.ReadSingle();
-        objectData.position.z = reader.ReadSingle();
-        Vector3 euler = new Vector3();
-        euler.x = reader.ReadSingle();
-        euler.y = reader.ReadSingle();
-        euler.z = reader.ReadSingle();
-        objectData.rotation = Quaternion.Euler(euler);
+        objectData.impulse.x = reader.ReadSingle();
+        objectData.impulse.y = reader.ReadSingle();
+        objectData.impulse.z = reader.ReadSingle();
 
         return objectData;
     }
