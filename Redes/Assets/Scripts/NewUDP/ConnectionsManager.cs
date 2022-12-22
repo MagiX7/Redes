@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,12 +30,19 @@ public class ConnectionsManager : MonoBehaviour
     bool needToInstantiateServer = false;
     bool serverInstanced = false;
 
+    Mutex mutex = new Mutex();
+
     // Start is called before the first frame update
     void Start()
     {
         clientNetIds = new List<int>();
         destroyableObjects = new List<GameObject>();
         players = new List<GameObject>();
+    }
+
+    private void OnDisable()
+    {
+        mutex.Dispose();
     }
 
     // Update is called once per frame
@@ -65,24 +73,19 @@ public class ConnectionsManager : MonoBehaviour
 
         if (needToUpdateEnemy)
         {
+            mutex.WaitOne();
+            {
                 foreach (int clientId in clientNetIds)
                 {
                     if (clientId == latestAffectedNetId)
                     {
-                        if (clientId == 1)
-                        {
-                            Debug.Log("Changed NETID 1");
-                        }
-                        else if (clientId == 2)
-                        {
-                            Debug.Log("Changed NETID 2");
-                        }
                         //latestAffectedNetId = clientId;
                         EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
                         go.playerData = latestPlayerData;
                         break;
                     }
                 }
+            }
         }
 
         if (needToUpdateObject)
