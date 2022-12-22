@@ -6,8 +6,8 @@ using UnityEngine;
 
 public enum MessageType
 {
+    CHAT = 1,
     NEW_USER,
-    CHAT,
     PLAYER_DATA,
     NET_ID,
     START_GAME,
