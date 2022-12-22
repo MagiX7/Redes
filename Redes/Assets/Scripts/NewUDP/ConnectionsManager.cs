@@ -18,7 +18,7 @@ public class ConnectionsManager : MonoBehaviour
     ObjectData latestObjectData;
     bool needToUpdateObject = false;
     int  latestObjectId = -1;
-    public List<GameObject> destroyableObjects;
+    public List<GameObject> destroyableObjects = new List<GameObject>();
 
     int latestSenderNetId = -1;
     bool clientDisconnected = false;
@@ -36,7 +36,6 @@ public class ConnectionsManager : MonoBehaviour
     void Start()
     {
         clientNetIds = new List<int>();
-        destroyableObjects = new List<GameObject>();
         players = new List<GameObject>();
     }
 
@@ -97,9 +96,11 @@ public class ConnectionsManager : MonoBehaviour
                 if (objectDestructor.objectID == latestObjectId)
                 {
                     objectDestructor.objectData = latestObjectData;
+                    objectDestructor.SetImpulseForce();
                     break;
                 }
             }
+            needToUpdateObject = false;
         }
     }
 

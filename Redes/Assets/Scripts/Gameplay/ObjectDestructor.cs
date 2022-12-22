@@ -31,21 +31,28 @@ public class ObjectDestructor : MonoBehaviour
             //objectData.rotation = this.gameObject.transform.rotation;
             // Send data
             udpManager.SendObjectData(objectData, objectID, isClient);
-            rb.AddForce(impulse, ForceMode.Impulse);
             isMoving = false;
-            impulse = Vector3.zero;
+            //rb.AddForce(impulse, ForceMode.Impulse);
+            //isMoving = false;
+            //impulse = Vector3.zero;
         }
 
         //if (rb.velocity == Vector3.zero)
-        //    isMoving = false;
+          //  isMoving = false;
         
     }
 
+    public void SetImpulseForce()
+    {
+        rb.AddForce(objectData.impulse, ForceMode.Impulse);
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Rocket")
         {
             impulse = collision.gameObject.transform.forward * impulseForce;
+            rb.AddForce(impulse, ForceMode.Impulse);
+            objectData.impulse = impulse;
             isMoving = true;
         }
     }
