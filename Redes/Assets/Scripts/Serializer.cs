@@ -64,7 +64,6 @@ public static class Serializer
         writer.Write((int)MessageType.PLAYER_DATA);
         writer.Write(senderNetId);
         writer.Write(affectedNetId);
-        writer.Write(playerData.netIDComprovant);
         writer.Write(playerData.damage);
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.z);
@@ -84,7 +83,6 @@ public static class Serializer
     {
         PlayerData playerData = new PlayerData();
 
-        playerData.netIDComprovant = reader.ReadInt32();
         playerData.damage = reader.ReadInt32();
         playerData.position.x = reader.ReadSingle();
         playerData.position.z = reader.ReadSingle();

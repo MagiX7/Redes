@@ -67,14 +67,19 @@ public class ConnectionsManager : MonoBehaviour
         {
                 foreach (int clientId in clientNetIds)
                 {
-                  //  if (clientId == latestAffectedNetId)
+                    if (clientId == latestAffectedNetId)
                     {
-            
+                        if (clientId == 1)
+                        {
+                            Debug.Log("Changed NETID 1");
+                        }
+                        else if (clientId == 2)
+                        {
+                            Debug.Log("Changed NETID 2");
+                        }
                         //latestAffectedNetId = clientId;
                         EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
-                        if (go.playerData.netIDComprovant == clientId)
-                            go.playerData = latestPlayerData;
-                        
+                        go.playerData = latestPlayerData;
                         break;
                     }
                 }

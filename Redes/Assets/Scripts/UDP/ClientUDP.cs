@@ -80,9 +80,7 @@ public class ClientUDP : MonoBehaviour
         }
         if (netIdAssigned)
         {
-            GameObject parent = transform.parent.gameObject;
-            parent.name = netId.ToString();
-            parent.GetComponent<PlayerMovement>().playerData.netIDComprovant = netId;
+            transform.parent.name = netId.ToString();
             netIdAssigned = false;
             //connectionsManager.OnNewClient(netId);
         }
