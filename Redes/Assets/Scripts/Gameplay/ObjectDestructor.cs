@@ -13,7 +13,7 @@ public class ObjectDestructor : MonoBehaviour
     UDPManager udpManager;
     public bool isClient = false;
     private bool isMoving = false;
-    [HideInInspector] public int objectID = -1;
+    public int objectID = -1;
 
     // Start is called before the first frame update
     void Start()
