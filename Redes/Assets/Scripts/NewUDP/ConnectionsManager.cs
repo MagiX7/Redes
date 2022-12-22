@@ -65,24 +65,24 @@ public class ConnectionsManager : MonoBehaviour
 
         if (needToUpdateEnemy)
         {
-            foreach (int clientId in clientNetIds)
-            {
-                if (clientId == latestAffectedNetId)
+                foreach (int clientId in clientNetIds)
                 {
-                    if (clientId == 1)
+                    if (clientId == latestAffectedNetId)
                     {
-                        Debug.Log("Changed NETID 1");
+                        if (clientId == 1)
+                        {
+                            Debug.Log("Changed NETID 1");
+                        }
+                        else if (clientId == 2)
+                        {
+                            Debug.Log("Changed NETID 2");
+                        }
+                        //latestAffectedNetId = clientId;
+                        EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
+                        go.playerData = latestPlayerData;
+                        break;
                     }
-                    else if (clientId == 2)
-                    {
-                        Debug.Log("Changed NETID 2");
-                    }
-                    //latestAffectedNetId = clientId;
-                    EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
-                    go.playerData = latestPlayerData;
-                    break;
                 }
-            }
         }
 
         if (needToUpdateObject)
@@ -141,43 +141,43 @@ public class ConnectionsManager : MonoBehaviour
         switch (messageType)
         {
             case MessageType.NEW_USER:
-            {
-                chatText = Serializer.DeserializeString(reader);
-                sceneManager.OnNewChatMessage(chatText);
-                clientNetId = -1;
-                // On the server this is done when a remoters is not in the list
-                //OnNewClient(senderNetId);
-                break;
-            }
+                {
+                    chatText = Serializer.DeserializeString(reader);
+                    sceneManager.OnNewChatMessage(chatText);
+                    clientNetId = -1;
+                    // On the server this is done when a remoters is not in the list
+                    //OnNewClient(senderNetId);
+                    break;
+                }
 
             case MessageType.DISCONNECT:
-            {
-                latestSenderNetId = senderNetId;
-                clientDisconnected = true;
-                //chatText = Serializer.DeserializeString(reader);
-                chatText = Serializer.DeserializeString(reader);
-                sceneManager.OnNewChatMessage(chatText);
-                clientNetId = -1;
-                break;
-            }
+                {
+                    latestSenderNetId = senderNetId;
+                    clientDisconnected = true;
+                    //chatText = Serializer.DeserializeString(reader);
+                    chatText = Serializer.DeserializeString(reader);
+                    sceneManager.OnNewChatMessage(chatText);
+                    clientNetId = -1;
+                    break;
+                }
 
             case MessageType.NET_ID:
-            {
-                clientNetId = Serializer.DeserializeInt(reader);
-                chatText = string.Empty;
-                break;
-            }
+                {
+                    clientNetId = Serializer.DeserializeInt(reader);
+                    chatText = string.Empty;
+                    break;
+                }
 
             case MessageType.CHAT:
-            {
-                chatText = Serializer.DeserializeString(reader);
-                sceneManager.OnNewChatMessage(chatText);
-                clientNetId = -1;
-                break;
-            }
+                {
+                    chatText = Serializer.DeserializeString(reader);
+                    sceneManager.OnNewChatMessage(chatText);
+                    clientNetId = -1;
+                    break;
+                }
 
             case MessageType.PLAYER_DATA:
-            {
+                {
                     //if (affectedNetId == 0)
                     //{
                     //    Debug.Log(affectedNetId);
@@ -204,45 +204,43 @@ public class ConnectionsManager : MonoBehaviour
                     //{
                     //    needToInstantiateServer = true;
                     //}
-                    int netId = int.Parse(name);
-                    if (netId != affectedNetId)
+
+                    latestAffectedNetId = affectedNetId;
+                    needToUpdateEnemy = true;
+                    latestPlayerData = Serializer.DeserializePlayerData(reader);
+
+                    chatText = string.Empty;
+                    clientNetId = -1;
+                    break;
+                }
+
+            case MessageType.OBJECT_DATA:
+                {
+                    if (affectedNetId >= 0)
                     {
-                        latestAffectedNetId = affectedNetId;
-                        needToUpdateEnemy = true;
-                        latestPlayerData = Serializer.DeserializePlayerData(reader);
+                        latestObjectId = affectedNetId;
+                        latestObjectData = Serializer.DeserializeObjectData(reader);
+                        needToUpdateObject = true;
                     }
                     chatText = string.Empty;
                     clientNetId = -1;
                     break;
-            }
-
-            case MessageType.OBJECT_DATA:
-            {
-                if (affectedNetId >= 0)
-                {
-                    latestObjectId = affectedNetId;
-                    latestObjectData = Serializer.DeserializeObjectData(reader);
-                    needToUpdateObject = true;
                 }
-                    chatText = string.Empty;
-                    clientNetId = -1;
-                break;
-            }
 
             case MessageType.START_GAME:
-            {
-                sceneManager.StartClient();
-                chatText = string.Empty;
-                clientNetId = -1;
-                break;
-            }
+                {
+                    sceneManager.StartClient();
+                    chatText = string.Empty;
+                    clientNetId = -1;
+                    break;
+                }
 
             default:
-            {
-                chatText = string.Empty;
-                clientNetId = -1;
-                break;
-            }
+                {
+                    chatText = string.Empty;
+                    clientNetId = -1;
+                    break;
+                }
         }
 
         return messageType;

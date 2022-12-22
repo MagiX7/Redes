@@ -23,6 +23,7 @@ public class ServerUDP : MonoBehaviour
     EndPoint remote = null;
 
     Thread receiveMsgsThread;
+    Thread broadcastMsgsThread;
     bool finished = false;
 
     bool newMessage = false;
@@ -65,6 +66,8 @@ public class ServerUDP : MonoBehaviour
 
         receiveMsgsThread = new Thread(ReceiveMessages);
         receiveMsgsThread.Start();
+        broadcastMsgsThread = new Thread(BroadcastMessages);
+        broadcastMsgsThread.Start();
 
         //connectedPeople.text += ("You (Server)\n");
         sceneManager.UpdateUsersList("You (Server)");
@@ -86,19 +89,12 @@ public class ServerUDP : MonoBehaviour
         serverSocket.Close();
         if (receiveMsgsThread.IsAlive)
             receiveMsgsThread.Abort();
+        if (broadcastMsgsThread.IsAlive)
+            broadcastMsgsThread.Abort();
     }
 
     void Update()
     {
-        if (needToSendMessage)
-        {
-            // World State Replication: Passive
-            for (int i = 0; i < remoters.Count; i++)
-                serverSocket.SendTo(dataToSend, dataToSend.Length, SocketFlags.None, remoters[i]);
-            needToSendMessage = false;
-            dataToSend = new byte[1024];
-        }
-
         if (!clientConnected && newMessage)
         {
             OnChatMessageReceived();
@@ -250,6 +246,21 @@ public class ServerUDP : MonoBehaviour
                     //    serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
                     //}
                 }
+            }
+        }
+    }
+
+    void BroadcastMessages()
+    {
+        while(!finished)
+        {
+            if (needToSendMessage)
+            {
+                // World State Replication: Passive
+                for (int i = 0; i < remoters.Count; i++)
+                    serverSocket.SendTo(dataToSend, dataToSend.Length, SocketFlags.None, remoters[i]);
+                needToSendMessage = false;
+                dataToSend = new byte[1024];
             }
         }
     }
