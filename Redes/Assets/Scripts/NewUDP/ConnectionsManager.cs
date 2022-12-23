@@ -22,6 +22,7 @@ public class ConnectionsManager : MonoBehaviour
 
     int latestSenderNetId = -1;
     bool clientDisconnected = false;
+    string disconnectedUserName = string.Empty;
 
     [SerializeField] ClientSceneManagerUDP sceneManager;
 
@@ -58,17 +59,6 @@ public class ConnectionsManager : MonoBehaviour
             OnClientDisconnected();
             clientDisconnected = false;
         }
-
-        //if (needToInstantiateServer)
-        //{
-        //    GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
-        //    int serverId = 0;
-        //    latestClient.name = serverId.ToString();
-        //    clientNetIds.Add(serverId);
-        //    players.Add(latestClient);
-        //    needToInstantiateServer = false;
-        //    serverInstanced = true;
-        //}
 
         if (needToUpdateEnemy)
         {
@@ -127,15 +117,11 @@ public class ConnectionsManager : MonoBehaviour
     {
         clientNetIds.Remove(latestSenderNetId);
         GameObject go = GameObject.Find(latestSenderNetId.ToString());
+        sceneManager.RemoveUserFromList(disconnectedUserName);
         players.Remove(go);
         Destroy(go);
+        disconnectedUserName = string.Empty;
     }
-
-    void ClientDisconnected()
-    {
-
-    }
-
 
     public MessageType OnMessageReceived(byte[] bytes, out string chatText, out int clientNetId, out int senderNetId, out int affectedNetId)
     {
@@ -164,7 +150,8 @@ public class ConnectionsManager : MonoBehaviour
                     latestSenderNetId = senderNetId;
                     clientDisconnected = true;
                     //chatText = Serializer.DeserializeString(reader);
-                    chatText = Serializer.DeserializeString(reader);
+                    disconnectedUserName = Serializer.DeserializeString(reader);
+                    chatText = "[" + disconnectedUserName + "]: Disconnected";
                     sceneManager.OnNewChatMessage(chatText);
                     clientNetId = -1;
                     break;

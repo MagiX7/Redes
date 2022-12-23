@@ -61,7 +61,7 @@ public class ClientUDP : MonoBehaviour
         string msg = "[" + userName + "]" + ": Disconnected";
         //sceneManager.OnNewChatMessage(msg);
 
-        byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.DISCONNECT, netId, msg);
+        byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.DISCONNECT, netId, userName);
         clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
         finished = true;
 

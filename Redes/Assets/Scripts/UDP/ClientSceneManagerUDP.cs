@@ -247,12 +247,24 @@ public class ClientSceneManagerUDP : MonoBehaviour
         newChatMessage = true;
     }
 
-    public void UpdateUsersList(string message)
+    public void AddUserToList(string message)
     {
         if (connectedPeople == null)
             return;
 
         connectedPeople.text += message + "\n";
+    }
+
+    public void RemoveUserFromList(string userName)
+    {
+        if (connectedPeople == null)
+            return;
+
+        //string text = connectedPeople.text;
+        //int removeStart = text.IndexOf(userName);
+
+        //string deleted = text.Substring(removeStart, userName.Length);
+        connectedPeople.text.Replace(userName, string.Empty);
     }
 
 }

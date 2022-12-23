@@ -43,8 +43,6 @@ public class ServerUDP : MonoBehaviour
     //[SerializeField] Text connectedPeople;
     [SerializeField] Text ipText;
 
-    PlayerData serverPlayerData;
-
     ConnectionsManager connectionsManager;
     ClientSceneManagerUDP sceneManager;
 
@@ -70,12 +68,12 @@ public class ServerUDP : MonoBehaviour
         broadcastMsgsThread.Start();
 
         //connectedPeople.text += ("You (Server)\n");
-        sceneManager.UpdateUsersList("You (Server)");
+        sceneManager.AddUserToList("You (Server)");
         sceneManager.OnNewChatMessage("Server created successfully!");
         //chat.text += "Server created successfully!\n";
         ipText.text += serverIp;
 
-        serverPlayerData = transform.parent.GetComponent<PlayerMovement>().playerData;
+        //serverPlayerData = transform.parent.GetComponent<PlayerMovement>().playerData;
         transform.parent.name = netId.ToString();
 
     }
@@ -99,15 +97,14 @@ public class ServerUDP : MonoBehaviour
         {
             OnChatMessageReceived();
         }
-        else if (clientConnected)
+        if (clientConnected)
         {
             OnClientConnected();
         }
 
         if (notifyExistingUsers && !connectionsManager.newUser)
         {
-            text = "Welcome to the UDP server";
-            sceneManager.OnNewChatMessage(text);
+            //sceneManager.OnNewChatMessage(text);
 
             // TODO: The problem here is that we send to remote, which is the latest connected client
             // We need a way to ensure both lists, remoters and connectionsManager.players are the same (the first one is greater by 1)
@@ -123,17 +120,11 @@ public class ServerUDP : MonoBehaviour
                     // Send the server playerdata
 
                     int clientNetId = int.Parse(client.name);
-                    string message = string.Empty;
-                    //if (clientNetId == clientsNetId - 1)
-                    //{
-                        message = text;
-                        data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, clientNetId, message);
+                    if (clientNetId == clientsNetId - 1)
+                    {
+                        data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, clientNetId, "Welcome to the UDP server");
                         serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
-                    //}
-                    //else
-                    //{
-                    //    message = ""
-                    //}
+                    }
 
                     PlayerData playerData = client.GetComponent<EnemyController>().playerData;
                     data = Serializer.SerializePlayerData(playerData, netId, clientNetId);
@@ -172,9 +163,9 @@ public class ServerUDP : MonoBehaviour
                         //serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
                     }
+                    continue;
                 }
-
-                if (msgType == MessageType.PLAYER_DATA && connectionsManager.needToUpdateEnemy)
+                else if (msgType == MessageType.PLAYER_DATA && connectionsManager.needToUpdateEnemy)
                 {
                     dataToSend = bytes;
                     needToSendMessage = true;
@@ -280,7 +271,7 @@ public class ServerUDP : MonoBehaviour
     void OnClientConnected()
     {
         sceneManager.OnNewChatMessage(lastUserName + " Connected!");
-        sceneManager.UpdateUsersList(lastUserName);
+        sceneManager.AddUserToList(lastUserName);
 
         clientConnected = false;
         lastUserName = string.Empty;
