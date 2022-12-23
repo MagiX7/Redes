@@ -98,7 +98,7 @@ public class ServerUDP : MonoBehaviour
                 {
                     GameObject client = connectionsManager.players[i];
                     int clientNetId = int.Parse(client.name);
-                    string text = "Welcome to the server, " + lastUserName;
+                    string text = "Welcome, " + lastUserName;
                     data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, clientNetId, text);
                     serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
 
@@ -166,7 +166,7 @@ public class ServerUDP : MonoBehaviour
 
                     for (int i = 0; i < remoters.Count - 1; ++i)
                     {
-                        string msg = "Welcome to the server, " + lastUserName;
+                        string msg = "Welcome, " + lastUserName;
                         sceneManager.OnNewChatMessage(msg);
                         bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, msg);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
@@ -205,7 +205,7 @@ public class ServerUDP : MonoBehaviour
 
     void OnClientConnected()
     {
-        sceneManager.OnNewChatMessage(lastUserName + " Connected!");
+        sceneManager.OnNewChatMessage("Welcome, " + lastUserName);
         sceneManager.UpdateUsersList(lastUserName);
 
         clientConnected = false;
