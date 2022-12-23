@@ -1,16 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
-using System.IO;
-using static System.Net.Mime.MediaTypeNames;
-using UnityEngine.XR;
-using UnityEngine.SceneManagement;
 
 public class ClientUDP : MonoBehaviour
 {
@@ -30,7 +21,7 @@ public class ClientUDP : MonoBehaviour
     Thread receiveMsgsThread;
 
     bool finished = false;
-    bool newUser = false; // For other players
+    bool newUser = false;
     int latestNetId = -1;
 
     [SerializeField] EnemyController enemy;
@@ -58,9 +49,6 @@ public class ClientUDP : MonoBehaviour
 
     private void OnDestroy()
     {
-        string msg = "[" + userName + "]" + ": Disconnected";
-        //sceneManager.OnNewChatMessage(msg);
-
         byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.DISCONNECT, netId, userName);
         clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
         finished = true;
@@ -72,17 +60,16 @@ public class ClientUDP : MonoBehaviour
 
     void Update()
     {
-        // TODO: Check if this works with 3 clients
         if (newUser)
         {
             connectionsManager.OnNewClient(latestNetId);
             newUser = false;
         }
+
         if (netIdAssigned)
         {
             transform.parent.name = netId.ToString();
             netIdAssigned = false;
-            //connectionsManager.OnNewClient(netId);
         }
     }
 

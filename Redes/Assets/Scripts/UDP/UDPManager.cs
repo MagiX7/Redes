@@ -1,12 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System;
 
 public class UDPManager : MonoBehaviour
 {

@@ -1,15 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class ServerUDP : MonoBehaviour
 {
@@ -38,9 +32,6 @@ public class ServerUDP : MonoBehaviour
     int clientsNetId = 1;
     int netId = 0;
 
-    //[SerializeField] Text chat;
-    //[SerializeField] InputField input;
-    //[SerializeField] Text connectedPeople;
     [SerializeField] Text ipText;
 
     ConnectionsManager connectionsManager;
@@ -67,13 +58,10 @@ public class ServerUDP : MonoBehaviour
         broadcastMsgsThread = new Thread(BroadcastMessages);
         broadcastMsgsThread.Start();
 
-        //connectedPeople.text += ("You (Server)\n");
         sceneManager.AddUserToList("You (Server)");
         sceneManager.OnNewChatMessage("Server created successfully!");
-        //chat.text += "Server created successfully!\n";
         ipText.text += serverIp;
 
-        //serverPlayerData = transform.parent.GetComponent<PlayerMovement>().playerData;
         transform.parent.name = netId.ToString();
 
     }
@@ -104,21 +92,10 @@ public class ServerUDP : MonoBehaviour
 
         if (notifyExistingUsers && !connectionsManager.newUser)
         {
-            //sceneManager.OnNewChatMessage(text);
-
-            // TODO: The problem here is that we send to remote, which is the latest connected client
-            // We need a way to ensure both lists, remoters and connectionsManager.players are the same (the first one is greater by 1)
-            // So we can send the required information to each client
-
             foreach (var remote in remoters)
             {
                 foreach (var client in connectionsManager.players)
                 {
-                    // Send the server playerdata
-                    //byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
-                    //serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
-                    // Send the server playerdata
-
                     int clientNetId = int.Parse(client.name);
                     if (clientNetId == clientsNetId - 1)
                     {
@@ -136,7 +113,6 @@ public class ServerUDP : MonoBehaviour
 
         if (messageSent)
         {
-            //sceneManager.OnNewChatMessage("[Server]: " + input.text);
             data = new byte[1024];
             messageSent = false;
         }
@@ -150,7 +126,7 @@ public class ServerUDP : MonoBehaviour
             recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
             if (recv > 0)
             {
-                int clientNetId = -1;
+                int clientNetId;
                 int senderNetId;
                 MessageType msgType = connectionsManager.OnMessageReceived(bytes, out text, out clientNetId, out senderNetId, out _);
 
@@ -159,8 +135,6 @@ public class ServerUDP : MonoBehaviour
                     remoters.Remove(remote);
                     for (int i = 0; i < remoters.Count; ++i)
                     {
-                        //byte[] data = Serializer.SerializeIntWithHeader(MessageType.DISCONNECT, clientNetId, -1);
-                        //serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
                     }
                     continue;
@@ -182,21 +156,8 @@ public class ServerUDP : MonoBehaviour
                     connectionsManager.OnNewClient(clientsNetId);
                     clientsNetId++;
 
+                    notifyExistingUsers = true;
 
-                    //if (msgType == MessageType.NEW_USER)
-                    //{
-                    //    for (int i = 0; i < remoters.Count; ++i)
-                    //    {
-                    //        byte[] data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, netId, "Welcome!");
-                    //        serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
-                    //    }
-                    //}
-
-
-                    // ESTO ES UNA PRUEBA
-                    //{
-                        notifyExistingUsers = true;
-                    //}
                     for (int i = 0; i < remoters.Count - 1; ++i)
                     {
                         text = lastUserName + " Connected!";
@@ -204,38 +165,6 @@ public class ServerUDP : MonoBehaviour
                         bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
                     }
-
-                    // Lo que hay arriba es más óptimo, crack, titán, portaaviones
-                    //for (int i = 0; i < remoters.Count; i++)
-                    //{
-                    //    if (remote == remoters[i])
-                    //    {
-                    //        text = "Welcome to the UDP server";
-                    //        sceneManager.OnNewChatMessage(text);
-
-                    //        byte[] data = Serializer.SerializePlayerData(serverPlayerData, netId, netId);
-                    //        serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
-
-                    //        foreach (var client in connectionsManager.players)
-                    //        {
-                    //            int affectedNetId = client.GetComponent<ClientUDP>().GetNetId();
-                    //            //if (affectedNetId == clientsNetId - 1)
-                    //            //    continue;
-                    //            PlayerData playerData = client.GetComponent<EnemyController>().playerData;
-                    //            data = Serializer.SerializePlayerData(playerData, netId, affectedNetId);
-                    //            serverSocket.SendTo(data, data.Length, SocketFlags.None, remoters[i]);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        text = lastUserName + " Connected!";
-                    //        sceneManager.OnNewChatMessage(text);
-                    //        //connectionsManager.OnNewClient(clientsNetId++);
-                    //    }
-
-                    //    bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
-                    //    serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
-                    //}
                 }
             }
         }
