@@ -94,7 +94,6 @@ public class ServerUDP : MonoBehaviour
             foreach (var remote in remoters)
             {
                 for (int i = 0; i < connectionsManager.players.Count; i++)
-                //foreach (var client in connectionsManager.players)
                 {
                     GameObject client = connectionsManager.players[i];
                     int clientNetId = int.Parse(client.name);
@@ -178,7 +177,7 @@ public class ServerUDP : MonoBehaviour
 
     void BroadcastMessages()
     {
-        while(!finished)
+        while (!finished)
         {
             if (needToSendMessage)
             {
