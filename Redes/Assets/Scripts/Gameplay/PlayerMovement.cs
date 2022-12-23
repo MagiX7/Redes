@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,7 +10,6 @@ public class PlayerMovement : MonoBehaviour
     public ClientSceneManagerUDP sceneManager;
 
     // Private variables
-    AudioSource audioSource;
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
@@ -38,8 +33,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-
         healthBar.SetMaxHealth(5);
     }
 
@@ -85,7 +78,6 @@ public class PlayerMovement : MonoBehaviour
 
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
-        //Debug.Log("Transofrm from playermove" + playerData.position.ToString());
 
         if (gotHit)
         {
@@ -100,10 +92,9 @@ public class PlayerMovement : MonoBehaviour
 
         // This code is to test lag mitigation techniques
         sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.05f)
+        //if (sendDataCounter >= 0.05f)
         {
             sendDataCounter = 0.0f;
-            // TODO: The name is not an int
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
             playerData.shooted = false;
         }
@@ -116,11 +107,13 @@ public class PlayerMovement : MonoBehaviour
         switch (other.GetComponent<GroundWeapon>().type)
         {
             case GroundWeapon.weaponType.ROCKETLAUNCHER:
+            { 
                 Destroy(other.gameObject);
                 GameObject weapon = Instantiate(rocketLauncher, weaponPosition.transform.position, weaponPosition.transform.rotation);
                 weapon.transform.parent = weaponPosition.transform;
                 weapon.GetComponentInChildren<RocketLauncherController>().instigator = this.gameObject;
                 break;
+            }
         }
     }
 

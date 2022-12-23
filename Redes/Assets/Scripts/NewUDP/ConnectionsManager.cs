@@ -1,10 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ConnectionsManager : MonoBehaviour
 {
@@ -22,17 +19,15 @@ public class ConnectionsManager : MonoBehaviour
 
     int latestSenderNetId = -1;
     bool clientDisconnected = false;
+    string disconnectedUserName = string.Empty;
 
     [SerializeField] ClientSceneManagerUDP sceneManager;
 
     public List<int> clientNetIds;
     public List<GameObject> players;
-    bool needToInstantiateServer = false;
-    bool serverInstanced = false;
 
     Mutex mutex = new Mutex();
 
-    // Start is called before the first frame update
     void Start()
     {
         clientNetIds = new List<int>();
@@ -44,7 +39,6 @@ public class ConnectionsManager : MonoBehaviour
         mutex.Dispose();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (newUser)
@@ -59,17 +53,6 @@ public class ConnectionsManager : MonoBehaviour
             clientDisconnected = false;
         }
 
-        //if (needToInstantiateServer)
-        //{
-        //    GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
-        //    int serverId = 0;
-        //    latestClient.name = serverId.ToString();
-        //    clientNetIds.Add(serverId);
-        //    players.Add(latestClient);
-        //    needToInstantiateServer = false;
-        //    serverInstanced = true;
-        //}
-
         if (needToUpdateEnemy)
         {
             mutex.WaitOne();
@@ -78,7 +61,6 @@ public class ConnectionsManager : MonoBehaviour
                 {
                     if (clientId == latestAffectedNetId)
                     {
-                        //latestAffectedNetId = clientId;
                         EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
                         go.playerData = latestPlayerData;
                         break;
@@ -127,15 +109,10 @@ public class ConnectionsManager : MonoBehaviour
     {
         clientNetIds.Remove(latestSenderNetId);
         GameObject go = GameObject.Find(latestSenderNetId.ToString());
+        sceneManager.RemovePlayerFromList(disconnectedUserName);
         players.Remove(go);
         Destroy(go);
     }
-
-    void ClientDisconnected()
-    {
-
-    }
-
 
     public MessageType OnMessageReceived(byte[] bytes, out string chatText, out int clientNetId, out int senderNetId, out int affectedNetId)
     {
@@ -150,78 +127,49 @@ public class ConnectionsManager : MonoBehaviour
         switch (messageType)
         {
             case MessageType.NEW_USER:
-                {
-                    chatText = Serializer.DeserializeString(reader);
-                    sceneManager.OnNewChatMessage(chatText);
-                    clientNetId = -1;
-                    // On the server this is done when a remoters is not in the list
-                    //OnNewClient(senderNetId);
-                    break;
-                }
+            {
+                chatText = Serializer.DeserializeString(reader);
+                sceneManager.OnNewChatMessage(chatText);
+                clientNetId = -1;
+                break;
+            }
 
             case MessageType.DISCONNECT:
-                {
-                    latestSenderNetId = senderNetId;
-                    clientDisconnected = true;
-                    //chatText = Serializer.DeserializeString(reader);
-                    chatText = Serializer.DeserializeString(reader);
-                    sceneManager.OnNewChatMessage(chatText);
-                    clientNetId = -1;
-                    break;
-                }
+            {
+                latestSenderNetId = senderNetId;
+                clientDisconnected = true;
+                disconnectedUserName = Serializer.DeserializeString(reader);
+                chatText = "[" + disconnectedUserName + "]: Disconnected";
+                sceneManager.OnNewChatMessage(chatText);
+                clientNetId = -1;
+                break;
+            }
 
             case MessageType.NET_ID:
-                {
-                    clientNetId = Serializer.DeserializeInt(reader);
-                    chatText = string.Empty;
-                    break;
-                }
+            {
+                clientNetId = Serializer.DeserializeInt(reader);
+                chatText = string.Empty;
+                break;
+            }
 
             case MessageType.CHAT:
-                {
-                    chatText = Serializer.DeserializeString(reader);
-                    sceneManager.OnNewChatMessage(chatText);
-                    clientNetId = -1;
-                    break;
-                }
+            {
+                chatText = Serializer.DeserializeString(reader);
+                sceneManager.OnNewChatMessage(chatText);
+                clientNetId = -1;
+                break;
+            }
 
             case MessageType.PLAYER_DATA:
-                {
-                    //if (affectedNetId == 0)
-                    //{
-                    //    Debug.Log(affectedNetId);
-                    //    latestAffectedNetId = affectedNetId;
-                    //    needToUpdateEnemy = true;
-                    //    latestPlayerData = Serializer.DeserializePlayerData(reader);
-                    //}
-                    //else if (affectedNetId == 1)
-                    //{
-                    //    Debug.Log(affectedNetId);
-                    //    latestAffectedNetId = affectedNetId;
-                    //    needToUpdateEnemy = true;
-                    //    latestPlayerData = Serializer.DeserializePlayerData(reader);
-                    //}
-                    //else if (affectedNetId == 2)
-                    //{
-                    //    Debug.Log(affectedNetId);
-                    //    latestAffectedNetId = affectedNetId;
-                    //    needToUpdateEnemy = true;
-                    //    latestPlayerData = Serializer.DeserializePlayerData(reader);
-                    //}
-                    //// Server instancing
-                    //if (!serverInstanced && affectedNetId == 0)
-                    //{
-                    //    needToInstantiateServer = true;
-                    //}
+            {
+                latestAffectedNetId = affectedNetId;
+                needToUpdateEnemy = true;
+                latestPlayerData = Serializer.DeserializePlayerData(reader);
 
-                    latestAffectedNetId = affectedNetId;
-                    needToUpdateEnemy = true;
-                    latestPlayerData = Serializer.DeserializePlayerData(reader);
-
-                    chatText = string.Empty;
-                    clientNetId = -1;
-                    break;
-                }
+                chatText = string.Empty;
+                clientNetId = -1;
+                break;
+            }
 
             case MessageType.OBJECT_DATA:
                 {

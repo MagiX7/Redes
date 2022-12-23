@@ -1,16 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+
 using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
-using System.IO;
-using static System.Net.Mime.MediaTypeNames;
-using UnityEngine.XR;
-using UnityEngine.SceneManagement;
+
 
 public class ClientUDP : MonoBehaviour
 {
@@ -33,7 +26,6 @@ public class ClientUDP : MonoBehaviour
     bool newUser = false; // For other players
     int latestNetId = -1;
 
-    [SerializeField] EnemyController enemy;
     [SerializeField] ClientSceneManagerUDP sceneManager;
     ConnectionsManager connectionsManager;
     
@@ -58,10 +50,8 @@ public class ClientUDP : MonoBehaviour
 
     private void OnDestroy()
     {
-        string msg = "[" + userName + "]" + ": Disconnected";
-        //sceneManager.OnNewChatMessage(msg);
-
-        byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.DISCONNECT, netId, msg);
+        // Notify Disconnection
+        byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.DISCONNECT, netId, userName);
         clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
         finished = true;
 
@@ -72,7 +62,6 @@ public class ClientUDP : MonoBehaviour
 
     void Update()
     {
-        // TODO: Check if this works with 3 clients
         if (newUser)
         {
             connectionsManager.OnNewClient(latestNetId);
@@ -82,7 +71,6 @@ public class ClientUDP : MonoBehaviour
         {
             transform.parent.name = netId.ToString();
             netIdAssigned = false;
-            //connectionsManager.OnNewClient(netId);
         }
     }
 
