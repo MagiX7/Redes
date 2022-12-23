@@ -1,5 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 using Input = UnityEngine.Input;
 
 public class ClientSceneManagerUDP : MonoBehaviour
@@ -24,6 +29,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     [SerializeField] GameObject player;
     [SerializeField] GameObject enemy;
     Vector3 initialPlayerPos = Vector3.zero;
+    Vector3 initialEnemyPos = Vector3.zero;
 
 
     // Fade
@@ -57,8 +63,11 @@ public class ClientSceneManagerUDP : MonoBehaviour
             userNameInputField = userNameInput.GetComponentInChildren<InputField>();
         }
 
+        //chatText = GameObject.Find("Chat Text").GetComponent<Text>();
         chatInput = chatInputGameObject.GetComponent<InputField>();
+
         initialPlayerPos = player.transform.position;
+        //initialEnemyPos = enemy.transform.position;
     }
 
     void Update()
@@ -177,6 +186,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
         player.SetActive(true);
         player.GetComponent<PlayerMovement>().isClient = true;
+        //enemy.SetActive(true);
     }
 
     void HideUIChat(bool value)
@@ -225,6 +235,10 @@ public class ClientSceneManagerUDP : MonoBehaviour
         player.SetActive(true);
         player.transform.position = initialPlayerPos;
         player.GetComponent<PlayerMovement>().ResetStats();
+
+        //enemy.SetActive(true);
+        //enemy.transform.position = initialEnemyPos;
+        //enemy.GetComponent<EnemyController>().ResetStats();
     }
 
 
@@ -234,20 +248,12 @@ public class ClientSceneManagerUDP : MonoBehaviour
         newChatMessage = true;
     }
 
-    public void AddUserToList(string message)
+    public void UpdateUsersList(string message)
     {
         if (connectedPeople == null)
             return;
 
         connectedPeople.text += message + "\n";
-    }
-
-    public void RemoveUserFromList(string userName)
-    {
-        if (connectedPeople == null)
-            return;
-
-        connectedPeople.text = connectedPeople.text.Replace(userName, string.Empty);
     }
 
 }
