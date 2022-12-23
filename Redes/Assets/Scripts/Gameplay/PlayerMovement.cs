@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
 
         // This code is to test lag mitigation techniques
         sendDataCounter += Time.deltaTime;
-        if (sendDataCounter >= 0.047f)
+        if (sendDataCounter >= 0.05f) // 4 frames
         {
             sendDataCounter = 0.0f;
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
