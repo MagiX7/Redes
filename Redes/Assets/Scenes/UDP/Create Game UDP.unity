@@ -831,6 +831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -2304,7 +2305,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 2568623838012824784, guid: 66664d2b5f5ed97448fb4425357ccefb, type: 3}
   newUser: 0
+  lastNetId: -1
+  latestAffectedNetId: -1
   needToUpdateEnemy: 0
+  needToUpdateObject: 0
+  latestObjectId: -1
   destroyableObjects:
   - {fileID: 1049898483}
   - {fileID: 861299300}
@@ -2324,6 +2329,9 @@ MonoBehaviour:
   - {fileID: 778840500}
   - {fileID: 616773023}
   - {fileID: 462670033}
+  latestSenderNetId: -1
+  clientDisconnected: 0
+  disconnectedUserName: 
   sceneManager: {fileID: 2133486110}
   clientNetIds: 
   players: []
