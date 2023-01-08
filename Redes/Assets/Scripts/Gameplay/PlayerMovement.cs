@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public ClientSceneManagerUDP sceneManager;
 
     // Private variables
+    bool isMoving = false;
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
@@ -46,12 +47,17 @@ public class PlayerMovement : MonoBehaviour
         float horizontalAxis = Input.GetAxis("Horizontal");
         if (verticalAxis != 0.0f || horizontalAxis != 0.0f)
         {
+            isMoving = true;
+            playerData.isMoving = isMoving;
             animator.SetBool("Run", true);
             transform.Translate(Vector3.forward * verticalAxis * speed * Time.deltaTime, Space.World);
             transform.Translate(Vector3.right * horizontalAxis * speed * Time.deltaTime, Space.World);
+
         }
         else
         {
+            isMoving = false;
+            playerData.isMoving = false;
             animator.SetBool("Run", false);
         }
 

@@ -13,21 +13,25 @@ public class EnemyController : MonoBehaviour
     bool gotHit = false;
     [HideInInspector] public int life = 5;
 
-    // For interpolation
     
+    // For interpolation
     public float durationInterpolation = 0.05f;
     public float currentInterpolationTime = 0.0f;
     private Vector3 positionToInterpolate;
     private Vector3 interpolateStartingPosition;
-    private Quaternion interpolateRotation2;
+    private Quaternion rotationToInterpolate;
  
     // UI Variables
     public HealthBar healthBar;
+
+    // Animations
+    private Animator anim;
 
     void Start()
     {
         playerData = new PlayerData();
         healthBar.SetMaxHealth(5);
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -40,17 +44,25 @@ public class EnemyController : MonoBehaviour
 
         currentInterpolationTime += Time.deltaTime;    
         transform.position = Vector3.Lerp(interpolateStartingPosition, positionToInterpolate, currentInterpolationTime / durationInterpolation);
-        transform.rotation = Quaternion.Lerp(transform.rotation, interpolateRotation2, currentInterpolationTime / durationInterpolation);
-        //transform.rotation = playerData.rotation;
+        transform.rotation = Quaternion.Lerp(transform.rotation, rotationToInterpolate, 0.01f * 10.0f);
 
         if (currentInterpolationTime >= durationInterpolation)
         {
             interpolateStartingPosition = transform.position;
-            positionToInterpolate = playerData.position;
 
-            interpolateRotation2 = playerData.rotation;
             durationInterpolation = (positionToInterpolate - interpolateStartingPosition).magnitude / 5.0f;
             currentInterpolationTime = 0.0f;
+        }
+
+        if (playerData.isMoving)
+        {
+            positionToInterpolate = playerData.position;
+            rotationToInterpolate = playerData.rotation;
+            anim.SetBool("Run", true);
+        }
+        else
+        {
+            anim.SetBool("Run", false);
         }
 
         if (gotHit)
