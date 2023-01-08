@@ -44,6 +44,15 @@ public class ObjectDestructor : MonoBehaviour
         if (collision.gameObject.tag == "Rocket")
         {
             impulse = collision.gameObject.transform.forward * impulseForce;
+            rb.AddForce(impulse, ForceMode.Impulse);
+            objectData.impulse = impulse;
+            isMoving = true;
+        }
+
+        if (collision.gameObject.tag == "Player")
+        {
+            impulse = collision.gameObject.transform.forward * 2.0f;
+            rb.AddForce(impulse, ForceMode.Force);
             objectData.impulse = impulse;
             isMoving = true;
         }
