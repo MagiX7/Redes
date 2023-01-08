@@ -80,8 +80,10 @@ public class ConnectionsManager : MonoBehaviour
                     ObjectDestructor objectDestructor = destroyableObjects[i].GetComponent<ObjectDestructor>();
                     if (objectDestructor.objectID == latestObjectId)
                     {
+                        objectDestructor.transform.position = latestObjectData.position;
+                        objectDestructor.transform.rotation = latestObjectData.rotation;
                         objectDestructor.objectData = latestObjectData;
-                        objectDestructor.ApplyImpulseForce();
+                        //objectDestructor.ApplyImpulseForce();
                         break;
                     }
                 }

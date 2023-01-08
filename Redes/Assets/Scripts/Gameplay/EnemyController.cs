@@ -49,21 +49,17 @@ public class EnemyController : MonoBehaviour
         if (currentInterpolationTime >= durationInterpolation)
         {
             interpolateStartingPosition = transform.position;
+            positionToInterpolate = playerData.position;
+            rotationToInterpolate = playerData.rotation;
 
             durationInterpolation = (positionToInterpolate - interpolateStartingPosition).magnitude / 5.0f;
             currentInterpolationTime = 0.0f;
         }
 
         if (playerData.isMoving)
-        {
-            positionToInterpolate = playerData.position;
-            rotationToInterpolate = playerData.rotation;
             anim.SetBool("Run", true);
-        }
         else
-        {
             anim.SetBool("Run", false);
-        }
 
         if (gotHit)
         {

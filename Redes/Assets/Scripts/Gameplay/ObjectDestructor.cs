@@ -23,14 +23,20 @@ public class ObjectDestructor : MonoBehaviour
     {
         if (isMoving)
         {
+            objectData.position = this.transform.position;
+            objectData.rotation = this.transform.rotation;
             udpManager.SendObjectData(objectData, objectID, isClient);
+        }    
+        
+        if (rb.velocity == Vector3.zero) 
+        {
             isMoving = false;
-        }        
+        }
     }
 
     public void ApplyImpulseForce()
     {
-        rb.AddForce(objectData.impulse, ForceMode.Impulse);
+        //rb.AddForce(objectData.impulse, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)
