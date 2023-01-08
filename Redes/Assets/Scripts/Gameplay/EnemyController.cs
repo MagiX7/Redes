@@ -15,6 +15,12 @@ public class EnemyController : MonoBehaviour
 
     private float speed = 5.0f;
 
+    // For interpolation
+    private int interpolationFramesCount = 5;
+    private int elapsedFrames = 0;
+    private Vector3 interpolatePosition;
+    private Quaternion interpolateRotation;
+
     // UI Variables
     public HealthBar healthBar;
 
@@ -32,8 +38,15 @@ public class EnemyController : MonoBehaviour
             playerData.shooted = false;
         }
 
-        transform.position = playerData.position;
-        transform.rotation = playerData.rotation;
+        float interpolationRatio = (float)elapsedFrames / interpolationFramesCount;
+        transform.position = Vector3.Lerp(transform.position, interpolatePosition, interpolationRatio);
+        transform.rotation = Quaternion.Lerp(transform.rotation, interpolateRotation, interpolationRatio);
+        elapsedFrames = (elapsedFrames + 1) % (interpolationFramesCount + 1);
+        if (interpolationRatio >= 1.0f)
+        {
+            interpolatePosition = playerData.position;
+            interpolateRotation = playerData.rotation;
+        }
 
         if (gotHit)
         {
