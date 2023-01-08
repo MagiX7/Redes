@@ -13,14 +13,14 @@ public class EnemyController : MonoBehaviour
     bool gotHit = false;
     [HideInInspector] public int life = 5;
 
-    private float speed = 5.0f;
-
     // For interpolation
-    private int interpolationFramesCount = 5;
-    private int elapsedFrames = 0;
-    private Vector3 interpolatePosition;
-    private Quaternion interpolateRotation;
-
+    
+    public float durationInterpolation = 0.05f;
+    public float currentInterpolationTime = 0.0f;
+    private Vector3 positionToInterpolate;
+    private Vector3 interpolateStartingPosition;
+    private Quaternion interpolateRotation2;
+ 
     // UI Variables
     public HealthBar healthBar;
 
@@ -38,14 +38,19 @@ public class EnemyController : MonoBehaviour
             playerData.shooted = false;
         }
 
-        float interpolationRatio = (float)elapsedFrames / interpolationFramesCount;
-        transform.position = Vector3.Lerp(transform.position, interpolatePosition, interpolationRatio);
-        transform.rotation = Quaternion.Lerp(transform.rotation, interpolateRotation, interpolationRatio);
-        elapsedFrames = (elapsedFrames + 1) % (interpolationFramesCount + 1);
-        if (interpolationRatio >= 1.0f)
+        currentInterpolationTime += Time.deltaTime;    
+        transform.position = Vector3.Lerp(interpolateStartingPosition, positionToInterpolate, currentInterpolationTime / durationInterpolation);
+        transform.rotation = Quaternion.Lerp(transform.rotation, interpolateRotation2, currentInterpolationTime / durationInterpolation);
+        //transform.rotation = playerData.rotation;
+
+        if (currentInterpolationTime >= durationInterpolation)
         {
-            interpolatePosition = playerData.position;
-            interpolateRotation = playerData.rotation;
+            interpolateStartingPosition = transform.position;
+            positionToInterpolate = playerData.position;
+
+            interpolateRotation2 = playerData.rotation;
+            durationInterpolation = (positionToInterpolate - interpolateStartingPosition).magnitude / 5.0f;
+            currentInterpolationTime = 0.0f;
         }
 
         if (gotHit)
