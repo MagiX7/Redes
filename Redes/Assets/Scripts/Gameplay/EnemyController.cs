@@ -1,3 +1,4 @@
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -7,6 +8,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] RocketLauncherController rocketLauncherController;
 
     public ClientSceneManagerUDP sceneManager;
+    public ConnectionsManager connectionManager;
 
     public GameObject deathPrefab;
     bool died = false;
@@ -29,6 +31,7 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
+        connectionManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
         playerData = new PlayerData();
         healthBar.SetMaxHealth(5);
         anim = GetComponent<Animator>();
@@ -66,12 +69,12 @@ public class EnemyController : MonoBehaviour
             Die();
         }
 
-        //if (gotHit)
-        //{
-        //    life -= 1;
-        //    healthBar.SetHealth(life);
-        //    gotHit = false;
-        //}
+        if (gotHit && !connectionManager.isClient)
+        {
+            life -= 1;
+            healthBar.SetHealth(life);
+            gotHit = false;
+        }
 
     }
 

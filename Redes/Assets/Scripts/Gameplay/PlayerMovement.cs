@@ -84,12 +84,12 @@ public class PlayerMovement : MonoBehaviour
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
-        //if (gotHit)
-        //{
-        //    life -= 1;
-        //    healthBar.SetHealth(life);
-        //    gotHit = false;
-        //}
+        if (gotHit && !isClient)
+        {
+            life -= 1;
+            healthBar.SetHealth(life);
+            gotHit = false;
+        }
 
         if (!died && life <= 0)
         {

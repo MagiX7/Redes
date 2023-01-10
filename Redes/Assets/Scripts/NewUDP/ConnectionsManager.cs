@@ -23,6 +23,8 @@ public class ConnectionsManager : MonoBehaviour
 
     [SerializeField] ClientSceneManagerUDP sceneManager;
 
+    public bool isClient = false;
+
     public List<int> clientNetIds;
     public List<GameObject> players;
 
@@ -59,27 +61,26 @@ public class ConnectionsManager : MonoBehaviour
             {
                 foreach (int clientId in clientNetIds)
                 {
+                    GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
+                    if (obj != null)
+                    {
+                        EnemyController enemy = obj.GetComponent<EnemyController>();
+                        if (enemy != null)
+                        {
+                            enemy.DecrementLife();
+                        }
+
+                        PlayerMovement player = obj.GetComponent<PlayerMovement>();
+                        if (player != null)
+                        {
+                            player.DecrementLife();
+                        }
+                    }
                     if (clientId == latestAffectedNetId)
                     {
                         EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
                         if (go.playerData.packetID < latestPlayerData.packetID)
                         {
-                            GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
-                            if (obj != null)
-                            {
-                                EnemyController enemy = obj.GetComponent<EnemyController>();
-                                if (enemy != null)
-                                {
-                                    enemy.DecrementLife();
-                                }
-
-                                PlayerMovement player = obj.GetComponent<PlayerMovement>();
-                                if (player != null)
-                                {
-                                    player.DecrementLife();
-                                }
-                            }
-                           
                             go.playerData = latestPlayerData;
                             if (go.playerData.chickenGotHit)
                             {
