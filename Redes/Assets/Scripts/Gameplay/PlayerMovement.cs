@@ -84,12 +84,13 @@ public class PlayerMovement : MonoBehaviour
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
-        if (gotHit)
-        {
-            life -= 1;
-            healthBar.SetHealth(life);
-            gotHit = false;
-        }
+        //if (gotHit)
+        //{
+        //    life -= 1;
+        //    healthBar.SetHealth(life);
+        //    gotHit = false;
+        //}
+
         if (!died && life <= 0)
         {
             Die();
@@ -109,6 +110,15 @@ public class PlayerMovement : MonoBehaviour
             playerData.chickenHitId = -1;
         }
     }
+
+    public void DecrementLife()
+    {
+        life -= 1;
+        healthBar.SetHealth(life);
+        playerData.chickenGotHit = false;
+        playerData.chickenHitId = -1;
+    }
+
 
     public PlayerData GetPlayerData() { return playerData; }
 

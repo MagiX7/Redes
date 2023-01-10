@@ -64,7 +64,28 @@ public class ConnectionsManager : MonoBehaviour
                         EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
                         if (go.playerData.packetID < latestPlayerData.packetID)
                         {
+                            GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
+                            if (obj != null)
+                            {
+                                EnemyController enemy = obj.GetComponent<EnemyController>();
+                                if (enemy != null)
+                                {
+                                    enemy.DecrementLife();
+                                }
+
+                                PlayerMovement player = obj.GetComponent<PlayerMovement>();
+                                if (player != null)
+                                {
+                                    player.DecrementLife();
+                                }
+                            }
+                           
                             go.playerData = latestPlayerData;
+                            if (go.playerData.chickenGotHit)
+                            {
+                                int a = 0;
+                                a++;
+                            }
                         }
                         else
                         { 
