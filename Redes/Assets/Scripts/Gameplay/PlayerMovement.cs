@@ -105,6 +105,8 @@ public class PlayerMovement : MonoBehaviour
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
             playerData.shooted = false;
+            playerData.chickenGotHit = false;
+            playerData.chickenHitId = -1;
         }
     }
 

@@ -14,4 +14,7 @@ public class PlayerData
     public Vector3 position = Vector3.forward;
     public Vector3 movementDirection = Vector3.zero;
     public Quaternion rotation = Quaternion.identity;
+
+    public bool chickenGotHit = false;
+    public int chickenHitId = -1;
 }

@@ -61,16 +61,26 @@ public class EnemyController : MonoBehaviour
         else
             anim.SetBool("Run", false);
 
-        if (gotHit)
+        if (playerData.chickenGotHit && playerData.chickenHitId == int.Parse(name))
         {
             life -= 1;
             healthBar.SetHealth(life);
-            gotHit = false;
+            playerData.chickenGotHit = false;
+            playerData.chickenHitId = -1;
         }
+
         if (!died && life <= 0)
         {
             Die();
         }
+
+        //if (gotHit)
+        //{
+        //    life -= 1;
+        //    healthBar.SetHealth(life);
+        //    gotHit = false;
+        //}
+
     }
 
     public void Die()
