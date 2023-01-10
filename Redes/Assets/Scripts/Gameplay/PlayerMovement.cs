@@ -52,7 +52,6 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("Run", true);
             transform.Translate(Vector3.forward * verticalAxis * speed * Time.deltaTime, Space.World);
             transform.Translate(Vector3.right * horizontalAxis * speed * Time.deltaTime, Space.World);
-
         }
         else
         {
@@ -82,7 +81,6 @@ public class PlayerMovement : MonoBehaviour
             playerData.rocketDirection = rocketTrans.rotation.eulerAngles;
         }
 
-
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
@@ -101,7 +99,10 @@ public class PlayerMovement : MonoBehaviour
         sendDataCounter += Time.deltaTime;
         if (sendDataCounter >= 0.05f) // 4 frames
         {
+            playerData.packetID++;
             sendDataCounter = 0.0f;
+            udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
+            udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
             playerData.shooted = false;
         }

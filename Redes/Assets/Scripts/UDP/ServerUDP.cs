@@ -104,6 +104,8 @@ public class ServerUDP : MonoBehaviour
                     PlayerData playerData = client.GetComponent<EnemyController>().playerData;
                     data = Serializer.SerializePlayerData(playerData, netId, clientNetId);
                     serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+                    serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+                    serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
                 }
             }
             notifyExistingUsers = false;

@@ -62,7 +62,14 @@ public class ConnectionsManager : MonoBehaviour
                     if (clientId == latestAffectedNetId)
                     {
                         EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
-                        go.playerData = latestPlayerData;
+                        if (go.playerData.packetID < latestPlayerData.packetID)
+                        {
+                            go.playerData = latestPlayerData;
+                        }
+                        else
+                        { 
+                            Debug.Log("HE PERDIDO UN PAQUETE, PAREZCO AMAZON");
+                        }
                         break;
                     }
                 }
