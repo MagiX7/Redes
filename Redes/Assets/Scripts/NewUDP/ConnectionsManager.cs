@@ -62,36 +62,47 @@ public class ConnectionsManager : MonoBehaviour
                 foreach (int clientId in clientNetIds)
                 {
                     // TODO: Sometimes an error appears here
-                    GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
-                    if (obj != null)
+                    if (latestPlayerData.chickenGotHit)
                     {
-                        EnemyController enemy = obj.GetComponent<EnemyController>();
-                        if (enemy != null)
-                        {
-                            enemy.DecrementLife();
-                        }
-
-                        PlayerMovement player = obj.GetComponent<PlayerMovement>();
-                        if (player != null)
-                        {
-                            player.DecrementLife();
-                        }
+                        
                     }
                     if (clientId == latestAffectedNetId)
                     {
                         EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
-                        if (go.playerData.packetID < latestPlayerData.packetID)
+                        if (go != null && go.playerData.packetID < latestPlayerData.packetID)
                         {
                             go.playerData = latestPlayerData;
                             if (go.playerData.chickenGotHit)
                             {
-                                int a = 0;
-                                a++;
+                                Debug.Log(go.playerData.packetID.ToString() + " " + latestPlayerData.packetID);
+
+
+                                GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
+                                if (obj != null)
+                                {
+                                    EnemyController enemy = obj.GetComponent<EnemyController>();
+                                    if (enemy != null)
+                                    {
+                                        enemy.DecrementLife();
+                                    }
+
+                                    PlayerMovement player = obj.GetComponent<PlayerMovement>();
+                                    if (player != null)
+                                    {
+                                        player.DecrementLife();
+                                    }
+                                }
+
+
+
+
+
                             }
+                            
                         }
                         else
                         { 
-                            Debug.Log("HE PERDIDO UN PAQUETE, PAREZCO AMAZON");
+                            //Debug.Log("HE PERDIDO UN PAQUETE, PAREZCO AMAZON");
                         }
                         break;
                     }

@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
-    float invulnerabilityTime = 2.0f;
+    float invulnerabilityTime = 1.0f;
     Material material;
 
     // Weapons
@@ -118,6 +118,7 @@ public class PlayerMovement : MonoBehaviour
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
             udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
+
             playerData.shooted = false;
             playerData.chickenGotHit = false;
             playerData.chickenHitId = -1;
@@ -126,10 +127,15 @@ public class PlayerMovement : MonoBehaviour
 
     public void DecrementLife()
     {
+        Debug.Log("Entered Decrement player");
+        if (playerData.isInvulnerable)
+            return;
+
         life -= 1;
         healthBar.SetHealth(life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
+        Debug.Log("Decrement player");
     }
 
 

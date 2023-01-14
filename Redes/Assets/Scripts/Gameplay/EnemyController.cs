@@ -1,5 +1,6 @@
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyController : MonoBehaviour
 {
@@ -7,14 +8,14 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] RocketLauncherController rocketLauncherController;
 
-    public ClientSceneManagerUDP sceneManager;
-    public ConnectionsManager connectionManager;
+    ClientSceneManagerUDP sceneManager;
+    ConnectionsManager connectionManager;
 
     public GameObject deathPrefab;
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
-    float invulnerabilityTime = 2.0f;
+    float invulnerabilityTime = 1.0f;
     //bool isInvulnerable = false;
     Material material;
 
@@ -35,6 +36,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         connectionManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
+        sceneManager = GameObject.Find("SceneManager").GetComponent<ClientSceneManagerUDP>();
         playerData = new PlayerData();
         healthBar.SetMaxHealth(5);
         anim = GetComponent<Animator>();
@@ -68,7 +70,6 @@ public class EnemyController : MonoBehaviour
         else
             anim.SetBool("Run", false);
 
-        
         if (gotHit && !playerData.isInvulnerable)
         {
             playerData.isInvulnerable = true;
@@ -76,6 +77,7 @@ public class EnemyController : MonoBehaviour
             {
                 life -= 1;
                 healthBar.SetHealth(life);
+                Debug.Log("Enemy update");
             }
         }
 
@@ -95,10 +97,15 @@ public class EnemyController : MonoBehaviour
 
     public void DecrementLife()
     {
-        life -= 1;
+        Debug.Log("Entered Decrement enemy");
+        if (playerData.isInvulnerable)
+            return;
+
         healthBar.SetHealth(life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
+        gotHit = false;
+        Debug.Log("Decrement Enemy");
     }
 
     public void Die()
