@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
-        if (gotHit && !isClient)
+        if (gotHit && !playerData.isInvulnerable && !isClient)
         {
             playerData.isInvulnerable = true;
             life -= 1;

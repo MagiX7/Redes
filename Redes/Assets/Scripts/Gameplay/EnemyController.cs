@@ -67,7 +67,7 @@ public class EnemyController : MonoBehaviour
             anim.SetBool("Run", false);
 
         
-        if (gotHit && !connectionManager.isClient)
+        if (gotHit && !playerData.isInvulnerable && !connectionManager.isClient)
         {
             playerData.isInvulnerable = true;
             life -= 1;

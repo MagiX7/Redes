@@ -33,7 +33,7 @@ public class ClientUDP : MonoBehaviour
     {
         clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         clientIpep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
-        clientSocket.Bind(clientIpep);
+        //clientSocket.Bind(clientIpep);
 
         remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
