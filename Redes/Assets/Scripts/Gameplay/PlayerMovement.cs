@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
+    float invulnerabilityTime = 1.0f;
+    //bool isInvulnerable = false;
 
     // Weapons
     public GameObject rocketLauncher;
@@ -86,14 +88,21 @@ public class PlayerMovement : MonoBehaviour
 
         if (gotHit && !isClient)
         {
+            playerData.isInvulnerable = true;
             life -= 1;
             healthBar.SetHealth(life);
-            gotHit = false;
+            //gotHit = false;
         }
 
         if (!died && life <= 0)
         {
             Die();
+        }
+
+        if (playerData.isInvulnerable)
+        {
+            GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(0, 184/255, 1, 1));
+            Invoke("RestoreInvulnerability", invulnerabilityTime);
         }
 
         // This code is to test lag mitigation techniques
@@ -178,5 +187,11 @@ public class PlayerMovement : MonoBehaviour
     private void ReEnableDisabledProjectile()
     {
         canShoot = true;
+    }
+
+    void RestoreInvulnerability()
+    {
+        playerData.isInvulnerable = false;
+        gotHit = false;
     }
 }

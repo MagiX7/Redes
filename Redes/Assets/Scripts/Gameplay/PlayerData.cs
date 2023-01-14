@@ -8,6 +8,7 @@ public class PlayerData
     public int packetID = -1;
     public bool shooted = false;
     public bool isMoving = true;
+    public bool isInvulnerable = false;
     public Vector3 rocketPosition = Vector3.zero;
     public Vector3 rocketDirection = Vector3.zero;
 

@@ -14,8 +14,10 @@ public class EnemyController : MonoBehaviour
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
+    float invulnerabilityTime = 1.0f;
+    //bool isInvulnerable = false;
 
-    
+
     // For interpolation
     public float durationInterpolation = 0.05f;
     public float currentInterpolationTime = 0.0f;
@@ -64,16 +66,24 @@ public class EnemyController : MonoBehaviour
         else
             anim.SetBool("Run", false);
 
+        
+        if (gotHit && !connectionManager.isClient)
+        {
+            playerData.isInvulnerable = true;
+            life -= 1;
+            healthBar.SetHealth(life);
+            //gotHit = false;
+        }
+
         if (!died && life <= 0)
         {
             Die();
         }
 
-        if (gotHit && !connectionManager.isClient)
+        if (playerData.isInvulnerable)
         {
-            life -= 1;
-            healthBar.SetHealth(life);
-            gotHit = false;
+            GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(0, 184 / 255, 1, 1));
+            Invoke("RestoreInvulnerability", invulnerabilityTime);
         }
 
     }
@@ -111,6 +121,12 @@ public class EnemyController : MonoBehaviour
     void DisableChicken()
     {
         gameObject.SetActive(false);
+    }
+
+    void RestoreInvulnerability()
+    {
+        playerData.isInvulnerable = false;
+        gotHit = false;
     }
 
     public PlayerData GetPlayerData() { return playerData; }

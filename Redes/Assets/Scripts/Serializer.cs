@@ -67,6 +67,7 @@ public static class Serializer
         writer.Write(playerData.damage);
         writer.Write(playerData.packetID);
         writer.Write(playerData.isMoving);
+        writer.Write(playerData.isInvulnerable);
         writer.Write(playerData.position.x);
         writer.Write(playerData.position.z);
         writer.Write(playerData.movementDirection.x);
@@ -102,6 +103,7 @@ public static class Serializer
         playerData.damage = reader.ReadInt32();
         playerData.packetID = reader.ReadInt32();
         playerData.isMoving = reader.ReadBoolean();
+        playerData.isInvulnerable = reader.ReadBoolean();
         playerData.position.x = reader.ReadSingle();
         playerData.position.z = reader.ReadSingle();
         playerData.movementDirection.x = reader.ReadSingle();

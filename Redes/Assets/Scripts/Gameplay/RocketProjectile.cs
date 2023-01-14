@@ -54,7 +54,7 @@ public class RocketProjectile : MonoBehaviour
             // Guarantee we are playing as the server
             PlayerMovement serverPlayer = GameObject.Find("0").GetComponent<PlayerMovement>();
 
-            if (serverPlayer != null && !serverPlayer.isClient && collision.gameObject.name != "0")
+            if (serverPlayer != null && !serverPlayer.isClient /*&& collision.gameObject.name != "0"*/)
             {
                 serverPlayer.playerData.chickenGotHit = true;
                 serverPlayer.playerData.chickenHitId = int.Parse(collision.gameObject.name);
