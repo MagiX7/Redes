@@ -14,8 +14,9 @@ public class EnemyController : MonoBehaviour
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
-    float invulnerabilityTime = 20.0f;
+    float invulnerabilityTime = 2.0f;
     //bool isInvulnerable = false;
+    Material material;
 
 
     // For interpolation
@@ -37,6 +38,7 @@ public class EnemyController : MonoBehaviour
         playerData = new PlayerData();
         healthBar.SetMaxHealth(5);
         anim = GetComponent<Animator>();
+        material = transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material;
     }
 
     void Update()
@@ -67,12 +69,14 @@ public class EnemyController : MonoBehaviour
             anim.SetBool("Run", false);
 
         
-        if (gotHit && !playerData.isInvulnerable && !connectionManager.isClient)
+        if (gotHit && !playerData.isInvulnerable)
         {
             playerData.isInvulnerable = true;
-            life -= 1;
-            healthBar.SetHealth(life);
-            //gotHit = false;
+            if (!connectionManager.isClient)
+            {
+                life -= 1;
+                healthBar.SetHealth(life);
+            }
         }
 
         if (!died && life <= 0)
@@ -80,10 +84,11 @@ public class EnemyController : MonoBehaviour
             Die();
         }
 
-        if (playerData.isInvulnerable)
+        if (playerData.isInvulnerable && gotHit)
         {
-            GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(0, 184 / 255, 1, 1));
+            material.SetColor("_EmissionColor", new Color(0, 184, 255, 255));
             Invoke("RestoreInvulnerability", invulnerabilityTime);
+            gotHit = false;
         }
 
     }
@@ -126,7 +131,7 @@ public class EnemyController : MonoBehaviour
     void RestoreInvulnerability()
     {
         playerData.isInvulnerable = false;
-        gotHit = false;
+        material.SetColor("_EmissionColor", new Color(0, 0, 0, 0));
     }
 
     public PlayerData GetPlayerData() { return playerData; }
