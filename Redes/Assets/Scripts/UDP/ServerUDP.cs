@@ -1,12 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,31 +11,40 @@ public class ServerUDP : MonoBehaviour
     IPEndPoint ipep;
     int recv = 0;
     byte[] data;
+    byte[] dataToSend;
+    bool needToSendMessage = false;
 
     EndPoint remote = null;
 
     Thread receiveMsgsThread;
+    Thread broadcastMsgsThread;
     bool finished = false;
 
     bool newMessage = false;
     bool messageSent = false;
+    bool notifyExistingUsers = false;
 
     bool clientConnected = false;
     string lastUserName = string.Empty;
 
     string text;
     List<EndPoint> remoters;
+    int clientsNetId = 1;
+    int netId = 0;
 
-    [SerializeField] Text chat;
-    [SerializeField] InputField input;
-    [SerializeField] Text connectedPeople;
     [SerializeField] Text ipText;
+
+    ConnectionsManager connectionsManager;
+    ClientSceneManagerUDP sceneManager;
 
     void Start()
     {
         remoters = new List<EndPoint>();
+        connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
+        sceneManager = GameObject.Find("SceneManager").GetComponent<ClientSceneManagerUDP>();
 
         data = new byte[1024];
+        dataToSend = new byte[1024];
 
         string serverIp = GetLocalIPAddress();
         ipep = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
@@ -49,12 +53,16 @@ public class ServerUDP : MonoBehaviour
 
         remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
-        receiveMsgsThread = new Thread(RecieveMessages);
+        receiveMsgsThread = new Thread(ReceiveMessages);
         receiveMsgsThread.Start();
+        broadcastMsgsThread = new Thread(BroadcastMessages);
+        broadcastMsgsThread.Start();
 
-        connectedPeople.text += ("You (Server)\n");
-        chat.text += "Server created successfully!\n";
+        sceneManager.UpdateUsersList("You (Server)");
+        sceneManager.OnNewChatMessage("Server created successfully!");
         ipText.text += serverIp;
+
+        transform.parent.name = netId.ToString();
     }
     
     private void OnDisable()
@@ -66,33 +74,51 @@ public class ServerUDP : MonoBehaviour
         serverSocket.Close();
         if (receiveMsgsThread.IsAlive)
             receiveMsgsThread.Abort();
+        if (broadcastMsgsThread.IsAlive)
+            broadcastMsgsThread.Abort();
     }
 
     void Update()
     {
         if (!clientConnected && newMessage)
         {
-            OnMessageReceived();
+            OnChatMessageReceived();
         }
         else if (clientConnected)
         {
             OnClientConnected();
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (notifyExistingUsers && !connectionsManager.newUser)
         {
-            OnMessageSent();
+            foreach (var remote in remoters)
+            {
+                for (int i = 0; i < connectionsManager.players.Count; i++)
+                {
+                    GameObject client = connectionsManager.players[i];
+                    int clientNetId = int.Parse(client.name);
+                    string text = "Welcome, " + lastUserName;
+                    data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, clientNetId, text);
+                    serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+
+                    PlayerData playerData = client.GetComponent<EnemyController>().playerData;
+                    data = Serializer.SerializePlayerData(playerData, netId, clientNetId);
+                    serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+                    serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+                    serverSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+                }
+            }
+            notifyExistingUsers = false;
         }
+
         if (messageSent)
         {
-            chat.text += ("[Server]: " + input.text + "\n");
-            input.text = "";
             data = new byte[1024];
             messageSent = false;
         }
     }
 
-    void RecieveMessages()
+    void ReceiveMessages()
     {
         while (!finished)
         {
@@ -100,9 +126,31 @@ public class ServerUDP : MonoBehaviour
             recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
             if (recv > 0)
             {
-                text = Encoding.ASCII.GetString(bytes, 0, recv);
-                newMessage = true;
-                data = bytes;
+                int clientNetId = -1;
+                int senderNetId;
+                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out text, out clientNetId, out senderNetId, out _);
+
+                if (msgType == MessageType.DISCONNECT)
+                {
+                    remoters.Remove(remote);
+                    for (int i = 0; i < remoters.Count; ++i)
+                    {
+                        serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
+                    }
+                    continue;
+                }
+
+                if (msgType == MessageType.NEW_USER)
+                {
+                    clientConnected = true;
+                    lastUserName = text;
+                }
+
+                if (msgType == MessageType.PLAYER_DATA && connectionsManager.needToUpdateEnemy)
+                {
+                    dataToSend = bytes;
+                    needToSendMessage = true;
+                }
 
                 if (!remoters.Contains(remote))
                 {
@@ -110,14 +158,18 @@ public class ServerUDP : MonoBehaviour
                     lastUserName = text;
                     remoters.Add(remote);
 
-                    for (int i = 0; i < remoters.Count; i++)
-                    {
-                        if (remote == remoters[i])
-                            text = "Welcome to the UDP server";
-                        else
-                            text = lastUserName + " Connected!\n";
+                    byte[] netIdBytes = Serializer.SerializeIntWithHeader(MessageType.NET_ID, netId, clientsNetId);
+                    serverSocket.SendTo(netIdBytes, remote);
+                    connectionsManager.OnNewClient(clientsNetId);
+                    clientsNetId++;
 
-                        bytes = Encoding.ASCII.GetBytes(text);
+                    notifyExistingUsers = true;
+
+                    for (int i = 0; i < remoters.Count - 1; ++i)
+                    {
+                        string msg = "Welcome, " + lastUserName;
+                        sceneManager.OnNewChatMessage(msg);
+                        bytes = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, msg);
                         serverSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remoters[i]);
                     }
                 }
@@ -125,43 +177,57 @@ public class ServerUDP : MonoBehaviour
         }
     }
 
-    void OnMessageReceived()
+    void BroadcastMessages()
     {
-        data = Encoding.ASCII.GetBytes(text);
-        recv = data.Length;
-
-        for (int i = 0; i < remoters.Count; i++)
-            serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
-
-        chat.text += (text + "\n");
-
-        newMessage = false;
-        data = new byte[1024];
+        while (!finished)
+        {
+            if (needToSendMessage)
+            {
+                // World State Replication: Passive
+                for (int i = 0; i < remoters.Count; i++)
+                    serverSocket.SendTo(dataToSend, dataToSend.Length, SocketFlags.None, remoters[i]);
+                needToSendMessage = false;
+                dataToSend = new byte[1024];
+            }
+        }
     }
 
-    void OnMessageSent()
+    void OnChatMessageReceived()
     {
-        data = Encoding.ASCII.GetBytes("[Server]: " + input.text);
+        data = Serializer.SerializeStringWithHeader(MessageType.CHAT, netId, text);
         recv = data.Length;
-        for (int i = 0; i < remoters.Count; i++)
-        {
-            serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
-        }
 
-        messageSent = true;
+        for (int i = 0; i < remoters.Count; i++)
+            serverSocket.SendTo(data, recv, SocketFlags.None, remoters[i]);
+
+        newMessage = false;
         data = new byte[1024];
     }
 
     void OnClientConnected()
     {
-        chat.text += (lastUserName + " Connected!\n");
-        connectedPeople.text += (lastUserName + "\n");
+        sceneManager.OnNewChatMessage("Welcome, " + lastUserName);
+        sceneManager.UpdateUsersList(lastUserName);
 
         clientConnected = false;
-        lastUserName = string.Empty;
+        //lastUserName = string.Empty;
 
         newMessage = false;
         data = new byte[1024];
+    }
+
+    public void Send(byte[] bytes)
+    {
+        if (remoters.Count <= 0)
+            return;
+
+        dataToSend = bytes;
+        needToSendMessage = true;
+    }
+
+    public int GetNetId()
+    {
+        return netId;
     }
 
     string GetLocalIPAddress()

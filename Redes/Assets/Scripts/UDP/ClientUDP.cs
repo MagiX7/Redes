@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+
 using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class ClientUDP : MonoBehaviour
 {
@@ -15,22 +12,22 @@ public class ClientUDP : MonoBehaviour
 
     int recv = 0;
     byte[] data;
-    public string clientIp;
-    public string serverIp;
+    [HideInInspector] public string clientIp;
+    [HideInInspector] public string serverIp;
     [HideInInspector] public string userName;
     
     EndPoint remote = null;
+    int netId = -1;
+    bool netIdAssigned = false;
 
     Thread receiveMsgsThread;
 
     bool finished = false;
-    bool newMessage = false;
+    bool newUser = false; // For other players
+    int latestNetId = -1;
 
-    string incomingText;
-
-    [SerializeField] Text chat;
-    [SerializeField] InputField input;
-
+    [SerializeField] ClientSceneManagerUDP sceneManager;
+    ConnectionsManager connectionsManager;
     
     void Start()
     {
@@ -41,17 +38,21 @@ public class ClientUDP : MonoBehaviour
         remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
         data = new byte[1024];
-        data = Encoding.ASCII.GetBytes(userName);
+        data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, netId, userName);
         clientSocket.SendTo(data, data.Length, SocketFlags.None, remote);
         data = new byte[1024];
 
-        receiveMsgsThread = new Thread(RecieveMessages);
+        receiveMsgsThread = new Thread(ReceiveMessages);
         receiveMsgsThread.Start();
 
+        connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
+        // Notify Disconnection
+        byte[] bytes = Serializer.SerializeStringWithHeader(MessageType.DISCONNECT, netId, userName);
+        clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
         finished = true;
 
         clientSocket.Close();
@@ -61,38 +62,60 @@ public class ClientUDP : MonoBehaviour
 
     void Update()
     {
-        if (newMessage)
+        if (newUser)
         {
-            chat.text += (incomingText + "\n");
-            newMessage = false;
+            connectionsManager.OnNewClient(latestNetId);
+            newUser = false;
         }
-
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (netIdAssigned)
         {
-            OnMessageSent();
+            transform.parent.name = netId.ToString();
+            netIdAssigned = false;
         }
     }
 
-    void RecieveMessages()
+    void ReceiveMessages()
     {
         while (!finished)
         {
-            byte[] msg = new byte[1024];
-            recv = clientSocket.ReceiveFrom(msg, SocketFlags.None, ref remote);
-            incomingText = Encoding.ASCII.GetString(msg, 0, recv);
-            newMessage = true;
-            data = msg;
+            byte[] bytes = new byte[1024];
+            recv = clientSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
+
+            if (recv > 0)
+            {
+                int incomingNetId;
+                int affectedNetId;
+                int senderNetId;
+                MessageType msgType = connectionsManager.OnMessageReceived(bytes, out _, out incomingNetId, out senderNetId, out affectedNetId);
+
+                if (msgType == MessageType.NET_ID && incomingNetId > 0)
+                {
+                    netId = incomingNetId;
+                    connectionsManager.OnNewClient(senderNetId);
+                    netIdAssigned = true;
+                }
+                else if (msgType == MessageType.NEW_USER && senderNetId != netId)
+                {
+                    newUser = true;
+                    latestNetId = senderNetId;
+                }
+            }
         }
     }
 
-    void OnMessageSent()
+    public void Send(byte[] bytes)
     {
-        string msg = "[" + userName + "]" + ": " + input.text;
-        data = Encoding.ASCII.GetBytes(msg);
-        recv = data.Length;
-        clientSocket.SendTo(data, recv, SocketFlags.None, remote);
-        input.text = "";
+        clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }
+
+    public void SetNetId(int value)
+    {
+        netId = value;
+    }
+
+    public int GetNetId() { return netId; }
+
+    public string GetUserName() { return userName; }
 
     string GetLocalIPAddress()
     {
@@ -106,5 +129,4 @@ public class ClientUDP : MonoBehaviour
         }
         return "Null";
     }
-
 }
