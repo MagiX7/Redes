@@ -101,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (playerData.isInvulnerable)
         {
-            GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(0, 184/255, 1, 1));
+            transform.GetChild(4).GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(0, 184/255, 1, 1));
             Invoke("RestoreInvulnerability", invulnerabilityTime);
         }
 
