@@ -61,6 +61,7 @@ public class ConnectionsManager : MonoBehaviour
             {
                 foreach (int clientId in clientNetIds)
                 {
+                    // TODO: Sometimes an error appears here
                     GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
                     if (obj != null)
                     {

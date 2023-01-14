@@ -14,7 +14,7 @@ public class EnemyController : MonoBehaviour
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
-    float invulnerabilityTime = 1.0f;
+    float invulnerabilityTime = 20.0f;
     //bool isInvulnerable = false;
 
 

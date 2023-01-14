@@ -14,8 +14,8 @@ public class PlayerMovement : MonoBehaviour
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
-    float invulnerabilityTime = 1.0f;
-    //bool isInvulnerable = false;
+    float invulnerabilityTime = 20.0f;
+    Material material;
 
     // Weapons
     public GameObject rocketLauncher;
@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         healthBar.SetMaxHealth(5);
+        material = transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material;
     }
 
     void Update()
@@ -101,7 +102,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (playerData.isInvulnerable)
         {
-            transform.GetChild(4).GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(0, 184/255, 1, 1));
+            //material.SetColor("_EmissionColor", new Color(0, 184, 255, 255));
+            material.SetColor("_EmissionColor", new Color(255, 0, 255, 255));
             Invoke("RestoreInvulnerability", invulnerabilityTime);
         }
 
@@ -193,5 +195,6 @@ public class PlayerMovement : MonoBehaviour
     {
         playerData.isInvulnerable = false;
         gotHit = false;
+        material.SetColor("_EmissionColor", new Color(0, 0, 0, 0));
     }
 }
