@@ -89,11 +89,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (gotHit && !playerData.isInvulnerable)
         {
+            Debug.Log("Entered Player update");
             playerData.isInvulnerable = true;
             if (!isClient)
             {
                 life -= 1;
                 healthBar.SetHealth(life);
+                Debug.Log("Player update");
             }
         }
 
@@ -128,13 +130,15 @@ public class PlayerMovement : MonoBehaviour
     public void DecrementLife()
     {
         Debug.Log("Entered Decrement player");
-        if (playerData.isInvulnerable)
+        if (playerData.isInvulnerable && !isClient)
             return;
 
         life -= 1;
         healthBar.SetHealth(life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
+        playerData.isInvulnerable = true;
+        gotHit = true;
         Debug.Log("Decrement player");
     }
 

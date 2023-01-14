@@ -72,6 +72,7 @@ public class EnemyController : MonoBehaviour
 
         if (gotHit && !playerData.isInvulnerable)
         {
+            Debug.Log("Entered Enemy update");
             playerData.isInvulnerable = true;
             if (!connectionManager.isClient)
             {
@@ -98,13 +99,14 @@ public class EnemyController : MonoBehaviour
     public void DecrementLife()
     {
         Debug.Log("Entered Decrement enemy");
-        if (playerData.isInvulnerable)
+        if (playerData.isInvulnerable && !connectionManager.isClient)
             return;
 
         healthBar.SetHealth(life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
-        gotHit = false;
+        playerData.isInvulnerable = true;
+        gotHit = true;
         Debug.Log("Decrement Enemy");
     }
 
