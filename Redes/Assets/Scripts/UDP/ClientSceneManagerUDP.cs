@@ -96,6 +96,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
             }
             else
             {
+                blackScreenCounter = 5.0f;
                 UpdateScene();
                 fadingInCompleted = false;
                 fadingOut = true;
@@ -230,7 +231,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     {
         player.SetActive(true);
         player.transform.position = initialPlayerPos;
-        player.GetComponent<PlayerMovement>().ResetStats();
+        //player.GetComponent<PlayerMovement>().ResetStats();
     }
 
 
