@@ -74,6 +74,7 @@ public class ConnectionsManager : MonoBehaviour
                         EnemyController go = GameObject.Find(clientId.ToString()).GetComponent<EnemyController>();
                         if (go != null && go.playerData.packetID < latestPlayerData.packetID)
                         {
+                            // No llega el chickenGotHit
                             go.playerData = latestPlayerData;
                             if (go.playerData.chickenGotHit)
                             {

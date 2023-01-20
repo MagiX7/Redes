@@ -122,10 +122,19 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Rocket")
-        {
-            gotHit = true;
-        }
+        //if (collision.gameObject.tag == "Rocket")
+        //{
+        //    gotHit = true;
+        //}
+
+        // We are in the server
+        //if (!connectionManager.isClient)
+        //{
+        //    if (collision.gameObject.tag == "Rocket")
+        //    {
+        //        gotHit = true;
+        //    }
+        //}
     }
 
     void DisableChicken()

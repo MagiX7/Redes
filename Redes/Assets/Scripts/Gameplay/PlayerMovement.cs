@@ -158,12 +158,22 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void Send()
+    {
+        playerData.packetID++;
+        //sendDataCounter = 0.0f;
+        udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Rocket")
-        {
-            gotHit = true;
-        }
+        //if (!isClient)
+        //{
+        //    if (collision.gameObject.tag == "Rocket")
+        //    {
+        //        gotHit = true;
+        //    }
+        //}
     }
 
     public void SetScore()
