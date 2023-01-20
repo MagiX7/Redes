@@ -119,6 +119,7 @@ public class EnemyController : MonoBehaviour
     {
         life = 5;
         healthBar.SetHealth(life);
+        died = false;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -141,7 +142,14 @@ public class EnemyController : MonoBehaviour
     void DisableChicken()
     {
         gameObject.SetActive(false);
+        Invoke("RestartChicken", 5.0f);
     }
 
+    void RestartChicken()
+    {
+        gameObject.SetActive(true);
+        SetLife(5);
+        died = false;
+    }
     public PlayerData GetPlayerData() { return playerData; }
 }

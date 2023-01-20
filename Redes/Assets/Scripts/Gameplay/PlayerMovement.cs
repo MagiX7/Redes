@@ -205,6 +205,14 @@ public class PlayerMovement : MonoBehaviour
     void DisableChicken()
     {
         gameObject.SetActive(false);
+        Invoke("RestartChicken", 5.0f);
+    }
+
+    void RestartChicken()
+    {
+        gameObject.SetActive(true);
+        SetLife(5);
+        died = false;
     }
 
     private void ReEnableDisabledProjectile()

@@ -120,29 +120,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
         {
             ToggleGameUI(true);
 
-
-            foreach (int clientId in connectionManager.clientNetIds)
-            {
-                GameObject chickenID = GameObject.Find(clientId.ToString());
-
-                if (chickenID)
-                {
-                    chickenID.SetActive(true);
-                    EnemyController enemy = chickenID.GetComponent<EnemyController>();
-                    if (enemy)
-                    {
-                        enemy.SetLife(5);
-                        continue;
-                    }
-
-                    PlayerMovement player = chickenID.GetComponent<PlayerMovement>();
-                    if (player)
-                    {
-                        player.SetLife(5);
-                    }
-                }
-            }
-
             if (serverUDP != null)
             {
                 for (int i = 0; i < UIToDeactivate.Length; ++i)

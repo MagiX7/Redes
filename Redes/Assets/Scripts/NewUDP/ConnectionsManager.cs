@@ -65,10 +65,6 @@ public class ConnectionsManager : MonoBehaviour
                 foreach (int clientId in clientNetIds)
                 {
                     // TODO: Sometimes an error appears here
-                    if (latestPlayerData.chickenGotHit)
-                    {
-                        
-                    }
                     if (clientId == latestAffectedNetId)
                     {
                         GameObject chickenID = GameObject.Find(clientId.ToString());
