@@ -109,9 +109,14 @@ public class EnemyController : MonoBehaviour
 
     public void Die()
     {
+        MeshRenderer[] meshes = GetComponentsInChildren<MeshRenderer>();
+        foreach (MeshRenderer mesh in meshes)
+        {
+            mesh.enabled = false;
+        }
         died = true;
         life = 0;
-        Invoke("DisableChicken", 1.0f);
+        Invoke("RestartChicken", 5.0f);
         sceneManager.EndGame();
     }
 
@@ -147,7 +152,11 @@ public class EnemyController : MonoBehaviour
 
     void RestartChicken()
     {
-        gameObject.SetActive(true);
+        MeshRenderer[] meshes = GetComponentsInChildren<MeshRenderer>();
+        foreach (MeshRenderer mesh in meshes)
+        {
+            mesh.enabled = true;
+        }
         SetLife(5);
         died = false;
     }

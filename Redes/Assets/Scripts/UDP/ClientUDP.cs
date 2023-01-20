@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Net;
 using System.Net.Sockets;
 
@@ -79,6 +80,7 @@ public class ClientUDP : MonoBehaviour
         while (!finished)
         {
             byte[] bytes = new byte[1024];
+       
             recv = clientSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
 
             if (recv > 0)

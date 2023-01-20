@@ -190,9 +190,14 @@ public class PlayerMovement : MonoBehaviour
 
     public void Die()
     {
+        MeshRenderer[] meshes = GetComponentsInChildren<MeshRenderer>();
+        foreach (MeshRenderer mesh in meshes)
+        {
+            mesh.enabled = false;
+        }
         died = true;
         life = 0;
-        Invoke("DisableChicken", 1.0f);
+        Invoke("RestartChicken", 5.0f);
         sceneManager.EndGame();
     }
 
@@ -204,13 +209,18 @@ public class PlayerMovement : MonoBehaviour
 
     void DisableChicken()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         Invoke("RestartChicken", 5.0f);
     }
 
     void RestartChicken()
     {
-        gameObject.SetActive(true);
+        MeshRenderer[] meshes = GetComponentsInChildren<MeshRenderer>();
+        foreach (MeshRenderer mesh in meshes)
+        {
+            mesh.enabled = true;
+        }
+        //gameObject.SetActive(true);
         SetLife(5);
         died = false;
     }
