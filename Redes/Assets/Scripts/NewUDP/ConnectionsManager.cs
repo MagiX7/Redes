@@ -86,13 +86,13 @@ public class ConnectionsManager : MonoBehaviour
                                     EnemyController enemy = obj.GetComponent<EnemyController>();
                                     if (enemy != null)
                                     {
-                                        enemy.life = latestPlayerData.chickenHitLife;
+                                        enemy.SetLife(latestPlayerData.chickenHitLife);
                                     }
 
                                     PlayerMovement player = obj.GetComponent<PlayerMovement>();
                                     if (player != null)
                                     {
-                                        player.DecrementLife();
+                                        player.SetLife(latestPlayerData.chickenHitLife);
                                     }
                                 }
 

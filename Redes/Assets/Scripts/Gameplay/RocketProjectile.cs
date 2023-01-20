@@ -58,7 +58,8 @@ public class RocketProjectile : MonoBehaviour
             {
                 serverPlayer.playerData.chickenGotHit = true;
                 serverPlayer.playerData.chickenHitId = int.Parse(collision.gameObject.name);
-                serverPlayer.playerData.chickenHitLife--;
+               
+                serverPlayer.playerData.chickenHitLife = collision.gameObject.GetComponent<EnemyController>().life-1;
             }       
             
             
