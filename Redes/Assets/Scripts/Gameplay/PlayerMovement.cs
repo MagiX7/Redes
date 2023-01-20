@@ -87,16 +87,16 @@ public class PlayerMovement : MonoBehaviour
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
-        if (gotHit)
-        {
-            Debug.Log("Entered Player update");
-            if (!isClient)
-            {
-                life -= 1;
-                healthBar.SetHealth(life);
-                Debug.Log("Player update");
-            }
-        }
+        //if (gotHit)
+        //{
+        //    Debug.Log("Entered Player update");
+        //    if (!isClient)
+        //    {
+        //        life -= 1;
+        //        healthBar.SetHealth(life);
+        //        Debug.Log("Player update");
+        //    }
+        //}
 
         if (!died && life <= 0)
         {
@@ -135,6 +135,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetLife(int lifePoints)
     {
+        Debug.Log("PLAYER SET LIFE " + lifePoints);
         life = lifePoints;
         healthBar.SetHealth(life);
         gotHit = true;

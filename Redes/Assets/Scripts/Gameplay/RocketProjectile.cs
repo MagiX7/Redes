@@ -58,13 +58,26 @@ public class RocketProjectile : MonoBehaviour
             {
                 serverPlayer.playerData.chickenGotHit = true;
                 serverPlayer.playerData.chickenHitId = int.Parse(collision.gameObject.name);
-               
-                serverPlayer.playerData.chickenHitLife = collision.gameObject.GetComponent<EnemyController>().life-1;
-            }       
-            
-            
+
+                EnemyController enemy = collision.gameObject.GetComponent<EnemyController>();
+
+                if (enemy)
+                {
+                    serverPlayer.playerData.chickenHitLife = enemy.life - 1;
+                    Debug.Log("CHICKEN HIT ENEMY HP IS " + collision.gameObject.GetComponent<EnemyController>().life);
+                }
+                else
+                {
+                    serverPlayer.playerData.chickenHitLife = serverPlayer.life - 1;
+                    Debug.Log("CHICKEN HIT PLAYER HP IS " + collision.gameObject.GetComponent<PlayerMovement>().life);
+                }
+
+
+            }
+
+
             PlayerMovement aux = instigator.GetComponent<PlayerMovement>();
-            if (aux) 
+            if (aux)
                 aux.SetScore();
         }
 

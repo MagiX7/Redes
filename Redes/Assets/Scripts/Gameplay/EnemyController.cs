@@ -70,16 +70,16 @@ public class EnemyController : MonoBehaviour
         else
             anim.SetBool("Run", false);
 
-        if (gotHit)
-        {
-            Debug.Log("Entered Enemy update");
-            if (!connectionManager.isClient)
-            {
-                life -= 1;
-                healthBar.SetHealth(life);
-                Debug.Log("Enemy update");
-            }
-        }
+        //if (gotHit)
+        //{
+        //    Debug.Log("Entered Enemy update");
+        //    if (!connectionManager.isClient)
+        //    {
+        //        life -= 1;
+        //        healthBar.SetHealth(life);
+        //        Debug.Log("Enemy update");
+        //    }
+        //}
 
         if (!died && life <= 0)
         {
