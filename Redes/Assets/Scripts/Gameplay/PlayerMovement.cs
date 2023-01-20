@@ -142,6 +142,13 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Decrement player");
     }
 
+    public void SetLife(int lifePoints)
+    {
+        life = lifePoints;
+        healthBar.SetHealth(life);
+        playerData.isInvulnerable = true;
+        gotHit = true;
+    }
 
     public PlayerData GetPlayerData() { return playerData; }
 

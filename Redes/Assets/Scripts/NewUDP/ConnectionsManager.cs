@@ -30,8 +30,8 @@ public class ConnectionsManager : MonoBehaviour
 
     Mutex mutex = new Mutex();
 
-    private object clientLocked;
-    private object objectLocked;
+    private object clientLocked = new object();
+    private object objectLocked = new object();
 
     void Start()
     {
@@ -86,7 +86,7 @@ public class ConnectionsManager : MonoBehaviour
                                     EnemyController enemy = obj.GetComponent<EnemyController>();
                                     if (enemy != null)
                                     {
-                                        enemy.DecrementLife();
+                                        enemy.life = latestPlayerData.chickenHitLife;
                                     }
 
                                     PlayerMovement player = obj.GetComponent<PlayerMovement>();
@@ -128,7 +128,6 @@ public class ConnectionsManager : MonoBehaviour
                 }
                 needToUpdateObject = false;
             }
-            mutex.ReleaseMutex();
         }
     }
 

@@ -95,6 +95,13 @@ public class EnemyController : MonoBehaviour
         }
 
     }
+    public void SetLife(int lifePoints)
+    {
+        life = lifePoints;
+        healthBar.SetHealth(life);
+        playerData.isInvulnerable = true;
+        gotHit = true;
+    }
 
     public void DecrementLife()
     {

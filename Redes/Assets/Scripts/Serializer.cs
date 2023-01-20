@@ -91,7 +91,10 @@ public static class Serializer
 
         writer.Write(playerData.chickenGotHit);
         if (playerData.chickenGotHit)
+        {
+            writer.Write(playerData.chickenHitLife);
             writer.Write(playerData.chickenHitId);
+        }
 
         return stream.GetBuffer();
     }
@@ -128,7 +131,10 @@ public static class Serializer
 
         playerData.chickenGotHit = reader.ReadBoolean();
         if (playerData.chickenGotHit)
+        {
+            playerData.chickenHitLife = reader.ReadInt32();
             playerData.chickenHitId = reader.ReadInt32();
+        }
 
         return playerData;
     }

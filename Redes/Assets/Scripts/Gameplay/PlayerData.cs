@@ -17,5 +17,6 @@ public class PlayerData
     public Quaternion rotation = Quaternion.identity;
 
     public bool chickenGotHit = false;
+    public int chickenHitLife = 5;
     public int chickenHitId = -1;
 }
