@@ -86,18 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
-        
-
-        //if (gotHit)
-        //{
-        //    Debug.Log("Entered Player update");
-        //    if (!isClient)
-        //    {
-        //        life -= 1;
-        //        healthBar.SetHealth(life);
-        //        Debug.Log("Player update");
-        //    }
-        //}
+       
 
         if (!died && life <= 0)
         {
@@ -122,7 +111,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void DecrementLife()
     {
-        Debug.Log("Entered Decrement player");
         if (!isClient)
             return;
 
@@ -131,12 +119,10 @@ public class PlayerMovement : MonoBehaviour
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
         gotHit = true;
-        Debug.Log("Decrement player");
     }
 
     public void SetLife(int lifePoints)
     {
-        Debug.Log("PLAYER SET LIFE " + lifePoints);
         life = lifePoints;
         healthBar.SetHealth(life);
         gotHit = true;

@@ -81,9 +81,6 @@ public class ConnectionsManager : MonoBehaviour
                             go.playerData = latestPlayerData;
                             if (go.playerData.chickenGotHit)
                             {
-                                Debug.Log(go.playerData.packetID.ToString() + " " + latestPlayerData.packetID);
-
-
                                 GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
                                 if (obj != null)
                                 {
@@ -102,10 +99,6 @@ public class ConnectionsManager : MonoBehaviour
 
                             }
                             
-                        }
-                        else
-                        { 
-                            //Debug.Log("HE PERDIDO UN PAQUETE, PAREZCO AMAZON");
                         }
                         break;
                     }

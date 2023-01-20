@@ -70,17 +70,6 @@ public class EnemyController : MonoBehaviour
         else
             anim.SetBool("Run", false);
 
-        //if (gotHit)
-        //{
-        //    Debug.Log("Entered Enemy update");
-        //    if (!connectionManager.isClient)
-        //    {
-        //        life -= 1;
-        //        healthBar.SetHealth(life);
-        //        Debug.Log("Enemy update");
-        //    }
-        //}
-
         if (!died && life <= 0)
         {
             Die();
@@ -88,7 +77,6 @@ public class EnemyController : MonoBehaviour
     }
     public void SetLife(int lifePoints)
     {
-        Debug.Log("SET LIFE IN ENEMY " + lifePoints);
         life = lifePoints;
         healthBar.SetHealth(life);
         gotHit = true;
@@ -96,7 +84,6 @@ public class EnemyController : MonoBehaviour
 
     public void DecrementLife()
     {
-        Debug.Log("Entered Decrement enemy");
         if (!connectionManager.isClient)
             return;
 
@@ -104,7 +91,6 @@ public class EnemyController : MonoBehaviour
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
         gotHit = true;
-        Debug.Log("Decrement Enemy");
     }
 
     public void Die()

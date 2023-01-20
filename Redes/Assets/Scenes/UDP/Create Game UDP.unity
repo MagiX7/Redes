@@ -831,7 +831,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -2335,6 +2334,12 @@ MonoBehaviour:
   - {fileID: 616773023}
   - {fileID: 462670033}
   sceneManager: {fileID: 2133486110}
+  positions:
+  - {x: 21.82, y: -0.1199998, z: 16.87}
+  - {x: -13.3, y: -0.02, z: 16.87}
+  - {x: 21.82, y: -0.1199998, z: -12.12}
+  - {x: -17.41, y: 0.13, z: -12.12}
+  isClient: 0
   clientNetIds: 
   players: []
 --- !u!4 &2044547879
@@ -2497,6 +2502,7 @@ MonoBehaviour:
   clientUDP: {fileID: 0}
   player: {fileID: 181595983305667948}
   enemy: {fileID: 0}
+  connectionManager: {fileID: 0}
   gameStarted: 0
   clientJoined: 0
   UIToDeactivate:
