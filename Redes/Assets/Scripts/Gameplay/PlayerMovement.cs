@@ -87,10 +87,9 @@ public class PlayerMovement : MonoBehaviour
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
 
-        if (gotHit && !playerData.isInvulnerable)
+        if (gotHit)
         {
             Debug.Log("Entered Player update");
-            playerData.isInvulnerable = true;
             if (!isClient)
             {
                 life -= 1;
@@ -102,13 +101,6 @@ public class PlayerMovement : MonoBehaviour
         if (!died && life <= 0)
         {
             Die();
-        }
-
-        if (playerData.isInvulnerable && gotHit)
-        {
-            material.SetColor("_EmissionColor", new Color(0, 184, 255, 255));
-            Invoke("RestoreInvulnerability", invulnerabilityTime);
-            gotHit = false;
         }
 
         // This code is to test lag mitigation techniques
@@ -130,14 +122,13 @@ public class PlayerMovement : MonoBehaviour
     public void DecrementLife()
     {
         Debug.Log("Entered Decrement player");
-        if (playerData.isInvulnerable && !isClient)
+        if (!isClient)
             return;
 
         life -= 1;
         healthBar.SetHealth(life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
-        playerData.isInvulnerable = true;
         gotHit = true;
         Debug.Log("Decrement player");
     }
@@ -146,7 +137,6 @@ public class PlayerMovement : MonoBehaviour
     {
         life = lifePoints;
         healthBar.SetHealth(life);
-        playerData.isInvulnerable = true;
         gotHit = true;
     }
 
@@ -208,12 +198,5 @@ public class PlayerMovement : MonoBehaviour
     private void ReEnableDisabledProjectile()
     {
         canShoot = true;
-    }
-
-    void RestoreInvulnerability()
-    {
-        playerData.isInvulnerable = false;
-        //gotHit = false;
-        material.SetColor("_EmissionColor", new Color(0, 0, 0, 0));
     }
 }

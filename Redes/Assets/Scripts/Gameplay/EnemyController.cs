@@ -70,10 +70,9 @@ public class EnemyController : MonoBehaviour
         else
             anim.SetBool("Run", false);
 
-        if (gotHit && !playerData.isInvulnerable)
+        if (gotHit)
         {
             Debug.Log("Entered Enemy update");
-            playerData.isInvulnerable = true;
             if (!connectionManager.isClient)
             {
                 life -= 1;
@@ -86,33 +85,23 @@ public class EnemyController : MonoBehaviour
         {
             Die();
         }
-
-        if (playerData.isInvulnerable && gotHit)
-        {
-            material.SetColor("_EmissionColor", new Color(0, 184, 255, 255));
-            Invoke("RestoreInvulnerability", invulnerabilityTime);
-            gotHit = false;
-        }
-
     }
     public void SetLife(int lifePoints)
     {
         life = lifePoints;
         healthBar.SetHealth(life);
-        playerData.isInvulnerable = true;
         gotHit = true;
     }
 
     public void DecrementLife()
     {
         Debug.Log("Entered Decrement enemy");
-        if (playerData.isInvulnerable && !connectionManager.isClient)
+        if (!connectionManager.isClient)
             return;
 
         healthBar.SetHealth(--life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
-        playerData.isInvulnerable = true;
         gotHit = true;
         Debug.Log("Decrement Enemy");
     }
@@ -142,12 +131,6 @@ public class EnemyController : MonoBehaviour
     void DisableChicken()
     {
         gameObject.SetActive(false);
-    }
-
-    void RestoreInvulnerability()
-    {
-        playerData.isInvulnerable = false;
-        material.SetColor("_EmissionColor", new Color(0, 0, 0, 0));
     }
 
     public PlayerData GetPlayerData() { return playerData; }
