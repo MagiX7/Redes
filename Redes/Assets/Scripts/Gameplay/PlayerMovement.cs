@@ -86,6 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
         playerData.position = transform.position;
         playerData.rotation = transform.rotation;
+        
 
         //if (gotHit)
         //{

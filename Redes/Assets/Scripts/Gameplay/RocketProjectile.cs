@@ -64,7 +64,7 @@ public class RocketProjectile : MonoBehaviour
                 if (enemy)
                 {
                     serverPlayer.playerData.chickenHitLife = enemy.life - 1;
-                    serverPlayer.Send();
+                    //serverPlayer.Send();
                     // As you are playing as the server, you need to process life locally and send the data later
                     enemy.SetLife(serverPlayer.playerData.chickenHitLife);
                     Debug.Log("CHICKEN HIT ENEMY HP IS " + enemy.life);
@@ -72,7 +72,7 @@ public class RocketProjectile : MonoBehaviour
                 else
                 {
                     serverPlayer.playerData.chickenHitLife = serverPlayer.life - 1;
-                    serverPlayer.Send();
+                    //serverPlayer.Send();
                     serverPlayer.SetLife(serverPlayer.playerData.chickenHitLife);
                     Debug.Log("CHICKEN HIT PLAYER HP IS " + collision.gameObject.GetComponent<PlayerMovement>().life);
                 }

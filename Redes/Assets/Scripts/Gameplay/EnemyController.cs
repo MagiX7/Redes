@@ -88,6 +88,7 @@ public class EnemyController : MonoBehaviour
     }
     public void SetLife(int lifePoints)
     {
+        Debug.Log("SET LIFE IN ENEMY " + lifePoints);
         life = lifePoints;
         healthBar.SetHealth(life);
         gotHit = true;

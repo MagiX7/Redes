@@ -1,3 +1,5 @@
+using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +26,9 @@ public class ClientSceneManagerUDP : MonoBehaviour
     [SerializeField] GameObject enemy;
     Vector3 initialPlayerPos = Vector3.zero;
 
+    // connection manager
+    [SerializeField] ConnectionsManager connectionManager;
+
 
     // Fade
     Image fadeImage;
@@ -48,6 +53,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     {
         serverIpInput = GameObject.Find("Server IP Input");
         userNameInput = GameObject.Find("Username Input");
+        connectionManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
 
         fadeImage = GameObject.Find("Fade").GetComponent<Image>();
         if (serverIpInput != null)
@@ -113,7 +119,30 @@ public class ClientSceneManagerUDP : MonoBehaviour
         if (gameEnded && startingNewGame)
         {
             ToggleGameUI(true);
-            
+
+
+            foreach (int clientId in connectionManager.clientNetIds)
+            {
+                GameObject chickenID = GameObject.Find(clientId.ToString());
+
+                if (chickenID)
+                {
+                    chickenID.SetActive(true);
+                    EnemyController enemy = chickenID.GetComponent<EnemyController>();
+                    if (enemy)
+                    {
+                        enemy.SetLife(5);
+                        continue;
+                    }
+
+                    PlayerMovement player = chickenID.GetComponent<PlayerMovement>();
+                    if (player)
+                    {
+                        player.SetLife(5);
+                    }
+                }
+            }
+
             if (serverUDP != null)
             {
                 for (int i = 0; i < UIToDeactivate.Length; ++i)
@@ -194,7 +223,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
             UIToDeactivate[i].gameObject.SetActive(false);
         }
 
-        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.START_GAME, serverUDP.GetNetId(),true);
+        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.START_GAME, serverUDP.GetNetId(), true);
         serverUDP.Send(bytes);
     }
 
@@ -202,7 +231,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
     {
         gameEnded = true;
         fadingIn = true;
-        ToggleGameUI(false);        
+        ToggleGameUI(false);
     }
 
     void ToggleGameUI(bool value)
@@ -241,7 +270,7 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
         connectedPeople.text += message + "\n";
     }
-    
+
     public void RemovePlayerFromList(string userName)
     {
         if (connectedPeople == null)
