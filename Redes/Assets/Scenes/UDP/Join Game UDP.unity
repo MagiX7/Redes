@@ -2349,7 +2349,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -3362,6 +3361,7 @@ MonoBehaviour:
   - {fileID: 298117722}
   - {fileID: 298117721}
   sceneManager: {fileID: 908946557}
+  isClient: 1
   clientNetIds: 
   players: []
 --- !u!1 &2073009858

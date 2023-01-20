@@ -102,7 +102,7 @@ public class EnemyController : MonoBehaviour
         if (playerData.isInvulnerable && !connectionManager.isClient)
             return;
 
-        healthBar.SetHealth(life);
+        healthBar.SetHealth(--life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
         playerData.isInvulnerable = true;

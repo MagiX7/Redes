@@ -30,6 +30,9 @@ public class ConnectionsManager : MonoBehaviour
 
     Mutex mutex = new Mutex();
 
+    private object clientLocked;
+    private object objectLocked;
+
     void Start()
     {
         clientNetIds = new List<int>();
@@ -57,7 +60,7 @@ public class ConnectionsManager : MonoBehaviour
 
         if (needToUpdateEnemy)
         {
-            mutex.WaitOne();
+            lock(clientLocked)
             {
                 foreach (int clientId in clientNetIds)
                 {
@@ -104,12 +107,11 @@ public class ConnectionsManager : MonoBehaviour
                     }
                 }
             }
-            mutex.ReleaseMutex();
         }
 
         if (needToUpdateObject)
         {
-            mutex.WaitOne();
+            lock(objectLocked)
             {
                 // Update the objects that are moving
                 for (int i = 0; i < destroyableObjects.Count; ++i)
