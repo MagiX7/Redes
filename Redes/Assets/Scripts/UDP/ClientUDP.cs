@@ -71,6 +71,7 @@ public class ClientUDP : MonoBehaviour
         if (netIdAssigned)
         {
             transform.parent.name = netId.ToString();
+            transform.parent.position = connectionsManager.positions[netId];
             netIdAssigned = false;
         }
     }

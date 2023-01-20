@@ -157,6 +157,7 @@ public class EnemyController : MonoBehaviour
         {
             mesh.enabled = true;
         }
+
         SetLife(5);
         died = false;
     }

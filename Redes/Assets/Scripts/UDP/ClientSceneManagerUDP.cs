@@ -1,7 +1,6 @@
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class ClientSceneManagerUDP : MonoBehaviour
 {
@@ -28,7 +27,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
 
     // connection manager
     [SerializeField] ConnectionsManager connectionManager;
-
 
     // Fade
     Image fadeImage;

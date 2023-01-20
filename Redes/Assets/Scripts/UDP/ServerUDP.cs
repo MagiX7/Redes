@@ -40,6 +40,7 @@ public class ServerUDP : MonoBehaviour
     void Start()
     {
         remoters = new List<EndPoint>();
+
         connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
         sceneManager = GameObject.Find("SceneManager").GetComponent<ClientSceneManagerUDP>();
 
@@ -63,6 +64,7 @@ public class ServerUDP : MonoBehaviour
         ipText.text += serverIp;
 
         transform.parent.name = netId.ToString();
+        transform.parent.position = connectionsManager.positions[netId];
     }
     
     private void OnDisable()

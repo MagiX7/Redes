@@ -220,7 +220,17 @@ public class PlayerMovement : MonoBehaviour
         {
             mesh.enabled = true;
         }
-        //gameObject.SetActive(true);
+        
+        ConnectionsManager connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
+
+        if (isClient)
+        {
+            transform.position = connectionsManager.positions[GetComponentInChildren<ClientUDP>().GetNetId()];
+        }
+        else
+        {
+            transform.position = connectionsManager.positions[GetComponentInChildren<ServerUDP>().GetNetId()];
+        }
         SetLife(5);
         died = false;
     }

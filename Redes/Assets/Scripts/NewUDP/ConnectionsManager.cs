@@ -22,6 +22,7 @@ public class ConnectionsManager : MonoBehaviour
     string disconnectedUserName = string.Empty;
 
     [SerializeField] ClientSceneManagerUDP sceneManager;
+    public List<Vector3> positions = new List<Vector3>();
 
     public bool isClient = false;
 
@@ -142,7 +143,7 @@ public class ConnectionsManager : MonoBehaviour
 
     void ClientConnected()
     {
-        GameObject latestClient = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
+        GameObject latestClient = Instantiate(enemyPrefab, positions[lastNetId], Quaternion.identity);
         latestClient.name = lastNetId.ToString();
         clientNetIds.Add(lastNetId);
         players.Add(latestClient);

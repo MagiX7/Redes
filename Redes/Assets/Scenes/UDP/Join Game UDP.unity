@@ -2055,15 +2055,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4084039688676900897, guid: d0811edf039b34243be6d20e3772e784, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.1976333
+      value: -17.41
       objectReference: {fileID: 0}
     - target: {fileID: 4084039688676900897, guid: d0811edf039b34243be6d20e3772e784, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.11999977
+      value: 0.13
       objectReference: {fileID: 0}
     - target: {fileID: 4084039688676900897, guid: d0811edf039b34243be6d20e3772e784, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.1520753
+      value: -12.12
       objectReference: {fileID: 0}
     - target: {fileID: 4084039688676900897, guid: d0811edf039b34243be6d20e3772e784, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2139,6 +2139,7 @@ MonoBehaviour:
   clientUDP: {fileID: 645908010}
   player: {fileID: 896945116}
   enemy: {fileID: 0}
+  connectionManager: {fileID: 0}
   gameStarted: 0
   clientJoined: 0
   UIToDeactivate: []
@@ -2349,6 +2350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -3361,6 +3363,11 @@ MonoBehaviour:
   - {fileID: 298117722}
   - {fileID: 298117721}
   sceneManager: {fileID: 908946557}
+  positions:
+  - {x: 21.82, y: -0.11999977, z: 16.87}
+  - {x: -13.3, y: -0.02, z: 16.87}
+  - {x: 21.82, y: -0.11999977, z: -12.12}
+  - {x: -17.41, y: 0.13, z: -12.12}
   isClient: 1
   clientNetIds: 
   players: []
