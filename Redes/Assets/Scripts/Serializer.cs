@@ -64,13 +64,13 @@ public static class Serializer
         MemoryStream stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         writer.Write((int)type);
-        writer.Write(date.ToBinary());
+        writer.Write((int)date.ToBinary());
         return stream.GetBuffer();
     }
 
     public static DateTime DeserializeDate(BinaryReader reader)
     {
-        return DateTime.FromBinary(reader.ReadInt64());
+        return DateTime.FromBinary(reader.ReadInt32());
     }
 
     public static byte[] SerializePlayerData(PlayerData playerData, int senderNetId, int affectedNetId)

@@ -22,4 +22,13 @@ public class UDPManager : MonoBehaviour
         else server.Send(bytes);
     }
 
+    public float GetRTTSecs(bool isClient)
+    {
+        if (isClient)
+        {
+            return client.GetRTTSecs();
+        }
+        return -1;
+    }
+
 }

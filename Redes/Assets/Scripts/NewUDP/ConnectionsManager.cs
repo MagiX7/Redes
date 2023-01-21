@@ -159,6 +159,13 @@ public class ConnectionsManager : MonoBehaviour
         stream.Seek(0, SeekOrigin.Begin);
 
         MessageType messageType = (MessageType)reader.ReadInt32();
+        //if (messageType == MessageType.RTT)
+        //{
+        //    chatText = string.Empty;
+        //    clientNetId = senderNetId = affectedNetId = -1;
+        //    return messageType;
+        //}
+
         senderNetId = reader.ReadInt32();
         affectedNetId = reader.ReadInt32();
         switch (messageType)
