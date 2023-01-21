@@ -1,4 +1,6 @@
 using JetBrains.Annotations;
+using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
@@ -20,6 +22,7 @@ public class ClientUDP : MonoBehaviour
     EndPoint remote = null;
     int netId = -1;
     bool netIdAssigned = false;
+    float rtt;
 
     Thread receiveMsgsThread;
 
@@ -42,6 +45,10 @@ public class ClientUDP : MonoBehaviour
         data = Serializer.SerializeStringWithHeader(MessageType.NEW_USER, netId, userName);
         clientSocket.SendTo(data, data.Length, SocketFlags.None, remote);
         data = new byte[1024];
+
+
+        // Here we don't care about the senderId
+        Serializer.SerializeBoolWithHeader(MessageType.RTT, -1, true);
 
         receiveMsgsThread = new Thread(ReceiveMessages);
         receiveMsgsThread.Start();
@@ -97,6 +104,17 @@ public class ClientUDP : MonoBehaviour
                     connectionsManager.OnNewClient(senderNetId);
                     netIdAssigned = true;
                 }
+                else if(msgType == MessageType.RTT)
+                {
+                    MemoryStream stream = new MemoryStream(bytes, 0, bytes.Length);
+                    BinaryReader reader = new BinaryReader(stream);
+
+                    stream.Seek(0, SeekOrigin.Begin);
+                    DateTime date = DateTime.FromBinary(reader.ReadInt64());
+                    rtt = (DateTime.Now - date).Milliseconds;
+                    Debug.Log("RTT: " + rtt + " ==========================");
+                }
+
                 //else if (msgType == MessageType.NEW_USER && senderNetId != netId)
                 //{
                 //    newUser = true;
@@ -114,6 +132,16 @@ public class ClientUDP : MonoBehaviour
     public void SetNetId(int value)
     {
         netId = value;
+    }
+
+    public float GetRTTMillis()
+    {
+        return rtt;
+    }
+
+    public float GetRTTSecs()
+    {
+        return (rtt / 1000);
     }
 
     public int GetNetId() { return netId; }

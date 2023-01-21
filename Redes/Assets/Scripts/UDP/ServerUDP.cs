@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -147,12 +149,20 @@ public class ServerUDP : MonoBehaviour
                     clientConnected = true;
                     lastUserName = text;
                 }
-
-                if (msgType == MessageType.PLAYER_DATA && connectionsManager.needToUpdateEnemy)
+                else if (msgType == MessageType.PLAYER_DATA && connectionsManager.needToUpdateEnemy)
                 {
                     dataToSend = bytes;
                     needToSendMessage = true;
                 }
+                else if(msgType == MessageType.RTT)
+                {
+                    byte[] rttData = Serializer.SerializeDateWithHeader(MessageType.RTT, DateTime.Now);
+                    // We use Send here and not socket.Send() to simulate the real process of sending the packets the app follows
+                    Send(rttData);
+                    continue;
+                }
+
+
 
                 if (!remoters.Contains(remote))
                 {

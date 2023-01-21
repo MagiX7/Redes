@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,8 @@ public enum MessageType
     NET_ID,
     START_GAME,
     OBJECT_DATA,
-    DISCONNECT
+    DISCONNECT,
+    RTT
 }
 
 public static class Serializer
@@ -55,6 +57,20 @@ public static class Serializer
     public static int DeserializeInt(BinaryReader reader)
     {
         return reader.ReadInt32();
+    }
+
+    public static byte[] SerializeDateWithHeader(MessageType type, DateTime date)
+    {
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write((int)type);
+        writer.Write(date.ToBinary());
+        return stream.GetBuffer();
+    }
+
+    public static DateTime DeserializeDate(BinaryReader reader)
+    {
+        return DateTime.FromBinary(reader.ReadInt64());
     }
 
     public static byte[] SerializePlayerData(PlayerData playerData, int senderNetId, int affectedNetId)

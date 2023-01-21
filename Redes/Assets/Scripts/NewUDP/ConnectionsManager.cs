@@ -209,32 +209,32 @@ public class ConnectionsManager : MonoBehaviour
             }
 
             case MessageType.OBJECT_DATA:
+            {
+                if (affectedNetId >= 0)
                 {
-                    if (affectedNetId >= 0)
-                    {
-                        latestObjectId = affectedNetId;
-                        latestObjectData = Serializer.DeserializeObjectData(reader);
-                        needToUpdateObject = true;
-                    }
-                    chatText = string.Empty;
-                    clientNetId = -1;
-                    break;
+                    latestObjectId = affectedNetId;
+                    latestObjectData = Serializer.DeserializeObjectData(reader);
+                    needToUpdateObject = true;
                 }
+                chatText = string.Empty;
+                clientNetId = -1;
+                break;
+            }
 
             case MessageType.START_GAME:
-                {
-                    sceneManager.StartClient();
-                    chatText = string.Empty;
-                    clientNetId = -1;
-                    break;
-                }
+            {
+                sceneManager.StartClient();
+                chatText = string.Empty;
+                clientNetId = -1;
+                break;
+            }
 
             default:
-                {
-                    chatText = string.Empty;
-                    clientNetId = -1;
-                    break;
-                }
+            {
+                chatText = string.Empty;
+                clientNetId = -1;
+                break;
+            }
         }
 
         return messageType;
