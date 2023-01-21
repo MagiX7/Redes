@@ -158,7 +158,8 @@ public class ServerUDP : MonoBehaviour
                 {
                     byte[] rttData = Serializer.SerializeDateWithHeader(MessageType.RTT, DateTime.Now);
                     // We use Send here and not socket.Send() to simulate the real process of sending the packets the app follows
-                    Send(rttData);
+                    serverSocket.SendTo(rttData, remote);
+                    //Send(rttData);
                     continue;
                 }
 

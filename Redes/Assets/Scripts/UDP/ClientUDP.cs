@@ -48,7 +48,9 @@ public class ClientUDP : MonoBehaviour
 
 
         // Here we don't care about the senderId
-        Serializer.SerializeBoolWithHeader(MessageType.RTT, -1, true);
+        data = Serializer.SerializeBoolWithHeader(MessageType.RTT, -1, true);
+        clientSocket.SendTo(data, data.Length, SocketFlags.None, remote);
+        data = new byte[1024];
 
         receiveMsgsThread = new Thread(ReceiveMessages);
         receiveMsgsThread.Start();
@@ -110,7 +112,7 @@ public class ClientUDP : MonoBehaviour
                     BinaryReader reader = new BinaryReader(stream);
 
                     stream.Seek(0, SeekOrigin.Begin);
-                    DateTime date = DateTime.FromBinary(reader.ReadInt64());
+                    DateTime date = DateTime.FromBinary(reader.ReadInt32());
                     rtt = (DateTime.Now - date).Milliseconds;
                     Debug.Log("RTT: " + rtt + " ==========================");
                 }
