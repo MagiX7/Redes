@@ -43,7 +43,10 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         if (!sceneManager.gameStarted)
+        {
+            playerData.position = gameObject.transform.position;
             return;
+        }
 
         float verticalAxis = Input.GetAxis("Vertical");
       

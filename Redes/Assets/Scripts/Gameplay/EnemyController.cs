@@ -45,6 +45,12 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
+        if (!sceneManager.gameStarted)
+        {
+            playerData.position = gameObject.transform.position;
+            return;
+        }
+
         if (playerData.shooted)
         {          
             rocketLauncherController.FireWeapon(playerData.rocketPosition, Quaternion.Euler(playerData.rocketDirection));
@@ -57,7 +63,7 @@ public class EnemyController : MonoBehaviour
 
         if (currentInterpolationTime >= durationInterpolation)
         {
-            interpolateStartingPosition = transform.position;
+            interpolateStartingPosition = gameObject.transform.position;
             positionToInterpolate = playerData.position;
             rotationToInterpolate = playerData.rotation;
 
