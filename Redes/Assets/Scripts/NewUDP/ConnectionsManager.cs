@@ -73,30 +73,38 @@ public class ConnectionsManager : MonoBehaviour
                         if (chickenID)
                         {
                             go = chickenID.GetComponent<EnemyController>();
-                        }   
+                        }
 
-                        if (go != null && go.playerData.packetID < latestPlayerData.packetID)
+                        if (go != null)
                         {
-                            // No llega el chickenGotHit
-                            go.playerData = latestPlayerData;
-                            if (go.playerData.chickenGotHit)
+                            if (go.playerData != null)
                             {
-                                GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
-                                if (obj != null)
+                                int a = go.playerData.packetID;
+                                int b = latestPlayerData.packetID;
+                                if (a < b)
                                 {
-                                    EnemyController enemy = obj.GetComponent<EnemyController>();
-                                    if (enemy != null)
+                                    // No llega el chickenGotHit
+                                    go.playerData = latestPlayerData;
+                                    if (go.playerData.chickenGotHit)
                                     {
-                                        enemy.SetLife(latestPlayerData.chickenHitLife);
-                                    }
+                                        GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
+                                        if (obj != null)
+                                        {
+                                            EnemyController enemy = obj.GetComponent<EnemyController>();
+                                            if (enemy != null)
+                                            {
+                                                enemy.SetLife(latestPlayerData.chickenHitLife);
+                                            }
 
-                                    PlayerMovement player = obj.GetComponent<PlayerMovement>();
-                                    if (player != null)
-                                    {
-                                        player.SetLife(latestPlayerData.chickenHitLife);
+                                            PlayerMovement player = obj.GetComponent<PlayerMovement>();
+                                            if (player != null)
+                                            {
+                                                player.SetLife(latestPlayerData.chickenHitLife);
+                                            }
+                                        }
+
                                     }
                                 }
-
                             }
                             
                         }

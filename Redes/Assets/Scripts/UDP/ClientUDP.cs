@@ -97,11 +97,12 @@ public class ClientUDP : MonoBehaviour
                     connectionsManager.OnNewClient(senderNetId);
                     netIdAssigned = true;
                 }
-                //else if (msgType == MessageType.NEW_USER && senderNetId != netId)
-                //{
-                //    newUser = true;
-                //    latestNetId = senderNetId;
-                //}
+                else if (msgType == MessageType.NEW_USER && senderNetId != netId)
+                {
+                    newUser = true;
+                    latestNetId = senderNetId;
+                    Debug.Log("Entered new user client udp");
+                }
             }
         }
     }
