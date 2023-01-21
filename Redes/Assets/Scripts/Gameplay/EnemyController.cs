@@ -47,7 +47,7 @@ public class EnemyController : MonoBehaviour
     {
         if (!sceneManager.gameStarted)
         {
-            playerData.position = gameObject.transform.position;
+            interpolateStartingPosition = positionToInterpolate = playerData.position = gameObject.transform.position;
             return;
         }
 
