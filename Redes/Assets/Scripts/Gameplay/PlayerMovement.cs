@@ -12,10 +12,7 @@ public class PlayerMovement : MonoBehaviour
     // Private variables
     bool isMoving = false;
     bool died = false;
-    bool gotHit = false;
     [HideInInspector] public int life = 5;
-    float invulnerabilityTime = 1.0f;
-    Material material;
 
     // Weapons
     public GameObject rocketLauncher;
@@ -37,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         healthBar.SetMaxHealth(5);
-        material = transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material;
     }
 
     void Update()
@@ -96,7 +92,6 @@ public class PlayerMovement : MonoBehaviour
             Die();
         }
 
-        // This code is to test lag mitigation techniques
         sendDataCounter += Time.deltaTime;
         if (sendDataCounter >= 0.05f) // 4 frames
         {
@@ -112,26 +107,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void DecrementLife()
-    {
-        if (!isClient)
-            return;
-
-        life -= 1;
-        healthBar.SetHealth(life);
-        playerData.chickenGotHit = false;
-        playerData.chickenHitId = -1;
-        gotHit = true;
-    }
-
     public void SetLife(int lifePoints)
     {
         life = lifePoints;
         healthBar.SetHealth(life);
-        gotHit = true;
     }
 
-    public PlayerData GetPlayerData() { return playerData; }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -148,35 +129,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void Send()
-    {
-        playerData.packetID++;
-        //sendDataCounter = 0.0f;
-        udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        //if (!isClient)
-        //{
-        //    if (collision.gameObject.tag == "Rocket")
-        //    {
-        //        gotHit = true;
-        //    }
-        //}
-    }
-
-    public void SetScore()
-    {
-        //Time.timeScale = 0.2f;
-        //Invoke("ResetTimeScale", 0.3f);
-    }
-
-    void ResetTimeScale()
-    {
-        Time.timeScale = 1.0f;
-    }
-
     public void Die()
     {
         MeshRenderer[] meshes = GetComponentsInChildren<MeshRenderer>();
@@ -190,17 +142,17 @@ public class PlayerMovement : MonoBehaviour
         sceneManager.EndGame();
     }
 
-    public void ResetStats()
-    {
-        life = 5;
-        healthBar.SetHealth(life);
-    }
+    //public void ResetStats()
+    //{
+    //    life = 5;
+    //    healthBar.SetHealth(life);
+    //}
 
-    void DisableChicken()
-    {
-        //gameObject.SetActive(false);
-        Invoke("RestartChicken", 5.0f);
-    }
+    //void DisableChicken()
+    //{
+    //    //gameObject.SetActive(false);
+    //    Invoke("RestartChicken", 5.0f);
+    //}
 
     void RestartChicken()
     {

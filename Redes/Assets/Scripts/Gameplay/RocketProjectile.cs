@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RocketProjectile : MonoBehaviour
@@ -77,11 +75,6 @@ public class RocketProjectile : MonoBehaviour
 
 
             }
-
-
-            PlayerMovement aux = instigator.GetComponent<PlayerMovement>();
-            if (aux)
-                aux.SetScore();
         }
 
         Destroy(gameObject, 5.0f);

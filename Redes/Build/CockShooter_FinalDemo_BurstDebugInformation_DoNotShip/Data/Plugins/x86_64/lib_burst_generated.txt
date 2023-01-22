@@ -125,7 +125,7 @@ Library: lib_burst_generated
 --compilation-defines=ENABLE_ANIMATION_BURST
 --compilation-defines=TIMELINE_FRAMEACCURATE
 --compilation-defines=ENABLE_SPRITESHAPE_BURST
---linker-options=PdbAltPath="BernalOriol_PerezLucas_MegiaCarlos_GonzalezDavidJesus_Ex4_Data/Plugins/x86_64"
+--linker-options=PdbAltPath="CockShooter_FinalDemo_Data/Plugins/x86_64"
 --generate-link-xml=Temp\burst.link.xml
 --output=F:\Redes\Redes\Temp\StagingArea\Data\Plugins\x86_64\lib_burst_generated
 --root-assembly=F:\Redes\Redes\Temp\StagingArea\Data\Managed\UnityEngine.UI.dll
@@ -289,7 +289,7 @@ Library: lib_burst_generated
 --compilation-defines=ENABLE_ANIMATION_BURST
 --compilation-defines=TIMELINE_FRAMEACCURATE
 --compilation-defines=ENABLE_SPRITESHAPE_BURST
---linker-options=PdbAltPath="BernalOriol_PerezLucas_MegiaCarlos_GonzalezDavidJesus_Ex4_Data/Plugins/x86_64"
+--linker-options=PdbAltPath="CockShooter_FinalDemo_Data/Plugins/x86_64"
 --generate-link-xml=Temp\burst.link.xml
 --output=F:\Redes\Redes\Temp\StagingArea\Data\Plugins\x86_64\lib_burst_generated
 --root-assembly=F:\Redes\Redes\Temp\StagingArea\Data\Managed\UnityEngine.UI.dll

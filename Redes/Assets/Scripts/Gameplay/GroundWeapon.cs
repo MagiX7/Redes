@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GroundWeapon : MonoBehaviour
@@ -13,9 +11,4 @@ public class GroundWeapon : MonoBehaviour
 
     public weaponType type;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

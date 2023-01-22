@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class ClientSceneManagerUDP : MonoBehaviour
 {
@@ -229,7 +228,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
     {
         player.SetActive(true);
         player.transform.position = initialPlayerPos;
-        //player.GetComponent<PlayerMovement>().ResetStats();
     }
 
 
