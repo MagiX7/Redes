@@ -150,6 +150,10 @@ public class EnemyController : MonoBehaviour
             mesh.enabled = true;
         }
 
+        ConnectionsManager connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
+
+        transform.position = connectionsManager.positions[int.Parse(name)];
+
         SetLife(5);
         died = false;
     }
