@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Net;
 using System.Net.Sockets;
 
@@ -8,6 +9,7 @@ using UnityEngine;
 public class ClientUDP : MonoBehaviour
 {
     Socket clientSocket;
+    IPEndPoint clientIpep;
 
     int recv = 0;
     byte[] data;
@@ -31,6 +33,9 @@ public class ClientUDP : MonoBehaviour
     void Start()
     {
         clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        clientIpep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
+        //clientSocket.Bind(clientIpep);
+
         remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
         data = new byte[1024];
@@ -96,6 +101,7 @@ public class ClientUDP : MonoBehaviour
                 {
                     newUser = true;
                     latestNetId = senderNetId;
+                    Debug.Log("Entered new user client udp");
                 }
             }
         }
@@ -106,8 +112,25 @@ public class ClientUDP : MonoBehaviour
         clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
     }
 
+    public void SetNetId(int value)
+    {
+        netId = value;
+    }
+
     public int GetNetId() { return netId; }
 
     public string GetUserName() { return userName; }
 
+    string GetLocalIPAddress()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        return "Null";
+    }
 }

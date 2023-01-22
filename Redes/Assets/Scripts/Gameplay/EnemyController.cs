@@ -1,4 +1,6 @@
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyController : MonoBehaviour
 {
@@ -11,7 +13,11 @@ public class EnemyController : MonoBehaviour
 
     public GameObject deathPrefab;
     bool died = false;
+    bool gotHit = false;
     [HideInInspector] public int life = 5;
+    float invulnerabilityTime = 1.0f;
+    //bool isInvulnerable = false;
+    Material material;
 
 
     // For interpolation
@@ -34,6 +40,7 @@ public class EnemyController : MonoBehaviour
         playerData = new PlayerData();
         healthBar.SetMaxHealth(5);
         anim = GetComponent<Animator>();
+        material = transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material;
     }
 
     void Update()
@@ -83,6 +90,7 @@ public class EnemyController : MonoBehaviour
     {
         life = lifePoints;
         healthBar.SetHealth(life);
+        gotHit = true;
     }
 
     public void DecrementLife()
@@ -93,6 +101,7 @@ public class EnemyController : MonoBehaviour
         healthBar.SetHealth(--life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
+        gotHit = true;
     }
 
     public void Die()
@@ -115,11 +124,28 @@ public class EnemyController : MonoBehaviour
         died = false;
     }
 
-    //void DisableChicken()
-    //{
-    //    gameObject.SetActive(false);
-    //    Invoke("RestartChicken", 5.0f);
-    //}
+    private void OnCollisionEnter(Collision collision)
+    {
+        //if (collision.gameObject.tag == "Rocket")
+        //{
+        //    gotHit = true;
+        //}
+
+        // We are in the server
+        //if (!connectionManager.isClient)
+        //{
+        //    if (collision.gameObject.tag == "Rocket")
+        //    {
+        //        gotHit = true;
+        //    }
+        //}
+    }
+
+    void DisableChicken()
+    {
+        gameObject.SetActive(false);
+        Invoke("RestartChicken", 5.0f);
+    }
 
     void RestartChicken()
     {

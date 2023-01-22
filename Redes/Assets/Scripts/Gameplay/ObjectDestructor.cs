@@ -34,6 +34,11 @@ public class ObjectDestructor : MonoBehaviour
         }
     }
 
+    public void ApplyImpulseForce()
+    {
+        //rb.AddForce(objectData.impulse, ForceMode.Impulse);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Rocket")

@@ -65,42 +65,51 @@ public class ConnectionsManager : MonoBehaviour
             {
                 foreach (int clientId in clientNetIds)
                 {
-                    if (clientId != latestAffectedNetId)
-                        continue;
-                    
-                    GameObject chickenID = GameObject.Find(clientId.ToString());
-                    if (chickenID == null)
-                        continue;
-
-                    EnemyController go = chickenID.GetComponent<EnemyController>();
-                    if (go == null || go.playerData == null)
-                        continue;
-
-                    // Packet assurance
-                    if (go.playerData.packetID < latestPlayerData.packetID)
+                    // TODO: Sometimes an error appears here
+                    if (clientId == latestAffectedNetId)
                     {
-                        go.playerData = latestPlayerData;
-                        if (!go.playerData.chickenGotHit)
-                            continue;
-
-                        GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
-                        if (obj != null)
+                        GameObject chickenID = GameObject.Find(clientId.ToString());
+                        EnemyController go = null;
+                        if (chickenID)
                         {
-                            EnemyController enemy = obj.GetComponent<EnemyController>();
-                            if (enemy != null)
-                            {
-                                enemy.SetLife(latestPlayerData.chickenHitLife);
-                            }
-
-                            PlayerMovement player = obj.GetComponent<PlayerMovement>();
-                            if (player != null)
-                            {
-                                player.SetLife(latestPlayerData.chickenHitLife);
-                            }
+                            go = chickenID.GetComponent<EnemyController>();
                         }
+
+                        if (go != null)
+                        {
+                            if (go.playerData != null)
+                            {
+                                int a = go.playerData.packetID;
+                                int b = latestPlayerData.packetID;
+                                if (a < b)
+                                {
+                                    // No llega el chickenGotHit
+                                    go.playerData = latestPlayerData;
+                                    if (go.playerData.chickenGotHit)
+                                    {
+                                        GameObject obj = GameObject.Find(latestPlayerData.chickenHitId.ToString());
+                                        if (obj != null)
+                                        {
+                                            EnemyController enemy = obj.GetComponent<EnemyController>();
+                                            if (enemy != null)
+                                            {
+                                                enemy.SetLife(latestPlayerData.chickenHitLife);
+                                            }
+
+                                            PlayerMovement player = obj.GetComponent<PlayerMovement>();
+                                            if (player != null)
+                                            {
+                                                player.SetLife(latestPlayerData.chickenHitLife);
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                            
+                        }
+                        break;
                     }
-                    
-                    break;
                 }
             }
         }
@@ -208,32 +217,32 @@ public class ConnectionsManager : MonoBehaviour
             }
 
             case MessageType.OBJECT_DATA:
-            {
-                if (affectedNetId >= 0)
                 {
-                    latestObjectId = affectedNetId;
-                    latestObjectData = Serializer.DeserializeObjectData(reader);
-                    needToUpdateObject = true;
+                    if (affectedNetId >= 0)
+                    {
+                        latestObjectId = affectedNetId;
+                        latestObjectData = Serializer.DeserializeObjectData(reader);
+                        needToUpdateObject = true;
+                    }
+                    chatText = string.Empty;
+                    clientNetId = -1;
+                    break;
                 }
-                chatText = string.Empty;
-                clientNetId = -1;
-                break;
-            }
 
             case MessageType.START_GAME:
-            {
-                sceneManager.StartClient();
-                chatText = string.Empty;
-                clientNetId = -1;
-                break;
-            }
+                {
+                    sceneManager.StartClient();
+                    chatText = string.Empty;
+                    clientNetId = -1;
+                    break;
+                }
 
             default:
-            {
-                chatText = string.Empty;
-                clientNetId = -1;
-                break;
-            }
+                {
+                    chatText = string.Empty;
+                    clientNetId = -1;
+                    break;
+                }
         }
 
         return messageType;
