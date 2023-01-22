@@ -1,4 +1,3 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -62,16 +61,32 @@ public class EnemyController : MonoBehaviour
             playerData.shooted = false;
         }
 
-        currentInterpolationTime += Time.deltaTime;    
-        transform.position = Vector3.Lerp(interpolateStartingPosition, positionToInterpolate, currentInterpolationTime / durationInterpolation);
-        transform.rotation = Quaternion.Lerp(transform.rotation, rotationToInterpolate, 0.01f * 10.0f);
+        float distance = Vector3.Distance(positionToInterpolate, interpolateStartingPosition);
+        if (distance < 5.0f)
+        {
+            currentInterpolationTime += Time.deltaTime;
+            transform.position = Vector3.Lerp(interpolateStartingPosition, positionToInterpolate, currentInterpolationTime / durationInterpolation);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rotationToInterpolate, 0.01f * 10.0f);
 
-        if (currentInterpolationTime >= durationInterpolation)
+            if (currentInterpolationTime >= durationInterpolation)
+            {
+                interpolateStartingPosition = gameObject.transform.position;
+                positionToInterpolate = playerData.position;
+                rotationToInterpolate = playerData.rotation;
+
+                durationInterpolation = (positionToInterpolate - interpolateStartingPosition).magnitude / 5.0f;
+                currentInterpolationTime = 0.0f;
+            } 
+        }
+        else
         {
             interpolateStartingPosition = gameObject.transform.position;
+
             positionToInterpolate = playerData.position;
             rotationToInterpolate = playerData.rotation;
 
+            transform.position = positionToInterpolate;
+            transform.rotation = rotationToInterpolate;
             durationInterpolation = (positionToInterpolate - interpolateStartingPosition).magnitude / 5.0f;
             currentInterpolationTime = 0.0f;
         }
