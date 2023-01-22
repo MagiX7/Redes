@@ -2139,7 +2139,6 @@ MonoBehaviour:
   clientUDP: {fileID: 645908010}
   player: {fileID: 896945116}
   enemy: {fileID: 0}
-  connectionManager: {fileID: 0}
   gameStarted: 0
   clientJoined: 0
   UIToDeactivate: []

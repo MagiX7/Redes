@@ -24,8 +24,8 @@ public class SceneManagerUDP : MonoBehaviour
     [SerializeField] GameObject enemy;
     Vector3 initialPlayerPos = Vector3.zero;
 
-    // connection manager
-    [SerializeField] ConnectionsManager connectionManager;
+    // Connection manager
+    ConnectionsManager connectionManager;
 
     // Fade
     Image fadeImage;
@@ -194,6 +194,20 @@ public class SceneManagerUDP : MonoBehaviour
         gameEnded = true;
         fadingIn = true;
         ToggleGameUI(false);
+    }
+
+    // Triggered through an event from the server Start Game button
+    public void StartServerConnection()
+    {
+        fadingOut = true;
+        gameStarted = true;
+        for (int i = 0; i < UIToDeactivate.Length; ++i)
+        {
+            UIToDeactivate[i].gameObject.SetActive(false);
+        }
+
+        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.START_GAME, serverUDP.GetNetId(), true);
+        serverUDP.Send(bytes);
     }
 
     void ToggleGameUI(bool value)
