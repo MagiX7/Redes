@@ -47,6 +47,11 @@ public class EnemyController : MonoBehaviour
     {
         if (!sceneManager.gameStarted)
         {
+            if (transform.position.y <= -3.0f)
+            {
+                transform.position.Set(transform.position.x, 2.0f, transform.position.z);
+            }
+
             interpolateStartingPosition = positionToInterpolate = playerData.position = gameObject.transform.position;
             return;
         }
