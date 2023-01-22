@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RocketProjectile : MonoBehaviour
@@ -27,14 +25,10 @@ public class RocketProjectile : MonoBehaviour
 
     private void Start()
     {
-        //Destroy(this.gameObject, 9.0f);
     }
     private void Update()
     {
-        // --- Check to see if the target has been hit. We don't want to update the position if the target was hit ---
         if (targetHit) return;
-
-        // --- moves the game object in the forward direction at the defined speed ---
         transform.position += transform.forward * (speed * Time.deltaTime);
     }
 
@@ -54,34 +48,25 @@ public class RocketProjectile : MonoBehaviour
             // Guarantee we are playing as the server
             PlayerMovement serverPlayer = GameObject.Find("0").GetComponent<PlayerMovement>();
 
-            if (serverPlayer != null && !serverPlayer.isClient /*&& collision.gameObject.name != "0"*/)
+            if (serverPlayer != null && !serverPlayer.isClient)
             {
                 serverPlayer.playerData.chickenGotHit = true;
                 serverPlayer.playerData.chickenHitId = int.Parse(collision.gameObject.name);
 
                 EnemyController enemy = collision.gameObject.GetComponent<EnemyController>();
 
+                // As you are playing as the server, you need to process life locally and send the data later
                 if (enemy)
                 {
                     serverPlayer.playerData.chickenHitLife = enemy.life - 1;
-                    //serverPlayer.Send();
-                    // As you are playing as the server, you need to process life locally and send the data later
                     enemy.SetLife(serverPlayer.playerData.chickenHitLife);
                 }
                 else
                 {
                     serverPlayer.playerData.chickenHitLife = serverPlayer.life - 1;
-                    //serverPlayer.Send();
                     serverPlayer.SetLife(serverPlayer.playerData.chickenHitLife);
                 }
-
-
             }
-
-
-            PlayerMovement aux = instigator.GetComponent<PlayerMovement>();
-            if (aux)
-                aux.SetScore();
         }
 
         Destroy(gameObject, 5.0f);

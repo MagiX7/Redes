@@ -1,15 +1,12 @@
-using JetBrains.Annotations;
 using System.Net;
 using System.Net.Sockets;
 
 using System.Threading;
 using UnityEngine;
 
-
 public class ClientUDP : MonoBehaviour
 {
     Socket clientSocket;
-    IPEndPoint clientIpep;
 
     int recv = 0;
     byte[] data;
@@ -27,15 +24,12 @@ public class ClientUDP : MonoBehaviour
     bool newUser = false; // For other players
     int latestNetId = -1;
 
-    [SerializeField] ClientSceneManagerUDP sceneManager;
+    [SerializeField] SceneManagerUDP sceneManager;
     ConnectionsManager connectionsManager;
     
     void Start()
     {
         clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        clientIpep = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), 5345);
-        //clientSocket.Bind(clientIpep);
-
         remote = new IPEndPoint(IPAddress.Parse(serverIp), 5345);
 
         data = new byte[1024];
@@ -101,7 +95,6 @@ public class ClientUDP : MonoBehaviour
                 {
                     newUser = true;
                     latestNetId = senderNetId;
-                    Debug.Log("Entered new user client udp");
                 }
             }
         }
@@ -110,11 +103,6 @@ public class ClientUDP : MonoBehaviour
     public void Send(byte[] bytes)
     {
         clientSocket.SendTo(bytes, bytes.Length, SocketFlags.None, remote);
-    }
-
-    public void SetNetId(int value)
-    {
-        netId = value;
     }
 
     public int GetNetId() { return netId; }

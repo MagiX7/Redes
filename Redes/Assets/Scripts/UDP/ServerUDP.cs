@@ -35,14 +35,14 @@ public class ServerUDP : MonoBehaviour
     [SerializeField] Text ipText;
 
     ConnectionsManager connectionsManager;
-    ClientSceneManagerUDP sceneManager;
+    SceneManagerUDP sceneManager;
 
     void Start()
     {
         remoters = new List<EndPoint>();
 
         connectionsManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
-        sceneManager = GameObject.Find("SceneManager").GetComponent<ClientSceneManagerUDP>();
+        sceneManager = GameObject.Find("SceneManager").GetComponent<SceneManagerUDP>();
 
         data = new byte[1024];
         dataToSend = new byte[1024];
@@ -128,7 +128,7 @@ public class ServerUDP : MonoBehaviour
             recv = serverSocket.ReceiveFrom(bytes, SocketFlags.None, ref remote);
             if (recv > 0)
             {
-                int clientNetId = -1;
+                int clientNetId;
                 int senderNetId;
                 MessageType msgType = connectionsManager.OnMessageReceived(bytes, out text, out clientNetId, out senderNetId, out _);
 
@@ -212,8 +212,6 @@ public class ServerUDP : MonoBehaviour
         sceneManager.UpdateUsersList(lastUserName);
 
         clientConnected = false;
-        //lastUserName = string.Empty;
-
         newMessage = false;
         data = new byte[1024];
     }

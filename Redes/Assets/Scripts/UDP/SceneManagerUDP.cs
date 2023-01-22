@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
-public class ClientSceneManagerUDP : MonoBehaviour
+public class SceneManagerUDP : MonoBehaviour
 {
     // UI
     [SerializeField] GameObject chatGameObject;
@@ -190,19 +189,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
         chatInputGameObject.SetActive(value);
     }
 
-    public void StartServerConnection()
-    {
-        fadingOut = true;
-        gameStarted = true;
-        for (int i = 0; i < UIToDeactivate.Length; ++i)
-        {
-            UIToDeactivate[i].gameObject.SetActive(false);
-        }
-
-        byte[] bytes = Serializer.SerializeBoolWithHeader(MessageType.START_GAME, serverUDP.GetNetId(), true);
-        serverUDP.Send(bytes);
-    }
-
     public void EndGame()
     {
         gameEnded = true;
@@ -229,7 +215,6 @@ public class ClientSceneManagerUDP : MonoBehaviour
     {
         player.SetActive(true);
         player.transform.position = initialPlayerPos;
-        //player.GetComponent<PlayerMovement>().ResetStats();
     }
 
 

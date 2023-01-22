@@ -1,6 +1,4 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class EnemyController : MonoBehaviour
 {
@@ -8,16 +6,12 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] RocketLauncherController rocketLauncherController;
 
-    ClientSceneManagerUDP sceneManager;
+    SceneManagerUDP sceneManager;
     ConnectionsManager connectionManager;
 
     public GameObject deathPrefab;
     bool died = false;
-    bool gotHit = false;
     [HideInInspector] public int life = 5;
-    float invulnerabilityTime = 1.0f;
-    //bool isInvulnerable = false;
-    Material material;
 
 
     // For interpolation
@@ -36,11 +30,10 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         connectionManager = GameObject.Find("Connections Manager").GetComponent<ConnectionsManager>();
-        sceneManager = GameObject.Find("SceneManager").GetComponent<ClientSceneManagerUDP>();
+        sceneManager = GameObject.Find("SceneManager").GetComponent<SceneManagerUDP>();
         playerData = new PlayerData();
         healthBar.SetMaxHealth(5);
         anim = GetComponent<Animator>();
-        material = transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material;
     }
 
     void Update()
@@ -85,7 +78,7 @@ public class EnemyController : MonoBehaviour
     {
         life = lifePoints;
         healthBar.SetHealth(life);
-        gotHit = true;
+        //gotHit = true;
     }
 
     public void DecrementLife()
@@ -96,7 +89,7 @@ public class EnemyController : MonoBehaviour
         healthBar.SetHealth(--life);
         playerData.chickenGotHit = false;
         playerData.chickenHitId = -1;
-        gotHit = true;
+        //gotHit = true;
     }
 
     public void Die()

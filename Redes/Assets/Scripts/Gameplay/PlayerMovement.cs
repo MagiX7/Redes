@@ -7,14 +7,13 @@ public class PlayerMovement : MonoBehaviour
     public Camera cam;
     public GameObject weaponPosition;
     public GameObject deathPrefab;
-    public ClientSceneManagerUDP sceneManager;
+    public SceneManagerUDP sceneManager;
 
     // Private variables
     bool isMoving = false;
     bool died = false;
     bool gotHit = false;
     [HideInInspector] public int life = 5;
-    float invulnerabilityTime = 1.0f;
     Material material;
 
     // Weapons
@@ -96,7 +95,6 @@ public class PlayerMovement : MonoBehaviour
             Die();
         }
 
-        // This code is to test lag mitigation techniques
         sendDataCounter += Time.deltaTime;
         if (sendDataCounter >= 0.05f) // 4 frames
         {
@@ -112,26 +110,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void DecrementLife()
-    {
-        if (!isClient)
-            return;
-
-        life -= 1;
-        healthBar.SetHealth(life);
-        playerData.chickenGotHit = false;
-        playerData.chickenHitId = -1;
-        gotHit = true;
-    }
-
     public void SetLife(int lifePoints)
     {
         life = lifePoints;
         healthBar.SetHealth(life);
         gotHit = true;
     }
-
-    public PlayerData GetPlayerData() { return playerData; }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -146,35 +130,6 @@ public class PlayerMovement : MonoBehaviour
                 break;
             }
         }
-    }
-
-    public void Send()
-    {
-        playerData.packetID++;
-        //sendDataCounter = 0.0f;
-        udpManager.SendPlayerData(playerData, int.Parse(name), isClient);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        //if (!isClient)
-        //{
-        //    if (collision.gameObject.tag == "Rocket")
-        //    {
-        //        gotHit = true;
-        //    }
-        //}
-    }
-
-    public void SetScore()
-    {
-        //Time.timeScale = 0.2f;
-        //Invoke("ResetTimeScale", 0.3f);
-    }
-
-    void ResetTimeScale()
-    {
-        Time.timeScale = 1.0f;
     }
 
     public void Die()
